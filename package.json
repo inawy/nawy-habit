@@ -1,5 +1,5 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "nawy-habit",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "check": "bun run lint && bun run typecheck && bun run test"
   },
   "overrides": {
     "rolldown": "1.2.1"
