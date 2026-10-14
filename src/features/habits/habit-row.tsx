@@ -59,14 +59,14 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
             {best > 1 && <span className="ms-2">· الأفضل {best.toLocaleString("ar")}</span>}
           </p>
         </div>
-        <DropdownMenu>
+        <DropdownMenu dir="rtl">
           <DropdownMenuTrigger
             className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
             aria-label={`خيارات ${habit.name}`}
           >
             <MoreHorizontal className="size-5" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" dir="rtl">
+          <DropdownMenuContent align="start">
             <DropdownMenuItem onSelect={() => onEdit(habit)}>تعديل</DropdownMenuItem>
             <DropdownMenuItem onSelect={() => void onArchive()}>أرشفة</DropdownMenuItem>
           </DropdownMenuContent>
