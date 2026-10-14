@@ -1,11 +1,4 @@
-# Nawy Habit Builder
-
-عايزك تطلع على مستودعات تطبيقات ناوي
-inawy (ESLAM)
-وبعدين تاخد اذن كتابة في مستودع 
-nawy-habit
-علشان نبني التطبيق ونطوره 
-تطبيق ويب لوكال فيرست
+# Nawy Habit
 
 This project was built with [Lovable](https://lovable.dev).
 
