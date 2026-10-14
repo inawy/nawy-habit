@@ -1,24 +1,102 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { Button } from "@/components/ui/button";
+import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
+import { HabitRow } from "@/features/habits/habit-row";
+import { useHabitsView, useToday } from "@/features/habits/use-habits";
+import { parseDayKey } from "@/lib/date/day-key";
+import type { Habit } from "@/lib/db/schema";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "اليوم — ناوي للعادات" },
+      { name: "description", content: "سجّل عاداتك اليومية بضغطة واحدة، وبياناتك محفوظة على جهازك." },
+      { property: "og:title", content: "ناوي للعادات" },
+      { property: "og:description", content: "متتبع عادات هادئ يعمل بدون إنترنت ويحفظ بياناتك على جهازك." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: TodayPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+const dateFmt = new Intl.DateTimeFormat("ar", { weekday: "long", day: "numeric", month: "long" });
+
+function TodayPage() {
+  const today = useToday();
+  const view = useHabitsView();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<Habit | null>(null);
+
+  const openNew = () => {
+    setEditing(null);
+    setDialogOpen(true);
+  };
+  const openEdit = (h: Habit) => {
+    setEditing(h);
+    setDialogOpen(true);
+  };
+
+  const doneCount =
+    today && view ? view.habits.filter((h) => view.daysByHabit.get(h.id)?.has(today)).length : 0;
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-8">
+      <header className="mb-6">
+        <p className="text-sm text-muted-foreground">{today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}</p>
+        <h1 className="mt-1 text-3xl font-bold">اليوم</h1>
+        {view && view.habits.length > 0 && (
+          <p className="mt-2 text-muted-foreground" aria-live="polite">
+            أنجزت {doneCount.toLocaleString("ar")} من {view.habits.length.toLocaleString("ar")}
+          </p>
+        )}
+      </header>
+
+      {!view || !today ? (
+        <div className="space-y-3" aria-busy>
+          {[0, 1].map((i) => (
+            <div key={i} className="h-36 animate-pulse rounded-2xl bg-muted" />
+          ))}
+        </div>
+      ) : view.habits.length === 0 ? (
+        <section className="rounded-2xl border border-dashed p-10 text-center">
+          <p className="text-4xl" aria-hidden>
+            🌱
+          </p>
+          <h2 className="mt-3 text-lg font-semibold">ابدأ بعادة واحدة</h2>
+          <p className="mt-1 text-sm text-muted-foreground">صغيرة وسهلة، والاستمرار أهم من الكمال.</p>
+          <Button className="mt-5" onClick={openNew}>
+            <Plus /> أضف عادة
+          </Button>
+        </section>
+      ) : (
+        <ul className="space-y-3">
+          {view.habits.map((h) => (
+            <HabitRow
+              key={h.id}
+              habit={h}
+              days={view.daysByHabit.get(h.id) ?? new Set()}
+              today={today}
+              onEdit={openEdit}
+            />
+          ))}
+        </ul>
+      )}
+
+      {view && view.habits.length > 0 && (
+        <Button
+          size="lg"
+          onClick={openNew}
+          className="fixed bottom-6 start-1/2 h-14 -translate-x-1/2 rounded-full px-6 shadow-lg rtl:translate-x-1/2"
+        >
+          <Plus /> عادة جديدة
+        </Button>
+      )}
+
+      <HabitFormDialog open={dialogOpen} onOpenChange={setDialogOpen} habit={editing} />
+    </main>
   );
 }
