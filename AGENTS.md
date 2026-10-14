@@ -10,3 +10,7 @@ Local-first, offline-capable, mobile-first habit tracker in the Nawy ecosystem. 
 - Dexie schema changes only via versioned db.version(n).upgrade() — user data must survive updates.
 - PWA via vite-plugin-pwa (generateSW), registered only in production, never in preview — prevents stale caches.
 - Before adding a dependency, compare open-source alternatives (size, maintenance, license); prefer built-ins — keeps the app light.
+- UI never calls Dexie directly: data access goes through src/lib/db/*-repo.ts; pure logic (dates, streaks) lives in src/lib and is unit-tested — keeps storage swappable and logic testable.
+- Feature UI lives in src/features/<feature>; shadcn primitives in src/components/ui are excluded from lint.
+- `bun run check` (lint + typecheck + tests) must pass; CI runs it plus build on every push — no merging red.
+- UI is Arabic RTL first (html dir="rtl"); use logical spacing (ms/me/start/end) so LTR can be added later.
