@@ -13,9 +13,15 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "اليوم — ناوي للعادات" },
-      { name: "description", content: "سجّل عاداتك اليومية بضغطة واحدة، وبياناتك محفوظة على جهازك." },
+      {
+        name: "description",
+        content: "سجّل عاداتك اليومية بضغطة واحدة، وبياناتك محفوظة على جهازك.",
+      },
       { property: "og:title", content: "ناوي للعادات" },
-      { property: "og:description", content: "متتبع عادات هادئ يعمل بدون إنترنت ويحفظ بياناتك على جهازك." },
+      {
+        property: "og:description",
+        content: "متتبع عادات هادئ يعمل بدون إنترنت ويحفظ بياناتك على جهازك.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -46,7 +52,9 @@ function TodayPage() {
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-8">
       <header className="mb-6">
-        <p className="text-sm text-muted-foreground">{today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}</p>
+        <p className="text-sm text-muted-foreground">
+          {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
+        </p>
         <h1 className="mt-1 text-3xl font-bold">اليوم</h1>
         {view && view.habits.length > 0 && (
           <p className="mt-2 text-muted-foreground" aria-live="polite">
@@ -67,7 +75,9 @@ function TodayPage() {
             🌱
           </p>
           <h2 className="mt-3 text-lg font-semibold">ابدأ بعادة واحدة</h2>
-          <p className="mt-1 text-sm text-muted-foreground">صغيرة وسهلة، والاستمرار أهم من الكمال.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            صغيرة وسهلة، والاستمرار أهم من الكمال.
+          </p>
           <Button className="mt-5" onClick={openNew}>
             <Plus /> أضف عادة
           </Button>
@@ -90,7 +100,7 @@ function TodayPage() {
         <Button
           size="lg"
           onClick={openNew}
-          className="fixed bottom-6 start-1/2 h-14 -translate-x-1/2 rounded-full px-6 shadow-lg rtl:translate-x-1/2"
+          className="fixed bottom-6 left-1/2 h-14 -translate-x-1/2 rounded-full px-6 shadow-lg"
         >
           <Plus /> عادة جديدة
         </Button>

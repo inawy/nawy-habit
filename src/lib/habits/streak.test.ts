@@ -14,7 +14,10 @@ describe("computeStreaks", () => {
     expect(computeStreaks(["2026-10-13", "2026-10-14"], "2026-10-14").current).toBe(2);
   });
   it("resets current after a missed day but keeps best and total", () => {
-    const r = computeStreaks(["2026-10-01", "2026-10-02", "2026-10-03", "2026-10-12"], "2026-10-14");
+    const r = computeStreaks(
+      ["2026-10-01", "2026-10-02", "2026-10-03", "2026-10-12"],
+      "2026-10-14",
+    );
     expect(r).toEqual({ current: 0, best: 3, total: 4 });
   });
   it("ignores duplicates and order", () => {

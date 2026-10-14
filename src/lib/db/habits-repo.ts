@@ -1,7 +1,13 @@
 import type { DayKey } from "@/lib/date/day-key";
 
 import { getDb } from "./db";
-import { dayKeySchema, habitInputSchema, type Habit, type HabitInput, type HabitLog } from "./schema";
+import {
+  dayKeySchema,
+  habitInputSchema,
+  type Habit,
+  type HabitInput,
+  type HabitLog,
+} from "./schema";
 
 const newId = () => crypto.randomUUID();
 const nowIso = () => new Date().toISOString();

@@ -45,7 +45,10 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
   return (
     <li className="rounded-2xl border bg-card p-4 shadow-sm">
       <div className="flex items-center gap-3">
-        <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary text-2xl" aria-hidden>
+        <span
+          className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary text-2xl"
+          aria-hidden
+        >
           {habit.emoji}
         </span>
         <div className="min-w-0 flex-1">
@@ -86,7 +89,9 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
       <ol className="mt-4 grid grid-cols-7 gap-1.5" aria-label="آخر ٧ أيام">
         {lastDays(today, 7).map((d) => (
           <li key={d} className="flex flex-col items-center gap-1">
-            <span className="text-[11px] text-muted-foreground">{weekday.format(parseDayKey(d))}</span>
+            <span className="text-[11px] text-muted-foreground">
+              {weekday.format(parseDayKey(d))}
+            </span>
             <span
               className={cn("h-2 w-full rounded-full", days.has(d) ? "bg-primary" : "bg-muted")}
               aria-label={days.has(d) ? "تم" : "لم يتم"}
