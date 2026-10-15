@@ -7,6 +7,7 @@ import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { HabitRow } from "@/features/habits/habit-row";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { parseDayKey } from "@/lib/date/day-key";
+import { arabicFmt, num } from "@/lib/format/numbers";
 import type { Habit } from "@/lib/db/schema";
 
 export const Route = createFileRoute("/")({
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/")({
   component: TodayPage,
 });
 
-const dateFmt = new Intl.DateTimeFormat("ar", { weekday: "long", day: "numeric", month: "long" });
+const dateFmt = arabicFmt({ weekday: "long", day: "numeric", month: "long" });
 
 function TodayPage() {
   const today = useToday();
@@ -58,7 +59,7 @@ function TodayPage() {
         <h1 className="mt-1 text-3xl font-bold">اليوم</h1>
         {view && view.habits.length > 0 && (
           <p className="mt-2 text-muted-foreground" aria-live="polite">
-            أنجزت {doneCount.toLocaleString("ar")} من {view.habits.length.toLocaleString("ar")}
+            أنجزت {num(doneCount)} من {num(view.habits.length)}
           </p>
         )}
       </header>

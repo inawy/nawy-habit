@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Check, Flame, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 
@@ -10,10 +11,11 @@ import {
 import { lastDays, parseDayKey, type DayKey } from "@/lib/date/day-key";
 import { archiveHabit, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
 import type { Habit } from "@/lib/db/schema";
+import { arabicFmt, num } from "@/lib/format/numbers";
 import { computeStreaks } from "@/lib/habits/streak";
 import { cn } from "@/lib/utils";
 
-const weekday = new Intl.DateTimeFormat("ar", { weekday: "narrow" });
+const weekday = arabicFmt({ weekday: "narrow" });
 
 interface Props {
   habit: Habit;
@@ -45,20 +47,26 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
   return (
     <li className="rounded-2xl border bg-card p-4 shadow-sm">
       <div className="flex items-center gap-3">
-        <span
-          className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary text-2xl"
-          aria-hidden
+        <Link
+          to="/habit/$habitId"
+          params={{ habitId: habit.id }}
+          className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-1 py-1 hover:bg-muted/60"
         >
-          {habit.emoji}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold">{habit.name}</h3>
-          <p className="mt-0.5 flex items-center gap-1 text-sm text-muted-foreground">
-            <Flame className="size-4 text-accent-foreground" aria-hidden />
-            {current > 0 ? `${current.toLocaleString("ar")} يوم متتالي` : "ابدأ اليوم"}
-            {best > 1 && <span className="ms-2">· الأفضل {best.toLocaleString("ar")}</span>}
-          </p>
-        </div>
+          <span
+            className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary text-2xl"
+            aria-hidden
+          >
+            {habit.emoji}
+          </span>
+          <span className="min-w-0 flex-1">
+            <h3 className="truncate font-semibold">{habit.name}</h3>
+            <p className="mt-0.5 flex items-center gap-1 text-sm text-muted-foreground">
+              <Flame className="size-4 text-accent-foreground" aria-hidden />
+              {current > 0 ? `${num(current)} يوم متتالي` : "ابدأ اليوم"}
+              {best > 1 && <span className="ms-2">· الأفضل {num(best)}</span>}
+            </p>
+          </span>
+        </Link>
         <DropdownMenu dir="rtl">
           <DropdownMenuTrigger
             className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted"

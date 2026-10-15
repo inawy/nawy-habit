@@ -68,3 +68,12 @@ export async function toggleLog(habitId: string, day: DayKey): Promise<boolean> 
 export async function listLogs(): Promise<HabitLog[]> {
   return getDb().logs.toArray();
 }
+
+export async function getHabit(id: string): Promise<Habit | undefined> {
+  return getDb().habits.get(id);
+}
+
+/** Logs of one habit only — cheaper than filtering every log on the detail screen. */
+export async function listLogsForHabit(habitId: string): Promise<HabitLog[]> {
+  return getDb().logs.where("habitId").equals(habitId).toArray();
+}
