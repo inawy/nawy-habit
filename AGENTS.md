@@ -14,3 +14,4 @@ Local-first, offline-capable, mobile-first habit tracker in the Nawy ecosystem. 
 - Feature UI lives in src/features/<feature>; shadcn primitives in src/components/ui are excluded from lint.
 - `bun run check` (lint + typecheck + tests) must pass; CI runs it plus build on every push — no merging red.
 - UI is Arabic RTL first (html dir="rtl"); use logical spacing (ms/me/start/end) so LTR can be added later.
+- All user-visible numbers and date formats go through src/lib/format/numbers.ts (ar-u-nu-latn) — one digit style everywhere, because bare toLocaleString("ar") renders different digits per device.
