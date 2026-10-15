@@ -39,26 +39,24 @@ export function HabitCalendar({ month, days, today, onMonthChange, onToggle }: P
   return (
     <section className="rounded-2xl border bg-card p-4 shadow-sm">
       <header className="flex items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => onMonthChange(addMonths(month, -1))}
+          aria-label="الشهر السابق"
+          className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
+        >
+          <ChevronRight className="size-5" />
+        </button>
         <h2 className="text-base font-semibold">{label}</h2>
-        <div className="flex gap-1">
-          <button
-            type="button"
-            onClick={() => onMonthChange(addMonths(month, -1))}
-            aria-label="الشهر السابق"
-            className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
-          >
-            <ChevronRight className="size-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => onMonthChange(addMonths(month, 1))}
-            disabled={isThisMonth}
-            aria-label="الشهر التالي"
-            className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-40"
-          >
-            <ChevronLeft className="size-5" />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => onMonthChange(addMonths(month, 1))}
+          disabled={isThisMonth}
+          aria-label="الشهر التالي"
+          className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-40"
+        >
+          <ChevronLeft className="size-5" />
+        </button>
       </header>
 
       <div className="mt-3 grid grid-cols-7 gap-1.5" aria-hidden>

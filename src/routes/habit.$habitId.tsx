@@ -115,12 +115,8 @@ function HabitDetailPage() {
           <h1 className="truncate text-2xl font-bold">{habit.name}</h1>
           <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
             <Flame className="size-4 text-accent-foreground" aria-hidden />
-            {streaks.current > 0
-              ? `${num(streaks.current)} يوم متتالي`
-              : "ابدأ اليوم"}
-            {streaks.best > 1 && (
-              <span className="ms-2">· الأفضل {num(streaks.best)}</span>
-            )}
+            {streaks.current > 0 ? `${num(streaks.current)} يوم متتالي` : "ابدأ اليوم"}
+            {streaks.best > 1 && <span className="ms-2">· الأفضل {num(streaks.best)}</span>}
             <span className="ms-2">· الإجمالي {num(streaks.total)}</span>
           </p>
         </div>
