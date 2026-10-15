@@ -183,7 +183,7 @@ function HabitDetailPage() {
       </div>
 
       <section className="mt-4 rounded-2xl border bg-card p-4 shadow-sm">
-        <h2 className="text-sm font-medium text-muted-foreground">آخر ٤ أسابيع</h2>
+        <h2 className="text-sm font-medium text-muted-foreground">آخر 4 أسابيع</h2>
         <ol className="mt-3 grid grid-cols-4 gap-2">
           {weeks.map((w) => (
             <li key={w.weekStart} className="text-center">
