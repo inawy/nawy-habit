@@ -55,8 +55,10 @@ function SettingsPage() {
     const a = document.createElement("a");
     a.href = url;
     a.download = `nawy-habit-${todayKey()}.json`;
+    document.body.append(a);
     a.click();
-    URL.revokeObjectURL(url);
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
     toast.success(`تم حفظ ${num(data.habits.length)} عادة في الملف`);
   };
 
