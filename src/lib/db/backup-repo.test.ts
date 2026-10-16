@@ -54,9 +54,16 @@ describe("database migrations", () => {
   it("opens data written by schema v1 without loss", async () => {
     const name = `mig-${crypto.randomUUID()}`;
     const old = new Dexie(name);
-    old.version(1).stores({ habits: "id, order, archivedAt", logs: "id, habitId, day, [habitId+day]" });
+    old
+      .version(1)
+      .stores({ habits: "id, order, archivedAt", logs: "id, habitId, day, [habitId+day]" });
     await old.table("habits").add({
-      id: "h1", name: "مشي", emoji: "🚶", order: 0, createdAt: "x", archivedAt: null,
+      id: "h1",
+      name: "مشي",
+      emoji: "🚶",
+      order: 0,
+      createdAt: "x",
+      archivedAt: null,
     });
     old.close();
     const current = new NawyHabitDB(name);
