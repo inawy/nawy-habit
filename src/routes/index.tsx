@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Plus, Settings } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -53,9 +53,18 @@ function TodayPage() {
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-8">
       <header className="mb-6">
-        <p className="text-sm text-muted-foreground">
-          {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
+          </p>
+          <Link
+            to="/settings"
+            aria-label="بياناتك والنسخ الاحتياطي"
+            className="rounded-full p-2 text-muted-foreground hover:bg-muted"
+          >
+            <Settings className="size-5" />
+          </Link>
+        </div>
         <h1 className="mt-1 text-3xl font-bold">اليوم</h1>
         {view && view.habits.length > 0 && (
           <p className="mt-2 text-muted-foreground" aria-live="polite">
