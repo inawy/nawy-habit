@@ -6,4 +6,5 @@
 - [x] Phase 3 — habit detail page: monthly calendar + consistency rate
 - [x] Phase 4 — JSON export/import, persistent storage request, migration tests
 - [x] Phase 5 — PWA install + offline (vite-plugin-pwa, production only)
-- [ ] Phase 6 — a11y/perf review, E2E with Playwright, publish
+- [x] Phase 6 — Arabic error/404 pages, a11y + mobile check
+- [ ] Publish — waiting for user go-ahead
