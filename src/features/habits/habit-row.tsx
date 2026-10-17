@@ -94,7 +94,7 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
           <Check className="size-6" strokeWidth={3} />
         </button>
       </div>
-      <ol className="mt-4 grid grid-cols-7 gap-1.5" aria-label="آخر ٧ أيام">
+      <ol className="mt-4 grid grid-cols-7 gap-1.5" aria-label="آخر 7 أيام">
         {lastDays(today, 7).map((d) => (
           <li key={d} className="flex flex-col items-center gap-1">
             <span className="text-[11px] text-muted-foreground">
