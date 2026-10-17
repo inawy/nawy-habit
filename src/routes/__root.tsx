@@ -23,9 +23,7 @@ function NotFoundComponent() {
           🍂
         </p>
         <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة مش موجودة</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          يمكن الرابط اتغيّر أو اتكتب غلط.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">يمكن الرابط اتغيّر أو اتكتب غلط.</p>
         <div className="mt-6">
           <Link
             to="/"
@@ -49,9 +47,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          الصفحة ما فتحتش
-        </h1>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">الصفحة ما فتحتش</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           حصلت مشكلة. بياناتك سليمة على جهازك — جرّب تاني أو ارجع للرئيسية.
         </p>
