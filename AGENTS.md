@@ -16,3 +16,4 @@ Local-first, offline-capable, mobile-first habit tracker in the Nawy ecosystem. 
 - UI is Arabic RTL first (html dir="rtl"); use logical spacing (ms/me/start/end) so LTR can be added later.
 - All user-visible numbers and date formats go through src/lib/format/numbers.ts (ar-u-nu-latn) — one digit style everywhere, because bare toLocaleString("ar") renders different digits per device.
 - Service worker is registered only via src/lib/pwa/register-sw.ts (guards dev, iframe, preview hosts, ?sw=off); HTML is NetworkFirst — never cache-first, so updates always reach users.
+- Habit history grids share HabitActivityGrid and derive cells from local day-key helpers, with no extra persisted state or chart dependency — keeps Today and detail views consistent and offline-safe.

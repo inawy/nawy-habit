@@ -8,14 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { lastDays, parseDayKey, type DayKey } from "@/lib/date/day-key";
+import { HabitActivityGrid } from "@/features/habits/habit-activity-grid";
+import type { DayKey } from "@/lib/date/day-key";
 import { archiveHabit, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
 import type { Habit } from "@/lib/db/schema";
-import { arabicFmt, num } from "@/lib/format/numbers";
+import { num } from "@/lib/format/numbers";
 import { computeStreaks } from "@/lib/habits/streak";
 import { cn } from "@/lib/utils";
-
-const weekday = arabicFmt({ weekday: "narrow" });
 
 interface Props {
   habit: Habit;
@@ -94,19 +93,7 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
           <Check className="size-6" strokeWidth={3} />
         </button>
       </div>
-      <ol className="mt-4 grid grid-cols-7 gap-1.5" aria-label="آخر 7 أيام">
-        {lastDays(today, 7).map((d) => (
-          <li key={d} className="flex flex-col items-center gap-1">
-            <span className="text-[11px] text-muted-foreground">
-              {weekday.format(parseDayKey(d))}
-            </span>
-            <span
-              className={cn("h-2 w-full rounded-full", days.has(d) ? "bg-primary" : "bg-muted")}
-              aria-label={days.has(d) ? "تم" : "لم يتم"}
-            />
-          </li>
-        ))}
-      </ol>
+      <HabitActivityGrid days={days} today={today} />
     </li>
   );
 }
