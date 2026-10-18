@@ -19,4 +19,13 @@ describe("day-key", () => {
   it("lists last days oldest first", () => {
     expect(lastDays("2026-03-02", 3)).toEqual(["2026-02-28", "2026-03-01", "2026-03-02"]);
   });
+  it("provides 12 weeks of unique local days ending today across leap day", () => {
+    const days = lastDays("2028-03-01", 84);
+    expect(days).toHaveLength(84);
+    expect(new Set(days).size).toBe(84);
+    expect(days[0]).toBe("2027-12-09");
+    expect(days.at(-1)).toBe("2028-03-01");
+    expect(days).toContain("2028-02-29");
+    expect(days.every((day) => day <= "2028-03-01")).toBe(true);
+  });
 });

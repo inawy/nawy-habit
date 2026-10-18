@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { HabitCalendar } from "@/features/habits/habit-calendar";
+import { HabitActivityGrid } from "@/features/habits/habit-activity-grid";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { useHabitDetailView } from "@/features/habits/use-habit-detail";
 import { useToday } from "@/features/habits/use-habits";
@@ -181,6 +182,11 @@ function HabitDetailPage() {
           onToggle={(d) => void onToggleDay(d)}
         />
       </div>
+
+      <section className="mt-6" aria-label="سجل الإنجاز">
+        <h2 className="text-sm font-medium">سجل الإنجاز</h2>
+        <HabitActivityGrid days={days} today={today} />
+      </section>
 
       <section className="mt-4 rounded-2xl border bg-card p-4 shadow-sm">
         <h2 className="text-sm font-medium text-muted-foreground">آخر 4 أسابيع</h2>
