@@ -7,7 +7,15 @@ const dayKeySchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid day key");
 const stateSchema = z.object({
   day: dayKeySchema,
   /** Indices into REMINDER_SLOTS already fired today (max MAX_REMINDERS_PER_DAY). */
-  sent: z.array(z.number().int().min(0).max(MAX_REMINDERS_PER_DAY - 1)).max(MAX_REMINDERS_PER_DAY),
+  sent: z
+    .array(
+      z
+        .number()
+        .int()
+        .min(0)
+        .max(MAX_REMINDERS_PER_DAY - 1),
+    )
+    .max(MAX_REMINDERS_PER_DAY),
   /** The day the user chose "not now" on the enable banner (persists for that day only). */
   dismissedDay: dayKeySchema.nullable(),
 });

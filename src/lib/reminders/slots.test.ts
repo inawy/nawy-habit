@@ -1,7 +1,12 @@
 import { describe, beforeEach, expect, it } from "vitest";
 
 import { dueSlot, MAX_REMINDERS_PER_DAY, REMINDER_SLOTS } from "./slots";
-import { getTodayState, isDismissedToday, recordDismissed, recordSlotSent } from "./reminders-store";
+import {
+  getTodayState,
+  isDismissedToday,
+  recordDismissed,
+  recordSlotSent,
+} from "./reminders-store";
 
 describe("reminder slots", () => {
   it("has at most 3 slots per day", () => {
