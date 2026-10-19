@@ -74,6 +74,10 @@ function TodayPage() {
         )}
       </header>
 
+      {view && today && view.habits.length > 0 && (
+        <ReminderBanner today={today} unfinished={view.habits.length - doneCount} />
+      )}
+
       {!view || !today ? (
         <div className="space-y-3" aria-busy>
           {[0, 1].map((i) => (
