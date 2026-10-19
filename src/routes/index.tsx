@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { HabitRow } from "@/features/habits/habit-row";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
+import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { parseDayKey } from "@/lib/date/day-key";
 import { arabicFmt, num } from "@/lib/format/numbers";
 import type { Habit } from "@/lib/db/schema";

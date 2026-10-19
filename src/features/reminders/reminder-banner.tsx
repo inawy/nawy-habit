@@ -57,11 +57,7 @@ export function ReminderBanner({ today, unfinished }: Props) {
           <X className="size-4" />
         </button>
       </div>
-      <Button
-        className="mt-3 w-full"
-        onClick={() => void request()}
-        disabled={unfinished === 0 && false}
-      >
+      <Button className="mt-3 w-full" onClick={() => void request()}>
         <Bell /> شغّل التذكير
       </Button>
     </section>
