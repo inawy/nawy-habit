@@ -27,7 +27,8 @@ const slotMinutes = (slot: ReminderSlot): number => slot.hour * 60 + slot.minute
 export function dueSlot(now: Date, sent: readonly number[]): number | null {
   const current = now.getHours() * 60 + now.getMinutes();
   for (let i = REMINDER_SLOTS.length - 1; i >= 0; i--) {
-    if (!sent.includes(i) && slotMinutes(REMINDER_SLOTS[i]) <= current) return i;
+    const slot = REMINDER_SLOTS[i];
+    if (slot && !sent.includes(i) && slotMinutes(slot) <= current) return i;
   }
   return null;
 }
