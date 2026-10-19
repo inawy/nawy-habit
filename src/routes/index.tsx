@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { HabitRow } from "@/features/habits/habit-row";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
+import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { parseDayKey } from "@/lib/date/day-key";
 import { arabicFmt, num } from "@/lib/format/numbers";
 import type { Habit } from "@/lib/db/schema";
@@ -72,6 +73,10 @@ function TodayPage() {
           </p>
         )}
       </header>
+
+      {view && today && view.habits.length > 0 && (
+        <ReminderBanner today={today} unfinished={view.habits.length - doneCount} />
+      )}
 
       {!view || !today ? (
         <div className="space-y-3" aria-busy>
