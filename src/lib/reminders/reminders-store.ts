@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { MAX_REMINDERS_PER_DAY, type ReminderSlot } from "./slots";
+import { MAX_REMINDERS_PER_DAY } from "./slots";
 
 const dayKeySchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid day key");
 
@@ -48,7 +48,7 @@ export function getTodayState(day: string): RemindersState {
   return state;
 }
 
-export function recordSlotSent(day: string, slot: ReminderSlot extends never ? never : number): void {
+export function recordSlotSent(day: string, slot: number): void {
   const state = getTodayState(day);
   if (!state.sent.includes(slot)) save({ ...state, day, sent: [...state.sent, slot] });
 }
