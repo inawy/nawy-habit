@@ -9,5 +9,6 @@
 - [x] Phase 6 — Arabic error/404 pages, a11y + mobile check
 - [x] Publish — live at https://nawy-habit.lovable.app (URL renamed from myhabit-vault)
 - [x] Habit Kit inspiration — reviewed repos (HabitKit app is closed-source; used jcortesdev/habit-tracker ideas) and shipped the 12-week achievement grid per habit. GitHub sync and publish re-verified (commit 31c4b28, https://nawy-habit.lovable.app → 200).
-- [ ] Local reminders — verify permission and notification flow; explain browser limits and optional cloud costs/hosting without enabling Cloud.
-- [ ] Design audit — compare the app with inawy/design-system and report concrete matches and deviations.
+- [ ] Local reminders — resolve storage/cross-tab cap safety and page-timer limitations; verify permission and real delivery before calling production-ready.
+- [x] Explain local-notification limits and optional Cloud costs/hosting without enabling Cloud.
+- [x] Design audit — compared with inawy/design-system revision 60bdbd2; findings in docs/design-audit.md. Visual identity unchanged.
