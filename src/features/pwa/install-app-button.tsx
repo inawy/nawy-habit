@@ -35,12 +35,14 @@ function isTopLevelProductionPage(): boolean {
 }
 
 export function InstallAppButton() {
+  const [canShowButton, setCanShowButton] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
 
   useEffect(() => {
     if (!isTopLevelProductionPage()) return;
+    setCanShowButton(true);
 
     const markInstalled = () => {
       setIsInstalled(true);
@@ -90,7 +92,7 @@ export function InstallAppButton() {
     }
   };
 
-  if (!isTopLevelProductionPage() || isInstalled) return null;
+  if (!canShowButton || isInstalled) return null;
 
   return (
     <>
@@ -113,12 +115,14 @@ export function InstallAppButton() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm leading-6 text-muted-foreground">
-            <p>
-              <span className="font-semibold text-foreground">على الكمبيوتر:</span> افتح قائمة المتصفح واختر «تثبيت ناوي للعادات» أو «Install app».
-            </p>
-            <p>
-              <span className="font-semibold text-foreground">على الموبايل:</span> افتح قائمة المشاركة أو قائمة المتصفح واختر «إضافة إلى الشاشة الرئيسية».
-            </p>
+            <div className="space-y-1">
+              <p className="font-semibold text-foreground">على الكمبيوتر:</p>
+              <p>افتح قائمة المتصفح واختر «تثبيت ناوي للعادات» أو «Install app».</p>
+            </div>
+            <div className="space-y-1">
+              <p className="font-semibold text-foreground">على الموبايل:</p>
+              <p>افتح قائمة المشاركة أو قائمة المتصفح واختر «إضافة إلى الشاشة الرئيسية».</p>
+            </div>
           </div>
           <DialogFooter>
             <Button type="button" onClick={() => setHelpOpen(false)}>
