@@ -1,5 +1,6 @@
 import { addDays, parseDayKey, type DayKey } from "@/lib/date/day-key";
 import { arabicFmt, num } from "@/lib/format/numbers";
+import type { HabitColorName } from "@/lib/habits/appearance";
 import { cn } from "@/lib/utils";
 
 const WEEK_COUNT = 26;
@@ -9,10 +10,12 @@ const monthFmt = arabicFmt({ month: "short" });
 interface Props {
   days: Set<DayKey>;
   today: DayKey;
+  color?: HabitColorName;
+  compact?: boolean;
 }
 
 /** Twenty-six calendar-aligned weeks, with future days left blank. */
-export function HabitActivityGrid({ days, today }: Props) {
+export function HabitActivityGrid({ days, today, color = "blue", compact = false }: Props) {
   const todayDate = parseDayKey(today);
   const mondayOffset = (todayDate.getDay() + 6) % 7;
   const currentWeekStart = addDays(today, -mondayOffset);
@@ -26,9 +29,9 @@ export function HabitActivityGrid({ days, today }: Props) {
   );
 
   return (
-    <div>
-      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-        <span>آخر {num(WEEK_COUNT)} أسبوع</span>
+    <div className="habit-heatmap" data-habit-color={color}>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
+        <span>{compact ? "آخر 6 شهور" : `آخر ${num(WEEK_COUNT)} أسبوع`}</span>
         <span>{num(completed)} يوم إنجاز</span>
       </div>
       <div className="relative mb-1 h-3 overflow-hidden" aria-hidden="true">
@@ -43,15 +46,19 @@ export function HabitActivityGrid({ days, today }: Props) {
         ))}
       </div>
       <ol
-        className="grid grid-flow-col grid-cols-[repeat(26,minmax(0,1fr))] grid-rows-7 gap-[3px]"
+        className={cn(
+          "habit-heatmap-grid grid grid-flow-col grid-cols-[repeat(26,minmax(0,1fr))] grid-rows-7",
+          compact ? "gap-[2px]" : "gap-[3px]",
+        )}
         aria-label="شبكة أيام الإنجاز لآخر ستة أشهر تقريبًا"
       >
         {dates.map((day) => {
           const isFuture = day > today;
+          const complete = days.has(day);
           const label =
             dateFmt.format(parseDayKey(day)) +
             " — " +
-            (days.has(day) ? "تم الإنجاز" : "بدون تسجيل") +
+            (complete ? "تم الإنجاز" : "بدون تسجيل") +
             (day === today ? " — اليوم" : "");
 
           return (
@@ -61,22 +68,20 @@ export function HabitActivityGrid({ days, today }: Props) {
               aria-label={isFuture ? undefined : label}
               aria-hidden={isFuture}
               className={cn(
-                "aspect-square min-w-0 rounded-[3px] border",
-                isFuture
-                  ? "border-transparent bg-transparent"
-                  : days.has(day)
-                    ? "border-primary bg-primary"
-                    : "border-border bg-muted",
-                day === today && "ring-1 ring-ring ring-offset-1 ring-offset-card",
+                "habit-heatmap-cell aspect-square min-w-0 rounded-[3px] border",
+                isFuture ? "is-future" : complete ? "is-complete" : "is-empty",
+                day === today && "is-today",
               )}
             />
           );
         })}
       </ol>
-      <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
-        <span>{dateFmt.format(parseDayKey(firstDay))}</span>
-        <span>اليوم</span>
-      </div>
+      {!compact && (
+        <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+          <span>{dateFmt.format(parseDayKey(firstDay))}</span>
+          <span>اليوم</span>
+        </div>
+      )}
     </div>
   );
 }
