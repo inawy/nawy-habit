@@ -66,6 +66,10 @@ function TodayPage() {
   };
 
   const openNew = () => setDialogOpen(true);
+  const doneCount =
+    today && view
+      ? view.habits.filter((habit) => view.daysByHabit.get(habit.id)?.has(today)).length
+      : 0;
   const totalCount = view?.habits.length ?? 0;
   const recentDays = today ? lastDays(today, 5) : [];
 
