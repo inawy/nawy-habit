@@ -7,7 +7,7 @@ import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { HabitRow } from "@/features/habits/habit-row";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
-import { parseDayKey } from "@/lib/date/day-key";
+import { lastDays, parseDayKey } from "@/lib/date/day-key";
 import { arabicFmt, num } from "@/lib/format/numbers";
 import type { Habit } from "@/lib/db/schema";
 
@@ -32,10 +32,14 @@ export const Route = createFileRoute("/")({
 });
 
 const dateFmt = arabicFmt({ weekday: "long", day: "numeric", month: "long" });
+const weekdayFmt = arabicFmt({ weekday: "short" });
+const dayNumberFmt = arabicFmt({ day: "numeric" });
+const dateRangeFmt = arabicFmt({ day: "numeric", month: "short" });
 
 function TodayPage() {
   const today = useToday();
   const view = useHabitsView();
+  const recentDays = today ? lastDays(today, 5) : [];
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Habit | null>(null);
 
@@ -102,17 +106,41 @@ function TodayPage() {
           </Button>
         </section>
       ) : (
-        <ul className="space-y-2">
-          {view.habits.map((h) => (
-            <HabitRow
-              key={h.id}
-              habit={h}
-              days={view.daysByHabit.get(h.id) ?? new Set()}
-              today={today}
-              onEdit={openEdit}
-            />
-          ))}
-        </ul>
+        <section className="overflow-hidden rounded-xl border bg-card" aria-label="عاداتك خلال آخر خمسة أيام">
+          <div className="flex items-center justify-between gap-3 px-3 pb-2 pt-3">
+            <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+              آخر {num(5)} أيام
+            </span>
+            <span className="text-[11px] text-muted-foreground">
+              {dateRangeFmt.format(parseDayKey(recentDays[0] ?? today))} — {dateRangeFmt.format(parseDayKey(today))}
+            </span>
+          </div>
+          <div className="grid grid-cols-[minmax(0,1fr)_repeat(5,1.75rem)] items-center gap-x-1.5 border-b bg-muted/30 px-3 py-2">
+            <span className="min-w-0 text-[10px] font-medium text-muted-foreground">العادة</span>
+            {recentDays.map((day) => (
+              <span key={day} className="flex min-w-0 flex-col items-center gap-0.5 text-center">
+                <span className="text-[9px] leading-none text-muted-foreground">
+                  {weekdayFmt.format(parseDayKey(day))}
+                </span>
+                <span className={day === today ? "text-[11px] font-bold text-primary" : "text-[11px] text-foreground"}>
+                  {dayNumberFmt.format(parseDayKey(day))}
+                </span>
+              </span>
+            ))}
+          </div>
+          <ul className="divide-y divide-border">
+            {view.habits.map((h) => (
+              <HabitRow
+                key={h.id}
+                habit={h}
+                days={view.daysByHabit.get(h.id) ?? new Set()}
+                recentDays={recentDays}
+                today={today}
+                onEdit={openEdit}
+              />
+            ))}
+          </ul>
+        </section>
       )}
 
       {view && view.habits.length > 0 && (
