@@ -12,7 +12,7 @@ import menuBook from "@/assets/icons/menu_book.svg?url";
 import moreHoriz from "@/assets/icons/more_horiz.svg?url";
 import notifications from "@/assets/icons/notifications.svg?url";
 import restaurant from "@/assets/icons/restaurant.svg?url";
-import savings from "@/assets/icons/savings.svg?url";
+import accountBalanceWallet from "@/assets/icons/account_balance_wallet.svg?url";
 import school from "@/assets/icons/school.svg?url";
 import selfImprovement from "@/assets/icons/self_improvement.svg?url";
 import volunteerActivism from "@/assets/icons/volunteer_activism.svg?url";
@@ -35,7 +35,7 @@ const icons = {
   more_horiz: moreHoriz,
   notifications,
   restaurant,
-  savings,
+  account_balance_wallet: accountBalanceWallet,
   school,
   self_improvement: selfImprovement,
   settings,

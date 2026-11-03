@@ -1,3 +1,12 @@
+/**
+ * Curated, reviewed allowlist for habit identity icons.
+ *
+ * Keep this set to neutral everyday activities and objects. Do not add icons
+ * depicting pork/pigs, alcohol, gambling, sexual content, nudity, occult
+ * imagery, or anything otherwise inappropriate for Nawy's faith-sensitive
+ * audience. Review the actual SVG artwork, not only its symbol name, before
+ * adding a new entry. The Zod enum in the habit schema enforces this allowlist.
+ */
 export const HABIT_ICON_NAMES = [
   "auto_awesome",
   "menu_book",
@@ -9,7 +18,7 @@ export const HABIT_ICON_NAMES = [
   "restaurant",
   "favorite",
   "school",
-  "savings",
+  "account_balance_wallet",
   "volunteer_activism",
 ] as const;
 
@@ -26,7 +35,7 @@ export const HABIT_ICON_OPTIONS: readonly { value: HabitIconName; label: string 
   { value: "restaurant", label: "غذاء" },
   { value: "favorite", label: "صحة" },
   { value: "school", label: "تعلّم" },
-  { value: "savings", label: "ادخار" },
+  { value: "account_balance_wallet", label: "ادخار" },
   { value: "volunteer_activism", label: "عطاء" },
 ];
 
