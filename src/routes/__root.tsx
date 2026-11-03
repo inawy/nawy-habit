@@ -14,7 +14,8 @@ import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { registerServiceWorker } from "../lib/pwa/register-sw";
-import { ThemeProvider, useTheme } from "../lib/theme/theme-provider";
+import { ThemeProvider } from "../lib/theme/theme-provider";
+import { useTheme } from "../lib/theme/theme-context";
 
 function NotFoundComponent() {
   return (
