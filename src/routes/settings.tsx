@@ -100,9 +100,7 @@ function SettingsPage() {
       <section className="mt-6 space-y-3 rounded-2xl border p-5">
         <h2 className="font-semibold">نسخة احتياطية</h2>
         <div className="flex flex-wrap gap-2">
-          <Button onClick={onExport}>
-            حفظ نسخة
-          </Button>
+          <Button onClick={onExport}>حفظ نسخة</Button>
           <Button variant="outline" onClick={() => fileRef.current?.click()}>
             استرجاع من ملف
           </Button>

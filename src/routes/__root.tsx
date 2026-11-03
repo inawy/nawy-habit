@@ -19,7 +19,10 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <div className="mx-auto grid size-12 place-items-center rounded-full bg-muted text-sm font-semibold text-muted-foreground" aria-hidden>
+        <div
+          className="mx-auto grid size-12 place-items-center rounded-full bg-muted text-sm font-semibold text-muted-foreground"
+          aria-hidden
+        >
           404
         </div>
         <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة مش موجودة</h2>

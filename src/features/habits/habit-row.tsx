@@ -51,7 +51,10 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
           params={{ habitId: habit.id }}
           className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-1 py-1 hover:bg-muted/60"
         >
-          <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary" aria-hidden>
+          <span
+            className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary"
+            aria-hidden
+          >
             <span className="size-3 rounded-full bg-primary" />
           </span>
           <span className="min-w-0 flex-1">

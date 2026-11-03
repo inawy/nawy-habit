@@ -102,7 +102,10 @@ function HabitDetailPage() {
       </Link>
 
       <header className="mt-4 flex items-start gap-3">
-        <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-secondary" aria-hidden>
+        <span
+          className="grid size-14 shrink-0 place-items-center rounded-2xl bg-secondary"
+          aria-hidden
+        >
           <span className="size-4 rounded-full bg-primary" />
         </span>
         <div className="min-w-0 flex-1">

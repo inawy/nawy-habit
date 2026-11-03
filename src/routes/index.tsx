@@ -86,7 +86,10 @@ function TodayPage() {
         </div>
       ) : view.habits.length === 0 ? (
         <section className="rounded-2xl border border-dashed p-10 text-center">
-          <span className="mx-auto grid size-12 place-items-center rounded-full bg-accent" aria-hidden>
+          <span
+            className="mx-auto grid size-12 place-items-center rounded-full bg-accent"
+            aria-hidden
+          >
             <span className="size-3 rounded-full bg-primary" />
           </span>
           <h2 className="mt-3 text-lg font-semibold">ابدأ بعادة واحدة</h2>
@@ -94,7 +97,10 @@ function TodayPage() {
             صغيرة وسهلة، والاستمرار أهم من الكمال.
           </p>
           <Button className="mt-5" onClick={openNew}>
-            <span aria-hidden className="text-xl leading-none">+</span> أضف عادة
+            <span aria-hidden className="text-xl leading-none">
+              +
+            </span>{" "}
+            أضف عادة
           </Button>
         </section>
       ) : (
@@ -117,7 +123,10 @@ function TodayPage() {
           onClick={openNew}
           className="fixed bottom-6 start-1/2 h-14 -translate-x-1/2 rounded-full px-6 shadow-lg"
         >
-          <span aria-hidden className="text-xl leading-none">+</span> عادة جديدة
+          <span aria-hidden className="text-xl leading-none">
+            +
+          </span>{" "}
+          عادة جديدة
         </Button>
       )}
 

@@ -54,7 +54,9 @@ export function ReminderBanner({ today, unfinished }: Props) {
           aria-label="إخفاء بطاقة التذكير للنهاردة"
           className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
         >
-          <span aria-hidden className="text-xl leading-none">×</span>
+          <span aria-hidden className="text-xl leading-none">
+            ×
+          </span>
         </button>
       </div>
       <Button className="mt-3 w-full" onClick={() => void request()}>
