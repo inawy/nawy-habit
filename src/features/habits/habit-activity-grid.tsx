@@ -66,6 +66,14 @@ export function HabitActivityGrid({
       ? [{ week: weekIndex, label: monthFmt.format(parseDayKey(firstOfMonth)) }]
       : [];
   });
+  const yearMarkers = weekStarts.flatMap((weekStart, weekIndex) => {
+    const firstOfYear = Array.from({ length: 7 }, (_, day) =>
+      addDays(weekStart, day),
+    ).find((day) => day.slice(5, 10) === "01-01");
+    return firstOfYear
+      ? [{ week: weekIndex, label: yearFmt.format(parseDayKey(firstOfYear)) }]
+      : [];
+  });
   const oldestWeekDate = weekStarts[weekStarts.length - 1] ?? currentWeekStart;
   const isScrollable = !compact && weekCount > MIN_WEEK_COUNT;
   const gridMinWidth = isScrollable ? String(weekCount * 10) + "px" : "100%";
@@ -76,7 +84,7 @@ export function HabitActivityGrid({
 
   return (
     <div
-      className={cn("habit-heatmap", isScrollable && "habit-heatmap-scroll")}
+      className={cn("habit-heatmap", isScrollable && "overflow-x-auto")}
       data-habit-color={color}
     >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
@@ -84,6 +92,19 @@ export function HabitActivityGrid({
         <span>{num(completed)} يوم إنجاز</span>
       </div>
       <div className="habit-heatmap-viewport" style={{ minWidth: gridMinWidth }}>
+        {weekCount > MIN_WEEK_COUNT && (
+          <div className="relative mb-1 h-3 overflow-hidden" aria-hidden="true">
+            {yearMarkers.map((marker) => (
+              <span
+                key={marker.week}
+                className="absolute top-0 whitespace-nowrap text-[9px] font-semibold leading-none text-muted-foreground"
+                style={{ insetInlineStart: String((marker.week / weekCount) * 100) + "%" }}
+              >
+                {marker.label}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="relative mb-1 h-3 overflow-hidden" aria-hidden="true">
           {monthMarkers.map((marker) => (
             <span
@@ -96,10 +117,7 @@ export function HabitActivityGrid({
           ))}
         </div>
         <ol
-          className={cn(
-            "habit-heatmap-grid grid grid-flow-col grid-rows-7 gap-[2px]",
-            compact ? "gap-[2px]" : "gap-[2px]",
-          )}
+          className="habit-heatmap-grid grid grid-flow-col grid-rows-7 gap-[2px]"
           style={{
             gridTemplateColumns: "repeat(" + weekCount + ", minmax(0, 1fr))",
           }}
