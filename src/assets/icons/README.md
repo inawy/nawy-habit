@@ -14,4 +14,4 @@ The SVG files in this directory are Google Material Symbols — Outlined, source
 
 Current habit-picker symbols: auto_awesome, menu_book, water_drop, directions_walk,
 fitness_center, self_improvement, bedtime, restaurant (cutlery only), favorite, school,
-account_balance_wallet (wallet), and redeem (gift box).
+account_balance_wallet (wallet), and volunteer_activism (hands holding a heart).
