@@ -56,7 +56,7 @@ describe("backup", () => {
       }),
     );
 
-    expect(backup.version).toBe(3);
+    expect(backup.version).toBe(4);
     expect(backup.habits[0]).toMatchObject({ icon: "auto_awesome", color: "blue" });
   });
 
@@ -93,7 +93,33 @@ describe("backup", () => {
     );
 
     expect(backup.version).toBe(3);
-    expect(backup.habits.map((habit) => habit.icon)).toEqual(["account_balance_wallet", "redeem"]);
+    expect(backup.habits.map((habit) => habit.icon)).toEqual(["account_balance_wallet", "volunteer_activism"]);
+  });
+
+  it("upgrades v3 backups from gift to hand with heart for giving", () => {
+    const backup = parseBackup(
+      JSON.stringify({
+        app: "nawy-habit",
+        version: 3,
+        exportedAt: "x",
+        habits: [
+          {
+            id: "giving",
+            name: "عطاء",
+            emoji: "✨",
+            icon: "redeem",
+            color: "blue",
+            order: 0,
+            createdAt: "x",
+            archivedAt: null,
+          },
+        ],
+        logs: [],
+      }),
+    );
+
+    expect(backup.version).toBe(4);
+    expect(backup.habits[0]?.icon).toBe("volunteer_activism");
   });
 
   it("drops logs of unknown habits", () => {
@@ -149,7 +175,39 @@ describe("database migrations", () => {
     const current = new NawyHabitDB(name);
     const migrated = await current.habits.toArray();
     expect(migrated.find((habit) => habit.id === "saving")?.icon).toBe("account_balance_wallet");
-    expect(migrated.find((habit) => habit.id === "giving")?.icon).toBe("redeem");
+    expect(migrated.find((habit) => habit.id === "giving")?.icon).toBe("volunteer_activism");
+    await current.delete();
+  });
+
+  it("replaces gift icon with hand and heart when migrating schema v3", async () => {
+    const name = `mig-v3-${crypto.randomUUID()}`;
+    const old = new Dexie(name);
+    old.version(1).stores({
+      habits: "id, order, archivedAt",
+      logs: "id, habitId, day, [habitId+day]",
+    });
+    old.version(2).stores({
+      habits: "id, order, archivedAt",
+      logs: "id, habitId, day, [habitId+day]",
+    });
+    old.version(3).stores({
+      habits: "id, order, archivedAt",
+      logs: "id, habitId, day, [habitId+day]",
+    });
+    await old.table("habits").add({
+      id: "giving",
+      name: "عطاء",
+      emoji: "✨",
+      icon: "redeem",
+      color: "blue",
+      order: 0,
+      createdAt: "x",
+      archivedAt: null,
+    });
+    old.close();
+
+    const current = new NawyHabitDB(name);
+    expect((await current.habits.get("giving"))?.icon).toBe("volunteer_activism");
     await current.delete();
   });
 
