@@ -9,13 +9,12 @@ import { HabitActivityGrid } from "@/features/habits/habit-activity-grid";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { useHabitDetailView } from "@/features/habits/use-habit-detail";
 import { useToday } from "@/features/habits/use-habits";
-import { parseDayKey, type DayKey } from "@/lib/date/day-key";
+import type { DayKey } from "@/lib/date/day-key";
 import { toMonthKey, type MonthKey } from "@/lib/date/month";
 import { archiveHabit, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
-import { arabicFmt, num } from "@/lib/format/numbers";
-import { lastWeeks, monthProgress } from "@/lib/habits/consistency";
+import { num } from "@/lib/format/numbers";
+import { monthProgress } from "@/lib/habits/consistency";
 import { computeStreaks } from "@/lib/habits/streak";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/habit/$habitId")({
   head: () => ({
@@ -23,12 +22,12 @@ export const Route = createFileRoute("/habit/$habitId")({
       { title: "تفاصيل العادة — ناوي للعادات" },
       {
         name: "description",
-        content: "تقويم شهري ونسبة التزام لكل عادة، محفوظة على جهازك.",
+        content: "سجل الإنجاز ونسبة الالتزام، مع إمكانية تعديل الأيام السابقة.",
       },
       { property: "og:title", content: "تفاصيل العادة — ناوي للعادات" },
       {
         property: "og:description",
-        content: "شوف أيامك اللي التزمت فيها، ونسبة التزامك هذا الشهر.",
+        content: "شوف سجل إنجازك ونسبة التزامك، وعدّل أي يوم سابق.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -36,8 +35,6 @@ export const Route = createFileRoute("/habit/$habitId")({
   }),
   component: HabitDetailPage,
 });
-
-const weekLabelFmt = arabicFmt({ day: "numeric", month: "short" });
 
 function HabitDetailPage() {
   const { habitId } = Route.useParams();
@@ -73,7 +70,6 @@ function HabitDetailPage() {
   const { habit, days } = view;
   const streaks = computeStreaks(days, today);
   const progress = monthProgress(days, month, today);
-  const weeks = lastWeeks(days, today, 4);
   const percent = progress.rate === null ? null : Math.round(progress.rate * 100);
 
   async function onToggleDay(day: DayKey) {
@@ -110,11 +106,13 @@ function HabitDetailPage() {
         </span>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-2xl font-bold">{habit.name}</h1>
-          <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-            <Icon name="local_fire_department" className="size-4 text-accent-foreground" />
-            {streaks.current > 0 ? `${num(streaks.current)} يوم متتالي` : "ابدأ اليوم"}
-            {streaks.best > 1 && <span className="ms-2">· الأفضل {num(streaks.best)}</span>}
-            <span className="ms-2">· الإجمالي {num(streaks.total)}</span>
+          <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <Icon name="local_fire_department" className="size-4 text-accent-foreground" />
+              {streaks.current > 0 ? `${num(streaks.current)} يوم متتالي` : "ابدأ اليوم"}
+            </span>
+            {streaks.best > 1 && <span>· الأفضل {num(streaks.best)}</span>}
+            <span>· الإجمالي {num(streaks.total)}</span>
           </p>
         </div>
         <button
@@ -169,44 +167,25 @@ function HabitDetailPage() {
         </div>
       </section>
 
-      <div className="mt-4">
-        <HabitCalendar
-          month={month}
-          days={days}
-          today={today}
-          onMonthChange={setPickedMonth}
-          onToggle={(d) => void onToggleDay(d)}
-        />
-      </div>
-
-      <section className="mt-6" aria-label="سجل الإنجاز">
-        <h2 className="text-sm font-medium">سجل الإنجاز</h2>
+      <section className="mt-5 rounded-2xl border bg-card p-4 shadow-sm" aria-label="سجل الإنجاز">
         <HabitActivityGrid days={days} today={today} />
       </section>
 
-      <section className="mt-4 rounded-2xl border bg-card p-4 shadow-sm">
-        <h2 className="text-sm font-medium text-muted-foreground">آخر 4 أسابيع</h2>
-        <ol className="mt-3 grid grid-cols-4 gap-2">
-          {weeks.map((w) => (
-            <li key={w.weekStart} className="text-center">
-              <div className="flex flex-col-reverse gap-1">
-                {w.days.map((d) => (
-                  <span
-                    key={d}
-                    className={cn(
-                      "h-2 w-full rounded-full",
-                      days.has(d) ? "bg-primary" : "bg-muted",
-                    )}
-                  />
-                ))}
-              </div>
-              <span className="mt-2 block text-[11px] text-muted-foreground">
-                {weekLabelFmt.format(parseDayKey(w.weekStart))}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </section>
+      <details className="group mt-4">
+        <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl border bg-card px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
+          <span>تقويم الأيام وتعديل السجل السابق</span>
+          <span className="text-xs font-semibold text-primary">فتح</span>
+        </summary>
+        <div className="mt-3">
+          <HabitCalendar
+            month={month}
+            days={days}
+            today={today}
+            onMonthChange={setPickedMonth}
+            onToggle={(day) => void onToggleDay(day)}
+          />
+        </div>
+      </details>
 
       <div className="mt-6">
         <Button variant="ghost" onClick={() => void onArchive()}>
