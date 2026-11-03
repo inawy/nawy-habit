@@ -33,19 +33,10 @@ interface Props {
 }
 
 /** Swipeable monthly calendar with direct month/year navigation. */
-export function HabitCalendar({
-  month,
-  minMonth,
-  days,
-  today,
-  onMonthChange,
-  onToggle,
-}: Props) {
+export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onToggle }: Props) {
   const touchStartX = useRef<number | null>(null);
   const cells = monthGrid(month);
-  const header = weekDays(firstDayOfMonth(month)).map((d) =>
-    weekdayFmt.format(parseDayKey(d)),
-  );
+  const header = weekDays(firstDayOfMonth(month)).map((d) => weekdayFmt.format(parseDayKey(d)));
   const label = monthFmt.format(parseDayKey(firstDayOfMonth(month)));
   const currentMonth = toMonthKey(today);
   const selectedYear = Number(month.slice(0, 4));
@@ -130,9 +121,7 @@ export function HabitCalendar({
           >
             {availableMonths.map((value) => (
               <option key={value} value={value}>
-                {monthNameFmt.format(
-                  new Date(selectedYear, Number(value) - 1, 1, 12),
-                )}
+                {monthNameFmt.format(new Date(selectedYear, Number(value) - 1, 1, 12))}
               </option>
             ))}
           </select>
@@ -175,10 +164,7 @@ export function HabitCalendar({
 
       <div className="mt-3 grid grid-cols-7 gap-1.5" aria-hidden>
         {header.map((weekday, index) => (
-          <span
-            key={index}
-            className="text-center text-[11px] text-muted-foreground"
-          >
+          <span key={index} className="text-center text-[11px] text-muted-foreground">
             {weekday}
           </span>
         ))}
