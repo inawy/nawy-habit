@@ -71,7 +71,6 @@ function TodayPage() {
       ? view.habits.filter((habit) => view.daysByHabit.get(habit.id)?.has(today)).length
       : 0;
   const totalCount = view?.habits.length ?? 0;
-  const completionRate = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
   const recentDays = today ? lastDays(today, 5) : [];
 
   return (
@@ -99,28 +98,7 @@ function TodayPage() {
               </p>
             )}
           </div>
-          {view && totalCount > 0 && (
-            <div className="shrink-0 text-end">
-              <span className="text-2xl font-bold tabular-nums">{num(completionRate)}٪</span>
-              <span className="mt-0.5 block text-[10px] text-muted-foreground">إنجاز اليوم</span>
-            </div>
-          )}
         </div>
-        {view && totalCount > 0 && (
-          <div
-            className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted"
-            role="progressbar"
-            aria-label="نسبة إنجاز العادات اليوم"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={completionRate}
-          >
-            <div
-              className="h-full rounded-full bg-primary transition-[width] duration-300"
-              style={{ width: `${completionRate}%` }}
-            />
-          </div>
-        )}
       </header>
 
       {view && today && totalCount > 0 && (
