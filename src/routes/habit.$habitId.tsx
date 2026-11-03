@@ -189,7 +189,9 @@ function HabitDetailPage() {
       >
         <div className="flex items-end justify-between gap-3">
           <div>
-            <h2 className="text-xs font-medium text-muted-foreground">{month === currentMonth ? "الالتزام هذا الشهر" : "الالتزام في " + monthLabel}</h2>
+            <h2 className="text-xs font-medium text-muted-foreground">
+              {month === currentMonth ? "الالتزام هذا الشهر" : "الالتزام في " + monthLabel}
+            </h2>
             <p className="mt-1 text-3xl font-bold tabular-nums">
               {percent === null ? "—" : `${num(percent)}٪`}
             </p>
