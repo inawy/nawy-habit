@@ -45,6 +45,19 @@ export class NawyHabitDB extends Dexie {
             if (habit.icon === "volunteer_activism") habit.icon = "redeem";
           }),
       );
+    this.version(4)
+      .stores({
+        habits: "id, order, archivedAt",
+        logs: "id, habitId, day, [habitId+day]",
+      })
+      .upgrade((tx) =>
+        tx
+          .table("habits")
+          .toCollection()
+          .modify((habit: { icon?: string }) => {
+            if (habit.icon === "redeem") habit.icon = "volunteer_activism";
+          }),
+      );
   }
 }
 
