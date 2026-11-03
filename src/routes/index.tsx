@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   HabitOverview,
-  HabitViewSwitcher,
+  HabitViewCycleButton,
   type OverviewMode,
 } from "@/features/habits/habit-overview";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
@@ -80,14 +80,19 @@ function TodayPage() {
           <p className="text-xs font-medium text-muted-foreground">
             {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
           </p>
-          <Link
-            to="/settings"
-            aria-label="الإعدادات"
-            title="الإعدادات"
-            className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <Icon name="settings" className="size-5" />
-          </Link>
+          <div className="flex items-center gap-2">
+            {view && totalCount > 0 && (
+              <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
+            )}
+            <Link
+              to="/settings"
+              aria-label="الإعدادات"
+              title="الإعدادات"
+              className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <Icon name="settings" className="size-5" />
+            </Link>
+          </div>
         </div>
         <div className="mt-3 flex items-end justify-between gap-4">
           <div className="min-w-0">
@@ -150,7 +155,6 @@ function TodayPage() {
           >
             <Icon name="add" className="size-6" />
           </button>
-          <HabitViewSwitcher value={overviewMode} onChange={chooseOverviewMode} />
         </>
       )}
 
