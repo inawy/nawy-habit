@@ -24,7 +24,7 @@ import {
 } from "@/lib/db/backup-repo";
 import { todayKey } from "@/lib/date/day-key";
 import { num } from "@/lib/format/numbers";
-import { useTheme, type ThemePreference } from "@/lib/theme/theme-provider";
+import { type ThemePreference, useTheme } from "@/lib/theme/theme-context";
 
 const themeOptions: readonly { value: ThemePreference; label: string }[] = [
   { value: "system", label: "حسب الجهاز" },
