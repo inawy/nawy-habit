@@ -41,11 +41,22 @@ function applyTheme(preference: ThemePreference) {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<ThemePreference>("system");
+  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>("light");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setTheme(readSavedTheme());
     setReady(true);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia?.("(prefers-color-scheme: dark)");
+    if (!media) return;
+
+    const syncSystemTheme = () => setSystemTheme(media.matches ? "dark" : "light");
+    syncSystemTheme();
+    media.addEventListener?.("change", syncSystemTheme);
+    return () => media.removeEventListener?.("change", syncSystemTheme);
   }, []);
 
   useEffect(() => {
@@ -57,19 +68,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       // The selected theme still works for this session when storage is unavailable.
     }
 
-    const syncTheme = () => applyTheme(theme);
-    syncTheme();
+    applyTheme(theme);
+  }, [ready, theme, systemTheme]);
 
-    const media = window.matchMedia?.("(prefers-color-scheme: dark)");
-    const onSystemChange = () => {
-      if (theme === "system") syncTheme();
-    };
-
-    media?.addEventListener?.("change", onSystemChange);
-    return () => media?.removeEventListener?.("change", onSystemChange);
-  }, [ready, theme]);
-
-  const resolvedTheme = theme === "system" ? getSystemTheme() : theme;
+  // Keep the first server and client render stable; the bootstrap script sets the real theme
+  // before paint, and this value catches up as soon as the provider mounts.
+  const resolvedTheme = theme === "system" ? systemTheme : theme;
 
   return (
     <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
