@@ -28,18 +28,11 @@ export function HabitActivityGrid({
   const mondayOffset = (todayDate.getDay() + 6) % 7;
   const currentWeekStart = addDays(today, -mondayOffset);
   const oldestLog = Array.from(days).sort()[0] ?? today;
-  const oldestRecordedDay =
-    startDate && startDate < oldestLog ? startDate : oldestLog;
+  const oldestRecordedDay = startDate && startDate < oldestLog ? startDate : oldestLog;
   const oldestRecordedDate = parseDayKey(oldestRecordedDay);
-  const oldestRecordedWeek = addDays(
-    oldestRecordedDay,
-    -((oldestRecordedDate.getDay() + 6) % 7),
-  );
+  const oldestRecordedWeek = addDays(oldestRecordedDay, -((oldestRecordedDate.getDay() + 6) % 7));
   const minimumWindowStart = addDays(currentWeekStart, -(MIN_WEEK_COUNT - 1) * 7);
-  const firstWeekStart =
-    !compact && oldestRecordedWeek < minimumWindowStart
-      ? oldestRecordedWeek
-      : minimumWindowStart;
+  const firstWeekStart = !compact && oldestRecordedWeek < minimumWindowStart ? oldestRecordedWeek : minimumWindowStart;
   const spanInWeeks = Math.round(
     (parseDayKey(currentWeekStart).getTime() - parseDayKey(firstWeekStart).getTime()) /
       (7 * 24 * 60 * 60 * 1000),
@@ -59,17 +52,17 @@ export function HabitActivityGrid({
   }, 0);
 
   const monthMarkers = weekStarts.flatMap((weekStart, weekIndex) => {
-    const firstOfMonth = Array.from({ length: 7 }, (_, day) =>
-      addDays(weekStart, day),
-    ).find((day) => day.slice(8, 10) === "01");
+    const firstOfMonth = Array.from({ length: 7 }, (_, day) => addDays(weekStart, day)).find(
+      (day) => day.slice(8, 10) === "01",
+    );
     return firstOfMonth
       ? [{ week: weekIndex, label: monthFmt.format(parseDayKey(firstOfMonth)) }]
       : [];
   });
   const yearMarkers = weekStarts.flatMap((weekStart, weekIndex) => {
-    const firstOfYear = Array.from({ length: 7 }, (_, day) =>
-      addDays(weekStart, day),
-    ).find((day) => day.slice(5, 10) === "01-01");
+    const firstOfYear = Array.from({ length: 7 }, (_, day) => addDays(weekStart, day)).find(
+      (day) => day.slice(5, 10) === "01-01",
+    );
     return firstOfYear
       ? [{ week: weekIndex, label: yearFmt.format(parseDayKey(firstOfYear)) }]
       : [];
