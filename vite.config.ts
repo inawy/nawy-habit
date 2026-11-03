@@ -7,13 +7,19 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { VitePWA } from "vite-plugin-pwa";
 
+// GH_PAGES=1 builds a static copy for GitHub Pages under /nawy-habit/.
+const ghPages = process.env.GH_PAGES === "1";
+const base = ghPages ? "/nawy-habit/" : "/";
+
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    ...(ghPages ? { spa: { enabled: true } } : {}),
   },
   vite: {
+    base,
     plugins: [
       VitePWA({
         strategies: "generateSW",
@@ -30,7 +36,7 @@ export default defineConfig({
           runtimeCaching: [
             {
               urlPattern: ({ request, url }) =>
-                request.mode === "navigate" && !url.pathname.startsWith("/~oauth"),
+                request.mode === "navigate" && !url.pathname.startsWith(`${base}~oauth`),
               handler: "NetworkFirst",
               options: {
                 cacheName: "pages",
@@ -40,7 +46,7 @@ export default defineConfig({
             },
             {
               urlPattern: ({ url }) =>
-                url.origin === self.location.origin && url.pathname.startsWith("/assets/"),
+                url.origin === self.location.origin && url.pathname.startsWith(`${base}assets/`),
               handler: "CacheFirst",
               options: { cacheName: "assets", expiration: { maxEntries: 200 } },
             },
