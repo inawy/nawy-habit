@@ -75,8 +75,8 @@ function HabitDetailPage() {
   async function onToggleDay(day: DayKey) {
     try {
       await toggleLog(habit.id, day);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       toast.error("تعذّر التسجيل");
     }
   }
@@ -89,15 +89,27 @@ function HabitDetailPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-6">
-      <Link
-        to="/"
-        className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground hover:bg-muted"
-      >
-        رجوع
-      </Link>
+    <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-5">
+      <div className="flex items-center justify-between">
+        <Link
+          to="/"
+          aria-label="العودة للعادات"
+          title="العودة للعادات"
+          className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
+        >
+          <Icon name="chevron_right" className="size-5" />
+        </Link>
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          aria-label="تعديل العادة"
+          className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
+        >
+          <Icon name="more_horiz" className="size-5" />
+        </button>
+      </div>
 
-      <header className="mt-4 flex items-start gap-3">
+      <header className="mt-5 flex items-center gap-3">
         <span
           className="habit-identity grid size-14 shrink-0 place-items-center rounded-2xl"
           data-habit-color={habit.color}
@@ -105,25 +117,25 @@ function HabitDetailPage() {
           <Icon name={habit.icon} className="size-7" />
         </span>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-2xl font-bold">{habit.name}</h1>
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Icon name="local_fire_department" className="size-4 text-accent-foreground" />
-              {streaks.current > 0 ? `${num(streaks.current)} يوم متتالي` : "ابدأ اليوم"}
-            </span>
-            {streaks.best > 1 && <span>· الأفضل {num(streaks.best)}</span>}
-            <span>· الإجمالي {num(streaks.total)}</span>
-          </p>
+          <h1 className="truncate text-[1.6rem] font-bold leading-tight">{habit.name}</h1>
+          <p className="mt-1 text-xs text-muted-foreground">سجلّك الخاص مع العادة دي</p>
         </div>
-        <button
-          type="button"
-          onClick={() => setEditing(true)}
-          aria-label="تعديل العادة"
-          className="shrink-0 rounded-lg px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted"
-        >
-          تعديل
-        </button>
       </header>
+
+      <div className="mt-4 flex flex-wrap gap-2" aria-label="إحصاءات العادة">
+        <span className="habit-stat-chip" data-habit-color={habit.color}>
+          <Icon name="local_fire_department" className="size-4" />
+          <span>{num(streaks.current)} متتالي</span>
+        </span>
+        <span className="habit-stat-chip">
+          <span className="font-semibold">{num(streaks.best)}</span>
+          <span>أفضل سلسلة</span>
+        </span>
+        <span className="habit-stat-chip">
+          <span className="font-semibold">{num(streaks.total)}</span>
+          <span>يوم إنجاز</span>
+        </span>
+      </div>
 
       {habit.archivedAt && (
         <p className="mt-4 rounded-xl border border-dashed p-3 text-sm text-muted-foreground">
@@ -138,22 +150,25 @@ function HabitDetailPage() {
         </p>
       )}
 
-      <section className="mt-5 rounded-2xl border bg-card p-4 shadow-sm">
+      <section
+        className="habit-progress-card mt-5 rounded-[1.4rem] border bg-card p-4"
+        data-habit-color={habit.color}
+      >
         <div className="flex items-end justify-between gap-3">
           <div>
-            <h2 className="text-sm font-medium text-muted-foreground">الالتزام هذا الشهر</h2>
+            <h2 className="text-xs font-medium text-muted-foreground">الالتزام هذا الشهر</h2>
             <p className="mt-1 text-3xl font-bold tabular-nums">
               {percent === null ? "—" : `${num(percent)}٪`}
             </p>
           </div>
           {progress.elapsed > 0 && (
-            <p className="pb-1 text-sm text-muted-foreground">
+            <p className="pb-1 text-xs text-muted-foreground">
               {num(progress.done)} من {num(progress.elapsed)} يوم
             </p>
           )}
         </div>
         <div
-          className="mt-3 h-2 overflow-hidden rounded-full bg-muted"
+          className="habit-progress-track mt-3 h-2 overflow-hidden rounded-full bg-muted"
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={100}
@@ -161,19 +176,26 @@ function HabitDetailPage() {
           aria-label="نسبة الالتزام هذا الشهر"
         >
           <div
-            className="h-full rounded-full bg-primary transition-all"
+            className="habit-progress-fill h-full rounded-full transition-[width] duration-300"
             style={{ width: `${percent ?? 0}%` }}
           />
         </div>
       </section>
 
-      <section className="mt-5 rounded-2xl border bg-card p-4 shadow-sm" aria-label="سجل الإنجاز">
-        <HabitActivityGrid days={days} today={today} />
+      <section
+        className="habit-history-panel mt-4 rounded-[1.4rem] border p-4"
+        data-habit-color={habit.color}
+        aria-label="سجل الإنجاز"
+      >
+        <HabitActivityGrid days={days} today={today} color={habit.color} />
       </section>
 
       <details className="group mt-4">
         <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl border bg-card px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
-          <span>تقويم الأيام وتعديل السجل السابق</span>
+          <span className="flex items-center gap-2">
+            <Icon name="calendar_month" className="size-5 text-muted-foreground" />
+            تقويم الأيام وتعديل السجل السابق
+          </span>
           <span className="text-xs font-semibold text-primary">فتح</span>
         </summary>
         <div className="mt-3">
@@ -187,7 +209,7 @@ function HabitDetailPage() {
         </div>
       </details>
 
-      <div className="mt-6">
+      <div className="mt-6 flex justify-end">
         <Button variant="ghost" onClick={() => void onArchive()}>
           أرشفة العادة
         </Button>
