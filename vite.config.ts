@@ -36,7 +36,7 @@ export default defineConfig({
           runtimeCaching: [
             {
               urlPattern: ({ request, url }) =>
-                request.mode === "navigate" && !url.pathname.startsWith(`${base}~oauth`),
+                request.mode === "navigate" && !url.pathname.includes("/~oauth"),
               handler: "NetworkFirst",
               options: {
                 cacheName: "pages",
@@ -45,8 +45,7 @@ export default defineConfig({
               },
             },
             {
-              urlPattern: ({ url }) =>
-                url.origin === self.location.origin && url.pathname.startsWith(`${base}assets/`),
+              urlPattern: new RegExp(`^[^?#]*${base}assets/`),
               handler: "CacheFirst",
               options: { cacheName: "assets", expiration: { maxEntries: 200 } },
             },
