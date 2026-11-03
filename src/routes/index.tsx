@@ -9,6 +9,7 @@ import {
   type OverviewMode,
 } from "@/features/habits/habit-overview";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
+import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { lastDays, parseDayKey } from "@/lib/date/day-key";
@@ -84,6 +85,7 @@ function TodayPage() {
             {view && totalCount > 0 && (
               <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
             )}
+            <InstallAppButton />
             <Link
               to="/settings"
               aria-label="الإعدادات"
