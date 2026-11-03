@@ -73,13 +73,19 @@ function HabitChecklistItem({
   const complete = days.has(today);
 
   return (
-    <li className="habit-checklist-row flex items-center gap-3 px-3 py-3" data-habit-color={habit.color}>
+    <li
+      className="habit-checklist-row flex items-center gap-3 px-3 py-3"
+      data-habit-color={habit.color}
+    >
       <Link
         to="/habit/$habitId"
         params={{ habitId: habit.id }}
         className="flex min-w-0 flex-1 items-center gap-3 rounded-lg"
       >
-        <span className="habit-identity grid size-10 shrink-0 place-items-center rounded-xl" data-habit-color={habit.color}>
+        <span
+          className="habit-identity grid size-10 shrink-0 place-items-center rounded-xl"
+          data-habit-color={habit.color}
+        >
           <Icon name={habit.icon} className="size-5" />
         </span>
         <span className="min-w-0 flex-1">
@@ -107,14 +113,20 @@ function HabitOverviewCard({
   const complete = days.has(today);
 
   return (
-    <li className="habit-overview-card rounded-[1.35rem] border bg-card p-3.5" data-habit-color={habit.color}>
+    <li
+      className="habit-overview-card rounded-[1.35rem] border bg-card p-3.5"
+      data-habit-color={habit.color}
+    >
       <div className="flex min-w-0 items-center gap-3">
         <Link
           to="/habit/$habitId"
           params={{ habitId: habit.id }}
           className="flex min-w-0 flex-1 items-center gap-3 rounded-lg"
         >
-          <span className="habit-identity grid size-10 shrink-0 place-items-center rounded-xl" data-habit-color={habit.color}>
+          <span
+            className="habit-identity grid size-10 shrink-0 place-items-center rounded-xl"
+            data-habit-color={habit.color}
+          >
             <Icon name={habit.icon} className="size-5" />
           </span>
           <span className="min-w-0 flex-1">
@@ -165,7 +177,10 @@ export function HabitOverview({ mode, habits, daysByHabit, recentDays, today }: 
   }
 
   return (
-    <section className="habit-compact-panel overflow-hidden rounded-[1.35rem] border bg-card shadow-sm" aria-label="عاداتك خلال آخر خمسة أيام">
+    <section
+      className="habit-compact-panel overflow-hidden rounded-[1.35rem] border bg-card shadow-sm"
+      aria-label="عاداتك خلال آخر خمسة أيام"
+    >
       <div className="flex items-center justify-between gap-3 px-3 pb-2 pt-3">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           العادة
@@ -183,7 +198,13 @@ export function HabitOverview({ mode, habits, daysByHabit, recentDays, today }: 
             <span className="text-[9px] leading-none text-muted-foreground">
               {weekdayFmt.format(parseDayKey(day))}
             </span>
-            <span className={day === today ? "text-[11px] font-bold text-foreground" : "text-[11px] text-muted-foreground"}>
+            <span
+              className={
+                day === today
+                  ? "text-[11px] font-bold text-foreground"
+                  : "text-[11px] text-muted-foreground"
+              }
+            >
               {dayNumberFmt.format(parseDayKey(day))}
             </span>
           </span>
