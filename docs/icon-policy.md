@@ -31,8 +31,9 @@ Do not add artwork depicting or promoting:
 4. Keep the curated picker small; do not expose the entire upstream icon library.
 5. When in doubt, leave the symbol out and choose a neutral alternative.
 
-Retired symbols: `savings` (pig-shaped bank) and `volunteer_activism` (hands holding a heart). Existing saved habits and v3 backups using the gift symbol are automatically upgraded to the wallet and hand-with-heart identifiers.
+Retired symbols: `savings` (pig-shaped bank) and `redeem` (gift box). Existing saved habits and v3 backups using the gift symbol are automatically upgraded to the wallet and hand-with-heart identifiers.
 
 Current approved picker set: `auto_awesome`, `menu_book`, `water_drop`,
 `directions_walk`, `fitness_center`, `self_improvement`, `bedtime`, `restaurant`
-(cutlery only), `favorite`, `school`, `account_balance_wallet` (wallet), and `redeem` (gift box).
+(cutlery only), `favorite`, `school`, `account_balance_wallet` (wallet), and
+`volunteer_activism` (hands holding a heart).
