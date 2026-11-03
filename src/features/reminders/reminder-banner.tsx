@@ -11,11 +11,7 @@ interface Props {
   unfinished: number;
 }
 
-/**
- * Enable card for the daily reminder. Honest by design: fixed times,
- * max 3 per day, works only while the app is open — never implies
- * the user can configure a custom time.
- */
+/** Compact reminder opt-in; the fixed schedule runs only while the app is open. */
 export function ReminderBanner({ today, unfinished }: Props) {
   const { permission, request } = useReminders(today, unfinished);
   const [dismissed, setDismissed] = useState(true);
@@ -28,40 +24,37 @@ export function ReminderBanner({ today, unfinished }: Props) {
 
   return (
     <section
-      className="mb-4 rounded-2xl border bg-card p-4 shadow-sm"
+      className="mb-3 flex items-center gap-2 rounded-xl border bg-card px-3 py-2"
       aria-label="تشغيل التذكير اليومي"
     >
-      <div className="flex items-start gap-3">
-        <span
-          className="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary"
-          aria-hidden
-        >
-          <Icon name="notifications" className="size-5 text-accent-foreground" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <h2 className="font-semibold">فكّرنا نذكّرك</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            تنبيهات يومية بسيطة: لحد 3 مرات في اليوم في أوقات ثابتة، لما يكون التطبيق مفتوح أو شغال
-            بالخلفية. الأوقات ثابتة ومش بتتظبط.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => {
-            recordDismissed(today);
-            setDismissed(true);
-          }}
-          aria-label="إخفاء بطاقة التذكير للنهاردة"
-          className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
-        >
-          <span aria-hidden className="text-xl leading-none">
-            ×
-          </span>
-        </button>
+      <span
+        className="grid size-8 shrink-0 place-items-center rounded-lg bg-secondary"
+        aria-hidden
+      >
+        <Icon name="notifications" className="size-4 text-accent-foreground" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <h2 className="text-sm font-semibold">فكّرنا نذكّرك</h2>
+        <p className="truncate text-xs text-muted-foreground">
+          حتى 3 تنبيهات يومية أثناء تشغيل التطبيق
+        </p>
       </div>
-      <Button className="mt-3 w-full" onClick={() => void request()}>
-        <Icon name="notifications" className="size-5" /> شغّل التذكير
+      <Button size="sm" className="h-8 shrink-0 px-3" onClick={() => void request()}>
+        تفعيل
       </Button>
+      <button
+        type="button"
+        onClick={() => {
+          recordDismissed(today);
+          setDismissed(true);
+        }}
+        aria-label="إخفاء بطاقة التذكير للنهاردة"
+        className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
+      >
+        <span aria-hidden className="text-xl leading-none">
+          ×
+        </span>
+      </button>
     </section>
   );
 }
