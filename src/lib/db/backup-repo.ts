@@ -6,7 +6,7 @@ import { getDb } from "./db";
 import { habitLogSchema, habitSchema } from "./schema";
 
 /** Bump when the backup file shape changes; add a converter in `upgradeBackup`. */
-export const BACKUP_VERSION = 3;
+export const BACKUP_VERSION = 4;
 export const BACKUP_APP = "nawy-habit";
 
 export const backupSchema = z.object({
@@ -31,11 +31,11 @@ export async function exportBackup(): Promise<Backup> {
   }));
 }
 
-/** Upgrades v1/v2 backups with defaults and replaces the retired piggy bank symbols. */
+/** Upgrades older backups, replacing the pig-shaped bank and restoring the hand-with-heart giving icon. */
 function upgradeBackup(raw: unknown): unknown {
   if (typeof raw !== "object" || raw === null) return raw;
   const backup = raw as { version?: unknown; habits?: unknown };
-  if ((backup.version !== 1 && backup.version !== 2) || !Array.isArray(backup.habits)) {
+  if (![1, 2, 3].includes(backup.version as number) || !Array.isArray(backup.habits)) {
     return raw;
   }
 
@@ -49,8 +49,8 @@ function upgradeBackup(raw: unknown): unknown {
       const icon =
         previousIcon === "savings"
           ? "account_balance_wallet"
-          : previousIcon === "volunteer_activism"
-            ? "redeem"
+          : previousIcon === "redeem"
+            ? "volunteer_activism"
             : (previousIcon ?? DEFAULT_HABIT_ICON);
 
       return {
