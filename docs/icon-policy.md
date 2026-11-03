@@ -7,7 +7,7 @@ faith-sensitive visual standard.
 
 Use simple, respectful, neutral symbols for everyday activities and constructive intentions:
 reading, water, walking, exercise, rest, food represented by ordinary cutlery, health, learning,
-saving, volunteering, and abstract positive motifs.
+saving represented by a wallet, giving represented by a gift, and abstract positive motifs.
 
 The picker uses an explicit allowlist in `src/lib/habits/appearance.ts`. The Zod schema accepts
 only those icon identifiers; an arbitrary Material Symbol cannot be selected or saved.
@@ -31,6 +31,8 @@ Do not add artwork depicting or promoting:
 4. Keep the curated picker small; do not expose the entire upstream icon library.
 5. When in doubt, leave the symbol out and choose a neutral alternative.
 
+Retired symbols: `savings` (pig-shaped bank) and `volunteer_activism` (replaced with an unambiguous gift symbol). Existing saved habits and v2 backups are automatically upgraded to the new wallet and gift identifiers.
+
 Current approved picker set: `auto_awesome`, `menu_book`, `water_drop`,
 `directions_walk`, `fitness_center`, `self_improvement`, `bedtime`, `restaurant`
-(cutlery only), `favorite`, `school`, `savings`, and `volunteer_activism`.
+(cutlery only), `favorite`, `school`, `account_balance_wallet` (wallet), and `redeem` (gift box).
