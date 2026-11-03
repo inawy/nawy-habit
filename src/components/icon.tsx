@@ -15,7 +15,7 @@ import restaurant from "@/assets/icons/restaurant.svg?url";
 import accountBalanceWallet from "@/assets/icons/account_balance_wallet.svg?url";
 import school from "@/assets/icons/school.svg?url";
 import selfImprovement from "@/assets/icons/self_improvement.svg?url";
-import redeem from "@/assets/icons/redeem.svg?url";
+import volunteerActivism from "@/assets/icons/volunteer_activism.svg?url";
 import waterDrop from "@/assets/icons/water_drop.svg?url";
 import settings from "@/assets/icons/settings.svg?url";
 import { cn } from "@/lib/utils";
@@ -39,7 +39,7 @@ const icons = {
   school,
   self_improvement: selfImprovement,
   settings,
-  redeem,
+  volunteer_activism: volunteerActivism,
   water_drop: waterDrop,
 } as const;
 
