@@ -3,7 +3,7 @@ import { arabicFmt, num } from "@/lib/format/numbers";
 import type { HabitColorName } from "@/lib/habits/appearance";
 import { cn } from "@/lib/utils";
 
-const WEEK_COUNT = 26;
+const WEEK_COUNT = 52;
 const dateFmt = arabicFmt({ day: "numeric", month: "long", year: "numeric" });
 const monthFmt = arabicFmt({ month: "short" });
 
@@ -14,7 +14,7 @@ interface Props {
   compact?: boolean;
 }
 
-/** Twenty-six calendar-aligned weeks, with future days left blank. */
+/** Fifty-two calendar-aligned weeks, with future days left blank. */
 export function HabitActivityGrid({ days, today, color = "blue", compact = false }: Props) {
   const todayDate = parseDayKey(today);
   const mondayOffset = (todayDate.getDay() + 6) % 7;
@@ -31,7 +31,7 @@ export function HabitActivityGrid({ days, today, color = "blue", compact = false
   return (
     <div className="habit-heatmap" data-habit-color={color}>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
-        <span>{compact ? "آخر 6 شهور" : `آخر ${num(WEEK_COUNT)} أسبوع`}</span>
+        <span>{compact ? "آخر سنة" : `آخر ${num(WEEK_COUNT)} أسبوع`}</span>
         <span>{num(completed)} يوم إنجاز</span>
       </div>
       <div className="relative mb-1 h-3 overflow-hidden" aria-hidden="true">
@@ -47,10 +47,10 @@ export function HabitActivityGrid({ days, today, color = "blue", compact = false
       </div>
       <ol
         className={cn(
-          "habit-heatmap-grid grid grid-flow-col grid-cols-[repeat(26,minmax(0,1fr))] grid-rows-7",
+          "habit-heatmap-grid grid grid-flow-col grid-cols-[repeat(52,minmax(0,1fr))] grid-rows-7",
           compact ? "gap-[2px]" : "gap-[3px]",
         )}
-        aria-label="شبكة أيام الإنجاز لآخر ستة أشهر تقريبًا"
+        aria-label="شبكة أيام الإنجاز لآخر سنة تقريبًا"
       >
         {dates.map((day) => {
           const isFuture = day > today;
@@ -68,7 +68,7 @@ export function HabitActivityGrid({ days, today, color = "blue", compact = false
               aria-label={isFuture ? undefined : label}
               aria-hidden={isFuture}
               className={cn(
-                "habit-heatmap-cell aspect-square min-w-0 rounded-[3px] border",
+                "habit-heatmap-cell aspect-square min-w-0 rounded-[2px] border",
                 isFuture ? "is-future" : complete ? "is-complete" : "is-empty",
                 day === today && "is-today",
               )}
