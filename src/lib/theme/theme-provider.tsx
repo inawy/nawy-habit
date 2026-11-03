@@ -1,16 +1,8 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
-export type ThemePreference = "system" | "light" | "dark";
-export type ResolvedTheme = "light" | "dark";
-
-interface ThemeContextValue {
-  theme: ThemePreference;
-  resolvedTheme: ResolvedTheme;
-  setTheme: (theme: ThemePreference) => void;
-}
+import { ThemeContext, type ResolvedTheme, type ThemePreference } from "./theme-context";
 
 const STORAGE_KEY = "nawy-habit-theme";
-const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function readSavedTheme(): ThemePreference {
   try {
@@ -82,8 +74,3 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useTheme() {
-  const value = useContext(ThemeContext);
-  if (!value) throw new Error("useTheme must be used inside ThemeProvider");
-  return value;
-}
