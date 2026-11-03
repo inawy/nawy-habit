@@ -14,6 +14,8 @@ import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { registerServiceWorker } from "../lib/pwa/register-sw";
+import { ThemeProvider } from "../lib/theme/theme-provider";
+import { useTheme } from "../lib/theme/theme-context";
 
 function NotFoundComponent() {
   return (
@@ -82,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "author", content: "Nawy" },
-      { name: "theme-color", content: "#3D7BFF" },
+      { name: "theme-color", content: "#F7F8FA" },
     ],
     links: [
       {
@@ -108,9 +110,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var p=localStorage.getItem('nawy-habit-theme');var dark=p==='dark'||(p!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var t=dark?'dark':'light';var r=document.documentElement;r.dataset.theme=t;r.classList.toggle('dark',dark);r.style.colorScheme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',dark?'#0D1117':'#F7F8FA');}catch(e){}})();",
+          }}
+        />
       </head>
       <body className="font-sans antialiased">
         {children}
@@ -128,9 +136,21 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <RootContent />
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+function RootContent() {
+  const { resolvedTheme } = useTheme();
+
+  return (
+    <>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <Toaster position="top-center" dir="rtl" />
-    </QueryClientProvider>
+      <Toaster position="top-center" dir="rtl" theme={resolvedTheme} />
+    </>
   );
 }

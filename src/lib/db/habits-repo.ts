@@ -27,6 +27,8 @@ export async function createHabit(input: HabitInput): Promise<Habit> {
       id: newId(),
       name: data.name,
       emoji: data.emoji || "✨",
+      icon: data.icon,
+      color: data.color,
       order: (last?.order ?? -1) + 1,
       createdAt: nowIso(),
       archivedAt: null,
@@ -38,7 +40,12 @@ export async function createHabit(input: HabitInput): Promise<Habit> {
 
 export async function updateHabit(id: string, input: HabitInput): Promise<void> {
   const data = habitInputSchema.parse(input);
-  await getDb().habits.update(id, { name: data.name, emoji: data.emoji || "✨" });
+  await getDb().habits.update(id, {
+    name: data.name,
+    emoji: data.emoji || "✨",
+    icon: data.icon,
+    color: data.color,
+  });
 }
 
 export async function archiveHabit(id: string): Promise<void> {

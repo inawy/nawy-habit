@@ -29,13 +29,15 @@ describe("habits repository", () => {
     const habits = await listActiveHabits();
     expect(habits.map((h) => h.name)).toEqual(["قراءة", "مشي"]);
     expect(habits[1]?.emoji).toBe("✨");
+    expect(habits[0]).toMatchObject({ icon: "auto_awesome", color: "blue" });
     await expect(createHabit({ name: "   " })).rejects.toThrow();
   });
 
   it("updates and archives without deleting history", async () => {
     const h = await createHabit({ name: "a" });
     await toggleLog(h.id, "2026-10-14");
-    await updateHabit(h.id, { name: "b", emoji: "💧" });
+    await updateHabit(h.id, { name: "b", emoji: "💧", icon: "water_drop", color: "teal" });
+    expect(await db.habits.get(h.id)).toMatchObject({ icon: "water_drop", color: "teal" });
     await archiveHabit(h.id);
     expect(await listActiveHabits()).toEqual([]);
     expect(await listLogs()).toHaveLength(1);

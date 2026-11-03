@@ -24,13 +24,20 @@ import {
 } from "@/lib/db/backup-repo";
 import { todayKey } from "@/lib/date/day-key";
 import { num } from "@/lib/format/numbers";
+import { type ThemePreference, useTheme } from "@/lib/theme/theme-context";
+
+const themeOptions: readonly { value: ThemePreference; label: string }[] = [
+  { value: "system", label: "حسب الجهاز" },
+  { value: "light", label: "نهاري" },
+  { value: "dark", label: "ليلي" },
+];
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "بياناتك — ناوي للعادات" },
-      { name: "description", content: "صدّر نسخة من عاداتك أو استرجعها، وبياناتك تبقى على جهازك." },
-      { property: "og:title", content: "بياناتك — ناوي للعادات" },
+      { title: "الإعدادات — ناوي للعادات" },
+      { name: "description", content: "اختار مظهر التطبيق واحتفظ بنسخة احتياطية من عاداتك." },
+      { property: "og:title", content: "الإعدادات — ناوي للعادات" },
       { property: "og:description", content: "نسخ احتياطي واسترجاع لعاداتك بملف واحد." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -43,6 +50,7 @@ function SettingsPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState<Backup | null>(null);
   const [persisted, setPersisted] = useState<boolean | null>(null);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     void navigator.storage?.persisted?.().then(setPersisted);
@@ -92,10 +100,33 @@ function SettingsPage() {
       <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground">
         رجوع
       </Link>
-      <h1 className="mt-3 text-3xl font-bold">بياناتك</h1>
+      <h1 className="mt-3 text-3xl font-bold">الإعدادات</h1>
       <p className="mt-2 text-muted-foreground">
-        كل عاداتك محفوظة على جهازك بس. خُد نسخة من وقت للتاني عشان ما تضيعش.
+        ظبّط شكل التطبيق، واحتفظ بنسخة من عاداتك عشان ما تضيعش.
       </p>
+
+      <section className="mt-6 space-y-3 rounded-2xl border p-5">
+        <div>
+          <h2 className="font-semibold">المظهر</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            اختار الوضع اللي يريح عينك، أو اتبع إعدادات جهازك.
+          </p>
+        </div>
+        <div className="grid grid-cols-3 gap-2" role="group" aria-label="اختيار مظهر التطبيق">
+          {themeOptions.map((option) => (
+            <Button
+              key={option.value}
+              type="button"
+              variant={theme === option.value ? "default" : "outline"}
+              aria-pressed={theme === option.value}
+              className="w-full px-2"
+              onClick={() => setTheme(option.value)}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      </section>
 
       <section className="mt-6 space-y-3 rounded-2xl border p-5">
         <h2 className="font-semibold">نسخة احتياطية</h2>

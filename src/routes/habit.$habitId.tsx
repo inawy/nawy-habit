@@ -103,10 +103,10 @@ function HabitDetailPage() {
 
       <header className="mt-4 flex items-start gap-3">
         <span
-          className="grid size-14 shrink-0 place-items-center rounded-2xl bg-secondary"
-          aria-hidden
+          className="habit-identity grid size-14 shrink-0 place-items-center rounded-2xl"
+          data-habit-color={habit.color}
         >
-          <span className="size-4 rounded-full bg-primary" />
+          <Icon name={habit.icon} className="size-7" />
         </span>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-2xl font-bold">{habit.name}</h1>

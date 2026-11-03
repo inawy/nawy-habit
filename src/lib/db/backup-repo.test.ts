@@ -36,6 +36,30 @@ describe("backup", () => {
     ).toThrow("تالفة");
   });
 
+  it("upgrades v1 backups with default habit appearance", () => {
+    const backup = parseBackup(
+      JSON.stringify({
+        app: "nawy-habit",
+        version: 1,
+        exportedAt: "x",
+        habits: [
+          {
+            id: "h1",
+            name: "مشي",
+            emoji: "🚶",
+            order: 0,
+            createdAt: "x",
+            archivedAt: null,
+          },
+        ],
+        logs: [],
+      }),
+    );
+
+    expect(backup.version).toBe(2);
+    expect(backup.habits[0]).toMatchObject({ icon: "auto_awesome", color: "blue" });
+  });
+
   it("drops logs of unknown habits", () => {
     const b = parseBackup(
       JSON.stringify({
@@ -67,7 +91,11 @@ describe("database migrations", () => {
     });
     old.close();
     const current = new NawyHabitDB(name);
-    expect(await current.habits.get("h1")).toMatchObject({ name: "مشي" });
+    expect(await current.habits.get("h1")).toMatchObject({
+      name: "مشي",
+      icon: "auto_awesome",
+      color: "blue",
+    });
     await current.delete();
   });
 });
