@@ -33,9 +33,7 @@ export function HabitActivityGrid({
   const oldestRecordedWeek = addDays(oldestRecordedDay, -((oldestRecordedDate.getDay() + 6) % 7));
   const minimumWindowStart = addDays(currentWeekStart, -(MIN_WEEK_COUNT - 1) * 7);
   const firstWeekStart =
-    !compact && oldestRecordedWeek < minimumWindowStart
-      ? oldestRecordedWeek
-      : minimumWindowStart;
+    !compact && oldestRecordedWeek < minimumWindowStart ? oldestRecordedWeek : minimumWindowStart;
   const spanInWeeks = Math.round(
     (parseDayKey(currentWeekStart).getTime() - parseDayKey(firstWeekStart).getTime()) /
       (7 * 24 * 60 * 60 * 1000),
@@ -117,7 +115,9 @@ export function HabitActivityGrid({
           style={{
             gridTemplateColumns: "repeat(" + weekCount + ", minmax(0, 1fr))",
           }}
-          aria-label={compact ? "شبكة أيام الإنجاز لآخر سنة" : "شبكة تاريخ العادة بالكامل، أسبوع لكل عمود"}
+          aria-label={
+            compact ? "شبكة أيام الإنجاز لآخر سنة" : "شبكة تاريخ العادة بالكامل، أسبوع لكل عمود"
+          }
         >
           {weekStarts.flatMap((weekStart) =>
             Array.from({ length: 7 }, (_, dayIndex) => {
