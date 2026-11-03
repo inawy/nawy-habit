@@ -207,7 +207,7 @@ function HabitDetailPage() {
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={percent ?? 0}
-          aria-label="نسبة الالتزام هذا الشهر"
+          aria-label={month === currentMonth ? "نسبة الالتزام هذا الشهر" : "نسبة الالتزام في " + monthLabel}
         >
           <div
             className="habit-progress-fill h-full rounded-full transition-[width] duration-300"
