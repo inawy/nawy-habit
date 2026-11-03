@@ -19,9 +19,9 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <p className="text-6xl" aria-hidden>
-          🍂
-        </p>
+        <div className="mx-auto grid size-12 place-items-center rounded-full bg-muted text-sm font-semibold text-muted-foreground" aria-hidden>
+          404
+        </div>
         <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة مش موجودة</h2>
         <p className="mt-2 text-sm text-muted-foreground">يمكن الرابط اتغيّر أو اتكتب غلط.</p>
         <div className="mt-6">
@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "author", content: "Nawy" },
-      { name: "theme-color", content: "#2f6b57" },
+      { name: "theme-color", content: "#3D7BFF" },
     ],
     links: [
       {
@@ -93,7 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap",
       },
     ],
   }),

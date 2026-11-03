@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Download, ShieldCheck, Upload } from "lucide-react";
+
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -90,7 +90,7 @@ function SettingsPage() {
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-16 pt-8">
       <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-        <ArrowRight className="size-4" /> رجوع
+        رجوع
       </Link>
       <h1 className="mt-3 text-3xl font-bold">بياناتك</h1>
       <p className="mt-2 text-muted-foreground">
@@ -101,10 +101,10 @@ function SettingsPage() {
         <h2 className="font-semibold">نسخة احتياطية</h2>
         <div className="flex flex-wrap gap-2">
           <Button onClick={onExport}>
-            <Download /> حفظ نسخة
+            حفظ نسخة
           </Button>
           <Button variant="outline" onClick={() => fileRef.current?.click()}>
-            <Upload /> استرجاع من ملف
+            استرجاع من ملف
           </Button>
           <input
             ref={fileRef}
@@ -126,7 +126,7 @@ function SettingsPage() {
         </p>
         {!persisted && (
           <Button variant="outline" onClick={onPersist}>
-            <ShieldCheck /> احمِ بياناتي
+            احمِ بياناتي
           </Button>
         )}
       </section>
