@@ -92,11 +92,6 @@ function TodayPage() {
         <div className="mt-3 flex items-end justify-between gap-4">
           <div className="min-w-0">
             <h1 className="text-[1.85rem] font-bold leading-tight tracking-tight">اليوم</h1>
-            {view && totalCount > 0 && (
-              <p className="mt-1 text-sm text-muted-foreground" aria-live="polite">
-                أنجزت {num(doneCount)} من {num(totalCount)} عادات
-              </p>
-            )}
           </div>
         </div>
       </header>
