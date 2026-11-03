@@ -81,9 +81,6 @@ function TodayPage() {
             {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
           </p>
           <div className="flex items-center gap-2">
-            {view && totalCount > 0 && (
-              <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
-            )}
             <Link
               to="/settings"
               aria-label="الإعدادات"
@@ -92,6 +89,9 @@ function TodayPage() {
             >
               <Icon name="settings" className="size-5" />
             </Link>
+            {view && totalCount > 0 && (
+              <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
+            )}
           </div>
         </div>
         <div className="mt-3 flex items-end justify-between gap-4">
