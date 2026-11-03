@@ -49,7 +49,9 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
           <Icon name={habit.icon} className="size-[19px]" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[13px] font-semibold leading-snug">{habit.name}</span>
+          <span className="block truncate text-[13px] font-semibold leading-snug">
+            {habit.name}
+          </span>
         </span>
       </Link>
 
