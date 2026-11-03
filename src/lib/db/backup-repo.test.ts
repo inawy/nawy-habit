@@ -56,8 +56,47 @@ describe("backup", () => {
       }),
     );
 
-    expect(backup.version).toBe(2);
+    expect(backup.version).toBe(3);
     expect(backup.habits[0]).toMatchObject({ icon: "auto_awesome", color: "blue" });
+  });
+
+  it("replaces retired icons when importing v2 backups", () => {
+    const backup = parseBackup(
+      JSON.stringify({
+        app: "nawy-habit",
+        version: 2,
+        exportedAt: "x",
+        habits: [
+          {
+            id: "saving",
+            name: "ادخار",
+            emoji: "✨",
+            icon: "savings",
+            color: "green",
+            order: 0,
+            createdAt: "x",
+            archivedAt: null,
+          },
+          {
+            id: "giving",
+            name: "عطاء",
+            emoji: "✨",
+            icon: "volunteer_activism",
+            color: "blue",
+            order: 1,
+            createdAt: "x",
+            archivedAt: null,
+          },
+        ],
+        logs: [],
+      }),
+    );
+
+    expect(backup.version).toBe(3);
+    expect(backup.habits.map((habit) => habit.icon)).toEqual([
+      "account_balance_wallet",
+      "redeem",
+    ]);
   });
 
   it("drops logs of unknown habits", () => {
@@ -75,6 +114,49 @@ describe("backup", () => {
 });
 
 describe("database migrations", () => {
+  it("replaces retired habit icons when migrating schema v2", async () => {
+    const name = `mig-v2-${crypto.randomUUID()}`;
+    const old = new Dexie(name);
+    old.version(1).stores({
+      habits: "id, order, archivedAt",
+      logs: "id, habitId, day, [habitId+day]",
+    });
+    old.version(2).stores({
+      habits: "id, order, archivedAt",
+      logs: "id, habitId, day, [habitId+day]",
+    });
+    await old.table("habits").bulkAdd([
+      {
+        id: "saving",
+        name: "ادخار",
+        emoji: "✨",
+        icon: "savings",
+        color: "green",
+        order: 0,
+        createdAt: "x",
+        archivedAt: null,
+      },
+      {
+        id: "giving",
+        name: "عطاء",
+        emoji: "✨",
+        icon: "volunteer_activism",
+        color: "blue",
+        order: 1,
+        createdAt: "x",
+        archivedAt: null,
+      },
+    ]);
+    old.close();
+
+    const current = new NawyHabitDB(name);
+    expect((await current.habits.toArray()).map((habit) => habit.icon)).toEqual([
+      "account_balance_wallet",
+      "redeem",
+    ]);
+    await current.delete();
+  });
+
   it("opens data written by schema v1 without loss", async () => {
     const name = `mig-${crypto.randomUUID()}`;
     const old = new Dexie(name);
