@@ -66,10 +66,6 @@ function TodayPage() {
   };
 
   const openNew = () => setDialogOpen(true);
-  const doneCount =
-    today && view
-      ? view.habits.filter((habit) => view.daysByHabit.get(habit.id)?.has(today)).length
-      : 0;
   const totalCount = view?.habits.length ?? 0;
   const recentDays = today ? lastDays(today, 5) : [];
 
@@ -92,11 +88,6 @@ function TodayPage() {
         <div className="mt-3 flex items-end justify-between gap-4">
           <div className="min-w-0">
             <h1 className="text-[1.85rem] font-bold leading-tight tracking-tight">اليوم</h1>
-            {view && totalCount > 0 && (
-              <p className="mt-1 text-sm text-muted-foreground" aria-live="polite">
-                أنجزت {num(doneCount)} من {num(totalCount)} عادات
-              </p>
-            )}
           </div>
         </div>
       </header>
