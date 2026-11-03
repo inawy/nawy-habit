@@ -1,10 +1,12 @@
 import { z } from "zod";
 
+import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from "@/lib/habits/appearance";
+
 import { getDb } from "./db";
 import { habitLogSchema, habitSchema } from "./schema";
 
 /** Bump when the backup file shape changes; add a converter in `upgradeBackup`. */
-export const BACKUP_VERSION = 1;
+export const BACKUP_VERSION = 2;
 export const BACKUP_APP = "nawy-habit";
 
 export const backupSchema = z.object({
@@ -29,9 +31,25 @@ export async function exportBackup(): Promise<Backup> {
   }));
 }
 
-/** Converts older backup shapes to the current one. Only v1 exists today. */
+/** Adds the new appearance fields when importing an older v1 backup. */
 function upgradeBackup(raw: unknown): unknown {
-  return raw;
+  if (typeof raw !== "object" || raw === null) return raw;
+  const backup = raw as { version?: unknown; habits?: unknown };
+  if (backup.version !== 1 || !Array.isArray(backup.habits)) return raw;
+
+  return {
+    ...backup,
+    version: BACKUP_VERSION,
+    habits: backup.habits.map((habit) => {
+      if (typeof habit !== "object" || habit === null) return habit;
+      const savedHabit = habit as Record<string, unknown>;
+      return {
+        ...savedHabit,
+        icon: savedHabit.icon ?? DEFAULT_HABIT_ICON,
+        color: savedHabit.color ?? DEFAULT_HABIT_COLOR,
+      };
+    }),
+  };
 }
 
 export function parseBackup(text: string): Backup {
