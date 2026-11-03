@@ -93,7 +93,10 @@ describe("backup", () => {
     );
 
     expect(backup.version).toBe(4);
-    expect(backup.habits.map((habit) => habit.icon)).toEqual(["account_balance_wallet", "volunteer_activism"]);
+    expect(backup.habits.map((habit) => habit.icon)).toEqual([
+      "account_balance_wallet",
+      "volunteer_activism",
+    ]);
   });
 
   it("upgrades v3 backups from gift to hand with heart for giving", () => {
