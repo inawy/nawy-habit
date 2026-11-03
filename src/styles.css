@@ -272,13 +272,6 @@
 .habit-view-switcher button {
   -webkit-tap-highlight-color: transparent;
 }
-.habit-view-switcher {
-  background: color-mix(in srgb, var(--card) 94%, transparent);
-  border-color: var(--border);
-}
-.dark .habit-view-switcher, [data-theme="dark"] .habit-view-switcher {
-  background: rgb(21 27 35 / 94%);
-}
 .habit-compact-panel {
   box-shadow: 0 8px 26px rgb(16 24 40 / 4%);
 }
