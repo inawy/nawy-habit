@@ -106,13 +106,17 @@ function TodayPage() {
           </Button>
         </section>
       ) : (
-        <section className="overflow-hidden rounded-xl border bg-card" aria-label="عاداتك خلال آخر خمسة أيام">
+        <section
+          className="overflow-hidden rounded-xl border bg-card"
+          aria-label="عاداتك خلال آخر خمسة أيام"
+        >
           <div className="flex items-center justify-between gap-3 px-3 pb-2 pt-3">
             <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
               آخر {num(5)} أيام
             </span>
             <span className="text-[11px] text-muted-foreground">
-              {dateRangeFmt.format(parseDayKey(recentDays[0] ?? today))} — {dateRangeFmt.format(parseDayKey(today))}
+              {dateRangeFmt.format(parseDayKey(recentDays[0] ?? today))}{" — "}
+              {dateRangeFmt.format(parseDayKey(today))}
             </span>
           </div>
           <div className="grid grid-cols-[minmax(0,1fr)_repeat(5,1.75rem)] items-center gap-x-1.5 border-b bg-muted/30 px-3 py-2">
@@ -122,7 +126,11 @@ function TodayPage() {
                 <span className="text-[9px] leading-none text-muted-foreground">
                   {weekdayFmt.format(parseDayKey(day))}
                 </span>
-                <span className={day === today ? "text-[11px] font-bold text-primary" : "text-[11px] text-foreground"}>
+                <span className={
+                    day === today
+                      ? "text-[11px] font-bold text-primary"
+                      : "text-[11px] text-foreground"
+                  }>
                   {dayNumberFmt.format(parseDayKey(day))}
                 </span>
               </span>
