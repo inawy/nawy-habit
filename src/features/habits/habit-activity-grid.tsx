@@ -17,9 +17,7 @@ export function HabitActivityGrid({ days, today }: Props) {
   const mondayOffset = (todayDate.getDay() + 6) % 7;
   const currentWeekStart = addDays(today, -mondayOffset);
   const firstDay = addDays(currentWeekStart, -(WEEK_COUNT - 1) * 7);
-  const dates = Array.from({ length: WEEK_COUNT * 7 }, (_, index) =>
-    addDays(firstDay, index),
-  );
+  const dates = Array.from({ length: WEEK_COUNT * 7 }, (_, index) => addDays(firstDay, index));
   const completed = dates.filter((day) => day <= today && days.has(day)).length;
   const monthMarkers = dates.flatMap((day, index) =>
     day.slice(8, 10) === "01"
