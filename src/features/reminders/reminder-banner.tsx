@@ -1,4 +1,4 @@
-import { Bell, X } from "lucide-react";
+import { Icon } from "@/components/icon";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -36,10 +36,10 @@ export function ReminderBanner({ today, unfinished }: Props) {
           className="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary"
           aria-hidden
         >
-          <Bell className="size-5 text-accent-foreground" />
+          <Icon name="notifications" className="size-5 text-accent-foreground" />
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="font-semibold">فكّرنا نذكّرك 🌿</h2>
+          <h2 className="font-semibold">فكّرنا نذكّرك</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             تنبيهات يومية بسيطة: لحد 3 مرات في اليوم في أوقات ثابتة، لما يكون التطبيق مفتوح أو شغال
             بالخلفية. الأوقات ثابتة ومش بتتظبط.
@@ -54,11 +54,13 @@ export function ReminderBanner({ today, unfinished }: Props) {
           aria-label="إخفاء بطاقة التذكير للنهاردة"
           className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
         >
-          <X className="size-4" />
+          <span aria-hidden className="text-xl leading-none">
+            ×
+          </span>
         </button>
       </div>
       <Button className="mt-3 w-full" onClick={() => void request()}>
-        <Bell /> شغّل التذكير
+        <Icon name="notifications" className="size-5" /> شغّل التذكير
       </Button>
     </section>
   );

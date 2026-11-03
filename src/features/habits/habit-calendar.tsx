@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Icon } from "@/components/icon";
 
 import { parseDayKey, type DayKey } from "@/lib/date/day-key";
 import {
@@ -45,7 +45,7 @@ export function HabitCalendar({ month, days, today, onMonthChange, onToggle }: P
           aria-label="الشهر السابق"
           className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
         >
-          <ChevronRight className="size-5" />
+          <Icon name="chevron_right" className="size-5" />
         </button>
         <h2 className="text-base font-semibold">{label}</h2>
         <button
@@ -55,7 +55,7 @@ export function HabitCalendar({ month, days, today, onMonthChange, onToggle }: P
           aria-label="الشهر التالي"
           className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-40"
         >
-          <ChevronLeft className="size-5" />
+          <Icon name="chevron_left" className="size-5" />
         </button>
       </header>
 

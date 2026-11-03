@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Check, Flame, MoreHorizontal } from "lucide-react";
+import { Icon } from "@/components/icon";
 import { toast } from "sonner";
 
 import {
@@ -52,15 +52,15 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
           className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-1 py-1 hover:bg-muted/60"
         >
           <span
-            className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary text-2xl"
+            className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary"
             aria-hidden
           >
-            {habit.emoji}
+            <span className="size-3 rounded-full bg-primary" />
           </span>
           <span className="min-w-0 flex-1">
             <h3 className="truncate font-semibold">{habit.name}</h3>
             <p className="mt-0.5 flex items-center gap-1 text-sm text-muted-foreground">
-              <Flame className="size-4 text-accent-foreground" aria-hidden />
+              <Icon name="local_fire_department" className="size-4 text-accent-foreground" />
               {current > 0 ? `${num(current)} يوم متتالي` : "ابدأ اليوم"}
               {best > 1 && <span className="ms-2">· الأفضل {num(best)}</span>}
             </p>
@@ -71,7 +71,7 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
             className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
             aria-label={`خيارات ${habit.name}`}
           >
-            <MoreHorizontal className="size-5" />
+            <Icon name="more_horiz" className="size-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuItem onSelect={() => onEdit(habit)}>تعديل</DropdownMenuItem>
@@ -90,7 +90,7 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
               : "border-border text-transparent hover:border-primary/60",
           )}
         >
-          <Check className="size-6" strokeWidth={3} />
+          <Icon name="check" className="size-6" />
         </button>
       </div>
       <HabitActivityGrid days={days} today={today} />

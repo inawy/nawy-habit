@@ -1,44 +1,34 @@
-# Nawy Habit — Design-system audit
+# Nawy Habit — Design-system alignment
 
-Reference: `inawy/design-system`, revision `60bdbd2495a39fcd1d3fbacd568dd4616bdb6834`.
+Reference: [inawy/design-system](https://github.com/inawy/design-system), reviewed against the current documented brand decisions.
 
-## Result
+## Implemented in this alignment pass
 
-Partial compliance, not full compliance. This audit did not change the application's visual identity.
+- Primary brand color changed to Nawy Blue `#3D7BFF` across semantic theme tokens, document theme color, and PWA manifest.
+- Arabic font changed from IBM Plex Sans Arabic to Cairo.
+- Functional Lucide/emoji UI icons replaced with locally vendored Google Material Symbols — Outlined SVG assets.
+- SVG assets are stored in `src/assets/icons`, include the upstream Apache-2.0 license, and render through a small currentColor mask component.
+- Visible decorative emoji were removed from empty, error, reminder, and habit surfaces. Habit identity now uses the Nawy dot motif.
+- Form alignment and the floating primary action use logical alignment where applicable.
+- Global `:focus-visible` treatment and `prefers-reduced-motion` support were added.
+- Placeholder number style now follows the app's Latin-digit formatting convention.
 
-## Confirmed matches
+## Deliberate compatibility choices
 
-- Arabic RTL document and explicit RTL menus/toasts.
-- Central semantic color tokens rather than scattered page color values.
-- Calm, focused habit-recording experience, with loading and empty states.
-- Accessible labels on many icon-only controls and status announcements.
-
-## Confirmed deviations
-
-| Reference | Application | Evidence |
-| --- | --- | --- |
-| Recorded brand color: Nawy Blue `#3D7BFF` | Green primary palette | `src/styles.css` |
-| Recorded Arabic font: Cairo | IBM Plex Sans Arabic | `src/styles.css`, `src/routes/__root.tsx` |
-| Local Material Symbols Outlined SVG icons | Lucide icons and emoji | Content routes, habit rows/forms, reminders |
-| Logical alignment and positioning | Some `text-right`, `right-4` and physical positioning | Habit form and shared dialog |
-| Clear focus-visible for every interactive element | Shared Button has explicit focus styling; several custom controls do not | Habit check-in, calendar navigation, reminder dismiss, root fallbacks |
-| Consistent number style | Eastern-Arabic digits in habit placeholder | `src/features/habits/habit-form-dialog.tsx:71` |
-| Reduced-motion support | No application-wide reduced-motion override | `src/styles.css` |
-
-## Proposed foundations, not mandatory brand values
-
-The reference labels neutral palettes, spacing, type scale, radii and motion timings as proposed starter values. The app's warmer surfaces and different radii are differences to review, not automatically brand violations.
+- The persisted `Habit.emoji` field is retained but no longer rendered or edited. Existing local databases and v1 JSON backups remain readable; removing or renaming this field requires a versioned Dexie migration and backup conversion.
+- The app remains on TanStack Start + Bun for this release. This is a product-specific existing architecture, not the default starting point for new Nawy apps. See [docs/ARCHITECTURE.md](./ARCHITECTURE.md).
+- Cairo is currently loaded from Google Fonts and is not bundled. The system fallback remains available, but the exact Cairo face may not be present on a first offline load.
+- The PWA manifest colors are aligned; the PNG app icon artwork was not redesigned in this change.
 
 ## Remaining verification
 
-- Contrast measurements, 200% zoom, keyboard flow, touch targets and safe-area checks have not been comprehensively verified in this audit.
-- Arabic is supported; English/LTR is not currently an implemented product mode.
-- Google-hosted typography can fall back when unavailable; it is not a bundled offline font.
+- Run visual checks on a small phone and a wide viewport, including Arabic/Latin mixed content.
+- Verify WCAG 2.2 AA contrast for every component state, plus keyboard navigation, 200% zoom, touch targets, and safe-area behavior.
+- English/LTR is not yet an implemented product mode.
+- Confirm the exact Cairo font loading and fallback behavior on a clean offline install.
+- Revisit PWA icon artwork so the installed app icon matches the Nawy visual identity.
+- Local reminders remain a page-timer implementation, not a guaranteed background alarm. Closed or suspended pages cannot guarantee delivery; cross-tab limits and actual notification delivery still require work.
 
-## Related reminder accuracy findings
+## Result
 
-The current reminder scheduler is a Today-page timer, not a background alarm. Suspended or closed pages cannot guarantee delivery. Storage failures and simultaneous tabs can undermine the three-notification cap; these need correction and regression tests before describing reminders as production-ready. Permission and real notification delivery remain unverified. No Cloud service was enabled.
-
-## Next decision
-
-Align the recorded brand color, font and icon source together, then address focus, logical layout, number consistency and reduced motion. Preserve habit storage and logs throughout. Implementation needs a separate agreed scope; this request was an audit only.
+Core visual brand foundations and interaction defaults are now aligned in code. This is not a claim that the full application has passed a comprehensive accessibility or production-readiness audit.

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Flame, Pencil } from "lucide-react";
+import { Icon } from "@/components/icon";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -61,9 +61,6 @@ function HabitDetailPage() {
   if (view === null) {
     return (
       <main className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center px-4 text-center">
-        <p className="text-4xl" aria-hidden>
-          🔍
-        </p>
         <h1 className="mt-3 text-lg font-semibold">ما لقينا هذه العادة</h1>
         <p className="mt-1 text-sm text-muted-foreground">يمكن اتحذفت، أو الرابط مش مظبوط.</p>
         <Button asChild className="mt-5">
@@ -101,21 +98,20 @@ function HabitDetailPage() {
         to="/"
         className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground hover:bg-muted"
       >
-        <ArrowRight className="size-4" aria-hidden />
         رجوع
       </Link>
 
       <header className="mt-4 flex items-start gap-3">
         <span
-          className="grid size-14 shrink-0 place-items-center rounded-2xl bg-secondary text-3xl"
+          className="grid size-14 shrink-0 place-items-center rounded-2xl bg-secondary"
           aria-hidden
         >
-          {habit.emoji}
+          <span className="size-4 rounded-full bg-primary" />
         </span>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-2xl font-bold">{habit.name}</h1>
           <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-            <Flame className="size-4 text-accent-foreground" aria-hidden />
+            <Icon name="local_fire_department" className="size-4 text-accent-foreground" />
             {streaks.current > 0 ? `${num(streaks.current)} يوم متتالي` : "ابدأ اليوم"}
             {streaks.best > 1 && <span className="ms-2">· الأفضل {num(streaks.best)}</span>}
             <span className="ms-2">· الإجمالي {num(streaks.total)}</span>
@@ -125,9 +121,9 @@ function HabitDetailPage() {
           type="button"
           onClick={() => setEditing(true)}
           aria-label="تعديل العادة"
-          className="grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
+          className="shrink-0 rounded-lg px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted"
         >
-          <Pencil className="size-4" />
+          تعديل
         </button>
       </header>
 

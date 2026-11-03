@@ -12,4 +12,4 @@
 - [x] GitHub Pages copy — workflow ready; user must set Pages source to "GitHub Actions".
 - [ ] Local reminders — resolve storage/cross-tab cap safety and page-timer limitations; verify permission and real delivery before calling production-ready.
 - [x] Explain local-notification limits and optional Cloud costs/hosting without enabling Cloud.
-- [x] Design audit — compared with inawy/design-system revision 60bdbd2; findings in docs/design-audit.md. Visual identity unchanged.
+- [x] Design-system alignment — Nawy Blue, Cairo, local Material Symbols SVG, logical form/floating-action alignment, global focus-visible and reduced-motion defaults. Remaining visual/accessibility verification is listed in docs/design-audit.md.
