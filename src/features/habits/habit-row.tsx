@@ -9,27 +9,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { DayKey } from "@/lib/date/day-key";
+import { parseDayKey } from "@/lib/date/day-key";
 import { archiveHabit, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
 import type { Habit } from "@/lib/db/schema";
-import { num } from "@/lib/format/numbers";
+import { arabicFmt, num } from "@/lib/format/numbers";
 import { computeStreaks } from "@/lib/habits/streak";
 import { cn } from "@/lib/utils";
 
 interface Props {
   habit: Habit;
   days: Set<DayKey>;
+  recentDays: DayKey[];
   today: DayKey;
   onEdit: (habit: Habit) => void;
 }
 
-/** Compact one-tap check-in row. Historical activity belongs on the detail page. */
-export function HabitRow({ habit, days, today, onEdit }: Props) {
-  const done = days.has(today);
+const fullDateFmt = arabicFmt({
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+});
+
+export function HabitRow({ habit, days, recentDays, today, onEdit }: Props) {
   const { current } = computeStreaks(days, today);
 
-  async function onToggle() {
+  async function onToggle(day: DayKey) {
     try {
-      await toggleLog(habit.id, today);
+      await toggleLog(habit.id, day);
     } catch (err) {
       console.error(err);
       toast.error("تعذّر التسجيل");
@@ -44,54 +50,70 @@ export function HabitRow({ habit, days, today, onEdit }: Props) {
   }
 
   return (
-    <li className="rounded-xl border bg-card px-3 py-2 shadow-sm">
-      <div className="flex items-center gap-2.5">
+    <li
+      className="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,1.75rem)] items-center gap-x-1.5 px-3 py-2"
+      data-habit-color={habit.color}
+    >
+      <div className="flex min-w-0 items-center gap-1">
         <Link
           to="/habit/$habitId"
           params={{ habitId: habit.id }}
-          className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg py-1 hover:bg-muted/60"
+          className="flex min-w-0 flex-1 items-center gap-2 rounded-lg py-1 hover:bg-muted/60"
         >
           <span
-            className="habit-identity grid size-10 shrink-0 place-items-center rounded-xl"
+            className="habit-identity grid size-8 shrink-0 place-items-center rounded-lg"
             data-habit-color={habit.color}
           >
-            <Icon name={habit.icon} className="size-5" />
+            <Icon name={habit.icon} className="size-[18px]" />
           </span>
           <span className="min-w-0 flex-1">
-            <h3 className="truncate text-sm font-semibold">{habit.name}</h3>
-            <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-              <Icon name="local_fire_department" className="size-3.5 text-accent-foreground" />
-              {current > 0 ? `${num(current)} يوم متتالي` : "ابدأ اليوم"}
-            </p>
+            <h3 className="truncate text-xs font-semibold">{habit.name}</h3>
+            {current > 0 && (
+              <span className="mt-0.5 inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+                <Icon name="local_fire_department" className="size-3 text-accent-foreground" />
+                {num(current)}
+              </span>
+            )}
           </span>
         </Link>
         <DropdownMenu dir="rtl">
           <DropdownMenuTrigger
-            className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
+            className="grid size-7 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
             aria-label={`خيارات ${habit.name}`}
           >
-            <Icon name="more_horiz" className="size-5" />
+            <Icon name="more_horiz" className="size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuItem onSelect={() => onEdit(habit)}>تعديل</DropdownMenuItem>
             <DropdownMenuItem onSelect={() => void onArchive()}>أرشفة</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <button
-          type="button"
-          onClick={() => void onToggle()}
-          aria-pressed={done}
-          aria-label={done ? `إلغاء تسجيل ${habit.name}` : `تسجيل ${habit.name} اليوم`}
-          className={cn(
-            "grid size-10 shrink-0 place-items-center rounded-full border-2 transition-all active:scale-95",
-            done
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border text-transparent hover:border-primary/60",
-          )}
-        >
-          <Icon name="check" className="size-5" />
-        </button>
       </div>
+
+      {recentDays.map((day) => {
+        const complete = days.has(day);
+        const isToday = day === today;
+        const label = `${fullDateFmt.format(parseDayKey(day))} — ${complete ? "تم الإنجاز" : "بدون تسجيل"}${isToday ? " — اليوم" : ""}`;
+
+        return (
+          <button
+            key={day}
+            type="button"
+            onClick={() => void onToggle(day)}
+            aria-pressed={complete}
+            aria-label={label}
+            title={label}
+            data-complete={complete}
+            data-today={isToday}
+            className={cn(
+              "habit-day-cell grid size-7 shrink-0 place-items-center rounded-[9px] border transition-all active:scale-95",
+              complete && "is-complete",
+            )}
+          >
+            {complete && <Icon name="check" className="size-4" />}
+          </button>
+        );
+      })}
     </li>
   );
 }
