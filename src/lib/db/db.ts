@@ -23,10 +23,13 @@ export class NawyHabitDB extends Dexie {
         logs: "id, habitId, day, [habitId+day]",
       })
       .upgrade((tx) =>
-        tx.table("habits").toCollection().modify((habit: Habit) => {
-          if (!habit.icon) habit.icon = DEFAULT_HABIT_ICON;
-          if (!habit.color) habit.color = DEFAULT_HABIT_COLOR;
-        }),
+        tx
+          .table("habits")
+          .toCollection()
+          .modify((habit: Habit) => {
+            if (!habit.icon) habit.icon = DEFAULT_HABIT_ICON;
+            if (!habit.color) habit.color = DEFAULT_HABIT_COLOR;
+          }),
       );
   }
 }
