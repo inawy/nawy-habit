@@ -93,10 +93,7 @@ describe("backup", () => {
     );
 
     expect(backup.version).toBe(3);
-    expect(backup.habits.map((habit) => habit.icon)).toEqual([
-      "account_balance_wallet",
-      "redeem",
-    ]);
+    expect(backup.habits.map((habit) => habit.icon)).toEqual(["account_balance_wallet", "redeem"]);
   });
 
   it("drops logs of unknown habits", () => {
