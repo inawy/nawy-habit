@@ -71,12 +71,13 @@ function HabitDetailPage() {
   const streaks = computeStreaks(days, today);
   const progress = monthProgress(days, month, today);
   const percent = progress.rate === null ? null : Math.round(progress.rate * 100);
-  const monthLabel = arabicFmt({ month: "long", year: "numeric" }).format(parseDayKey(month + "-01"));
+  const monthLabel = arabicFmt({ month: "long", year: "numeric" }).format(
+    parseDayKey(month + "-01"),
+  );
   const currentMonth = toMonthKey(today);
   const habitStartDay = toDayKey(new Date(habit.createdAt));
   const oldestLogDay = Array.from(days).sort()[0] ?? habitStartDay;
-  const historyStartDay =
-    habitStartDay < oldestLogDay ? habitStartDay : oldestLogDay;
+  const historyStartDay = habitStartDay < oldestLogDay ? habitStartDay : oldestLogDay;
   const minMonth = toMonthKey(historyStartDay);
 
   async function onToggleDay(day: DayKey) {
