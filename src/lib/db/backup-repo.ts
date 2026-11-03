@@ -6,7 +6,7 @@ import { getDb } from "./db";
 import { habitLogSchema, habitSchema } from "./schema";
 
 /** Bump when the backup file shape changes; add a converter in `upgradeBackup`. */
-export const BACKUP_VERSION = 2;
+export const BACKUP_VERSION = 3;
 export const BACKUP_APP = "nawy-habit";
 
 export const backupSchema = z.object({
@@ -31,11 +31,13 @@ export async function exportBackup(): Promise<Backup> {
   }));
 }
 
-/** Adds the new appearance fields when importing an older v1 backup. */
+/** Upgrades v1/v2 backups with defaults and replaces the retired piggy bank symbols. */
 function upgradeBackup(raw: unknown): unknown {
   if (typeof raw !== "object" || raw === null) return raw;
   const backup = raw as { version?: unknown; habits?: unknown };
-  if (backup.version !== 1 || !Array.isArray(backup.habits)) return raw;
+  if ((backup.version !== 1 && backup.version !== 2) || !Array.isArray(backup.habits)) {
+    return raw;
+  }
 
   return {
     ...backup,
@@ -43,9 +45,17 @@ function upgradeBackup(raw: unknown): unknown {
     habits: backup.habits.map((habit) => {
       if (typeof habit !== "object" || habit === null) return habit;
       const savedHabit = habit as Record<string, unknown>;
+      const previousIcon = savedHabit["icon"];
+      const icon =
+        previousIcon === "savings"
+          ? "account_balance_wallet"
+          : previousIcon === "volunteer_activism"
+            ? "redeem"
+            : (previousIcon ?? DEFAULT_HABIT_ICON);
+
       return {
         ...savedHabit,
-        icon: savedHabit["icon"] ?? DEFAULT_HABIT_ICON,
+        icon,
         color: savedHabit["color"] ?? DEFAULT_HABIT_COLOR,
       };
     }),
