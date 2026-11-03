@@ -19,7 +19,7 @@ export const HABIT_ICON_NAMES = [
   "favorite",
   "school",
   "account_balance_wallet",
-  "redeem",
+  "volunteer_activism",
 ] as const;
 
 export type HabitIconName = (typeof HABIT_ICON_NAMES)[number];
@@ -36,7 +36,7 @@ export const HABIT_ICON_OPTIONS: readonly { value: HabitIconName; label: string 
   { value: "favorite", label: "صحة" },
   { value: "school", label: "تعلّم" },
   { value: "account_balance_wallet", label: "ادخار" },
-  { value: "redeem", label: "عطاء" },
+  { value: "volunteer_activism", label: "عطاء" },
 ];
 
 export const HABIT_COLOR_NAMES = [
