@@ -239,10 +239,16 @@ export function HabitViewCycleButton({
   onChange: (mode: OverviewMode) => void;
 }) {
   const currentIndex = viewOptions.findIndex((option) => option.value === value);
-  const currentOption = viewOptions[currentIndex] ?? viewOptions[0];
+  const fallbackOption = {
+    value: "compact",
+    label: "مختصر",
+    icon: "view_compact",
+  } as const;
+  const currentOption = viewOptions[currentIndex] ?? fallbackOption;
 
   const cycleMode = () => {
-    const nextOption = viewOptions[(currentIndex + 1) % viewOptions.length];
+    const nextOption =
+      viewOptions[(currentIndex + 1) % viewOptions.length] ?? fallbackOption;
     onChange(nextOption.value);
     const message =
       nextOption.value === "cards"
