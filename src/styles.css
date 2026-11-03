@@ -240,3 +240,58 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* HabitKit-inspired compact overview: each habit gets one short row of daily tiles. */
+.habit-compact-row {
+  --habit-day-color: var(--primary);
+  --habit-day-mark: #FFFFFF;
+}
+
+.habit-compact-row[data-habit-color="blue"] { --habit-day-color: #2F6CEB; }
+.habit-compact-row[data-habit-color="teal"] { --habit-day-color: #0F766E; }
+.habit-compact-row[data-habit-color="green"] { --habit-day-color: #15803D; }
+.habit-compact-row[data-habit-color="orange"] { --habit-day-color: #C2410C; }
+.habit-compact-row[data-habit-color="rose"] { --habit-day-color: #BE185D; }
+.habit-compact-row[data-habit-color="violet"] { --habit-day-color: #6D28D9; }
+.habit-compact-row[data-habit-color="amber"] { --habit-day-color: #A16207; }
+.habit-compact-row[data-habit-color="slate"] { --habit-day-color: #475569; }
+
+.dark .habit-compact-row,
+[data-theme="dark"] .habit-compact-row {
+  --habit-day-mark: #0D1117;
+}
+
+.dark .habit-compact-row[data-habit-color="blue"],
+[data-theme="dark"] .habit-compact-row[data-habit-color="blue"] { --habit-day-color: #A7C4FF; }
+.dark .habit-compact-row[data-habit-color="teal"],
+[data-theme="dark"] .habit-compact-row[data-habit-color="teal"] { --habit-day-color: #5EEAD4; }
+.dark .habit-compact-row[data-habit-color="green"],
+[data-theme="dark"] .habit-compact-row[data-habit-color="green"] { --habit-day-color: #86EFAC; }
+.dark .habit-compact-row[data-habit-color="orange"],
+[data-theme="dark"] .habit-compact-row[data-habit-color="orange"] { --habit-day-color: #FDBA74; }
+.dark .habit-compact-row[data-habit-color="rose"],
+[data-theme="dark"] .habit-compact-row[data-habit-color="rose"] { --habit-day-color: #FDA4AF; }
+.dark .habit-compact-row[data-habit-color="violet"],
+[data-theme="dark"] .habit-compact-row[data-habit-color="violet"] { --habit-day-color: #C4B5FD; }
+.dark .habit-compact-row[data-habit-color="amber"],
+[data-theme="dark"] .habit-compact-row[data-habit-color="amber"] { --habit-day-color: #FCD34D; }
+.dark .habit-compact-row[data-habit-color="slate"],
+[data-theme="dark"] .habit-compact-row[data-habit-color="slate"] { --habit-day-color: #CBD5E1; }
+
+.habit-day-cell {
+  background-color: var(--muted);
+  border-color: var(--border);
+  color: transparent;
+}
+
+.habit-day-cell.is-complete {
+  background-color: var(--habit-day-color);
+  border-color: var(--habit-day-color);
+  color: var(--habit-day-mark);
+}
+
+.habit-day-cell[data-today="true"] {
+  outline: 1px solid var(--ring);
+  outline-offset: 2px;
+}
