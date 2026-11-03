@@ -27,10 +27,7 @@ export function ReminderBanner({ today, unfinished }: Props) {
       className="mb-3 flex items-center gap-2 rounded-xl border bg-card px-3 py-2"
       aria-label="تشغيل التذكير اليومي"
     >
-      <span
-        className="grid size-8 shrink-0 place-items-center rounded-lg bg-secondary"
-        aria-hidden
-      >
+      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-secondary" aria-hidden>
         <Icon name="notifications" className="size-4 text-accent-foreground" />
       </span>
       <div className="min-w-0 flex-1">
