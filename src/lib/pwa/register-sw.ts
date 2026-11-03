@@ -3,7 +3,7 @@
  * inside iframes, on Lovable preview hosts, and with ?sw=off — and cleans up
  * any stale registration there so previews never serve old cached code.
  */
-const SW_URL = "/sw.js";
+const SW_URL = `${import.meta.env.BASE_URL}sw.js`;
 
 function isBlockedHost(host: string): boolean {
   const domains = ["lovableproject.com", "lovableproject-dev.com", "beta.lovable.dev"];
