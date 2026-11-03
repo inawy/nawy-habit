@@ -244,7 +244,13 @@ export function HabitViewCycleButton({
   const cycleMode = () => {
     const nextOption = viewOptions[(currentIndex + 1) % viewOptions.length];
     onChange(nextOption.value);
-    toast(`عرض ${nextOption.label}`, { duration: 1200 });
+    const message =
+      nextOption.value === "cards"
+        ? "عرض البطاقات"
+        : nextOption.value === "checklist"
+          ? "عرض القائمة"
+          : "العرض المختصر";
+    toast(message, { duration: 1200 });
   };
 
   return (
