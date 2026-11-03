@@ -93,6 +93,78 @@
   --sidebar-ring: var(--nawy-brand);
 }
 
+/* A selected habit keeps its identity color in both appearance modes. */
+.habit-identity {
+  color: var(--habit-ink, var(--primary));
+  background-color: var(--habit-soft, var(--accent));
+}
+
+.habit-identity[data-habit-color="blue"] {
+  --habit-ink: #2F6CEB;
+  --habit-soft: #E8F0FF;
+}
+.habit-identity[data-habit-color="teal"] {
+  --habit-ink: #0F766E;
+  --habit-soft: #CCFBF1;
+}
+.habit-identity[data-habit-color="green"] {
+  --habit-ink: #15803D;
+  --habit-soft: #DCFCE7;
+}
+.habit-identity[data-habit-color="orange"] {
+  --habit-ink: #C2410C;
+  --habit-soft: #FFEDD5;
+}
+.habit-identity[data-habit-color="rose"] {
+  --habit-ink: #BE185D;
+  --habit-soft: #FCE7F3;
+}
+.habit-identity[data-habit-color="violet"] {
+  --habit-ink: #6D28D9;
+  --habit-soft: #EDE9FE;
+}
+.habit-identity[data-habit-color="amber"] {
+  --habit-ink: #A16207;
+  --habit-soft: #FEF3C7;
+}
+.habit-identity[data-habit-color="slate"] {
+  --habit-ink: #475569;
+  --habit-soft: #E2E8F0;
+}
+
+.dark .habit-identity[data-habit-color="blue"] {
+  --habit-ink: #A7C4FF;
+  --habit-soft: #20365C;
+}
+.dark .habit-identity[data-habit-color="teal"] {
+  --habit-ink: #5EEAD4;
+  --habit-soft: #123F3B;
+}
+.dark .habit-identity[data-habit-color="green"] {
+  --habit-ink: #86EFAC;
+  --habit-soft: #17432A;
+}
+.dark .habit-identity[data-habit-color="orange"] {
+  --habit-ink: #FDBA74;
+  --habit-soft: #4A2C1B;
+}
+.dark .habit-identity[data-habit-color="rose"] {
+  --habit-ink: #FDA4AF;
+  --habit-soft: #4B2435;
+}
+.dark .habit-identity[data-habit-color="violet"] {
+  --habit-ink: #C4B5FD;
+  --habit-soft: #30254F;
+}
+.dark .habit-identity[data-habit-color="amber"] {
+  --habit-ink: #FCD34D;
+  --habit-soft: #493819;
+}
+.dark .habit-identity[data-habit-color="slate"] {
+  --habit-ink: #CBD5E1;
+  --habit-soft: #273444;
+}
+
 .dark,
 [data-theme="dark"] {
   --background: #0D1117;
@@ -131,6 +203,14 @@
 }
 
 @layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
   * {
     border-color: var(--color-border);
   }
