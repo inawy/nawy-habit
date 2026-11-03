@@ -108,7 +108,9 @@ function SettingsPage() {
       <section className="mt-6 space-y-3 rounded-2xl border p-5">
         <div>
           <h2 className="font-semibold">المظهر</h2>
-          <p className="mt-1 text-sm text-muted-foreground">اختار الوضع اللي يريح عينك، أو اتبع إعدادات جهازك.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            اختار الوضع اللي يريح عينك، أو اتبع إعدادات جهازك.
+          </p>
         </div>
         <div className="grid grid-cols-3 gap-2" role="group" aria-label="اختيار مظهر التطبيق">
           {themeOptions.map((option) => (
