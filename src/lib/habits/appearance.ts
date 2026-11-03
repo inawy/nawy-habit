@@ -1,3 +1,12 @@
+/**
+ * Curated, reviewed allowlist for habit identity icons.
+ *
+ * Keep this set to neutral everyday activities and objects. Do not add icons
+ * depicting pork/pigs, alcohol, gambling, sexual content, nudity, occult
+ * imagery, or anything otherwise inappropriate for Nawy's faith-sensitive
+ * audience. Review the actual SVG artwork, not only its symbol name, before
+ * adding a new entry. The Zod enum in the habit schema enforces this allowlist.
+ */
 export const HABIT_ICON_NAMES = [
   "auto_awesome",
   "menu_book",
