@@ -9,6 +9,7 @@ import directionsWalk from "@/assets/icons/directions_walk.svg?url";
 import favorite from "@/assets/icons/favorite.svg?url";
 import fitnessCenter from "@/assets/icons/fitness_center.svg?url";
 import gridView from "@/assets/icons/grid_view.svg?url";
+import installMobile from "@/assets/icons/install_mobile.svg?url";
 import localFireDepartment from "@/assets/icons/local_fire_department.svg?url";
 import menuBook from "@/assets/icons/menu_book.svg?url";
 import moreHoriz from "@/assets/icons/more_horiz.svg?url";
@@ -36,6 +37,7 @@ const icons = {
   favorite,
   fitness_center: fitnessCenter,
   grid_view: gridView,
+  install_mobile: installMobile,
   local_fire_department: localFireDepartment,
   menu_book: menuBook,
   more_horiz: moreHoriz,
