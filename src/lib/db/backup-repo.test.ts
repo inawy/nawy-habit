@@ -147,10 +147,9 @@ describe("database migrations", () => {
     old.close();
 
     const current = new NawyHabitDB(name);
-    expect((await current.habits.toArray()).map((habit) => habit.icon)).toEqual([
-      "account_balance_wallet",
-      "redeem",
-    ]);
+    const migrated = await current.habits.toArray();
+    expect(migrated.find((habit) => habit.id === "saving")?.icon).toBe("account_balance_wallet");
+    expect(migrated.find((habit) => habit.id === "giving")?.icon).toBe("redeem");
     await current.delete();
   });
 
