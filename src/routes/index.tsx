@@ -123,10 +123,7 @@ function TodayPage() {
           <div className="grid grid-cols-[minmax(0,1fr)_repeat(5,1.75rem)] items-center gap-x-1.5 border-b bg-muted/30 px-3 py-2">
             <span className="min-w-0 text-[10px] font-medium text-muted-foreground">العادة</span>
             {recentDays.map((day) => (
-              <span
-                key={day}
-                className="flex min-w-0 flex-col items-center gap-0.5 text-center"
-              >
+              <span key={day} className="flex min-w-0 flex-col items-center gap-0.5 text-center">
                 <span className="text-[9px] leading-none text-muted-foreground">
                   {weekdayFmt.format(parseDayKey(day))}
                 </span>
