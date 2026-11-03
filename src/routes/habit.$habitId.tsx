@@ -9,10 +9,10 @@ import { HabitActivityGrid } from "@/features/habits/habit-activity-grid";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { useHabitDetailView } from "@/features/habits/use-habit-detail";
 import { useToday } from "@/features/habits/use-habits";
-import type { DayKey } from "@/lib/date/day-key";
+import { parseDayKey, toDayKey, type DayKey } from "@/lib/date/day-key";
 import { toMonthKey, type MonthKey } from "@/lib/date/month";
 import { archiveHabit, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
-import { num } from "@/lib/format/numbers";
+import { arabicFmt, num } from "@/lib/format/numbers";
 import { monthProgress } from "@/lib/habits/consistency";
 import { computeStreaks } from "@/lib/habits/streak";
 
@@ -71,6 +71,15 @@ function HabitDetailPage() {
   const streaks = computeStreaks(days, today);
   const progress = monthProgress(days, month, today);
   const percent = progress.rate === null ? null : Math.round(progress.rate * 100);
+  const monthLabel = arabicFmt({ month: "long", year: "numeric" }).format(
+    parseDayKey(month + "-01"),
+  );
+  const currentMonth = toMonthKey(today);
+  const habitStartDay = toDayKey(new Date(habit.createdAt));
+  const oldestLogDay = Array.from(days).sort()[0] ?? habitStartDay;
+  const historyStartDay =
+    habitStartDay < oldestLogDay ? habitStartDay : oldestLogDay;
+  const minMonth = toMonthKey(historyStartDay);
 
   async function onToggleDay(day: DayKey) {
     try {
@@ -151,12 +160,36 @@ function HabitDetailPage() {
       )}
 
       <section
+        className="habit-history-panel mt-5 rounded-[1.4rem] border p-4"
+        data-habit-color={habit.color}
+        aria-label="سجل العادة بالكامل"
+      >
+        <HabitActivityGrid
+          days={days}
+          today={today}
+          color={habit.color}
+          startDate={historyStartDay}
+        />
+      </section>
+
+      <section className="mt-4" aria-label="التقويم الشهري وتعديل السجل السابق">
+        <HabitCalendar
+          month={month}
+          minMonth={minMonth}
+          days={days}
+          today={today}
+          onMonthChange={setPickedMonth}
+          onToggle={(day) => void onToggleDay(day)}
+        />
+      </section>
+
+      <section
         className="habit-progress-card mt-5 rounded-[1.4rem] border bg-card p-4"
         data-habit-color={habit.color}
       >
         <div className="flex items-end justify-between gap-3">
           <div>
-            <h2 className="text-xs font-medium text-muted-foreground">الالتزام هذا الشهر</h2>
+            <h2 className="text-xs font-medium text-muted-foreground">{month === currentMonth ? "الالتزام هذا الشهر" : "الالتزام في " + monthLabel}</h2>
             <p className="mt-1 text-3xl font-bold tabular-nums">
               {percent === null ? "—" : `${num(percent)}٪`}
             </p>
@@ -181,33 +214,6 @@ function HabitDetailPage() {
           />
         </div>
       </section>
-
-      <section
-        className="habit-history-panel mt-4 rounded-[1.4rem] border p-4"
-        data-habit-color={habit.color}
-        aria-label="سجل الإنجاز"
-      >
-        <HabitActivityGrid days={days} today={today} color={habit.color} />
-      </section>
-
-      <details className="group mt-4">
-        <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl border bg-card px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
-          <span className="flex items-center gap-2">
-            <Icon name="calendar_month" className="size-5 text-muted-foreground" />
-            تقويم الأيام وتعديل السجل السابق
-          </span>
-          <span className="text-xs font-semibold text-primary">فتح</span>
-        </summary>
-        <div className="mt-3">
-          <HabitCalendar
-            month={month}
-            days={days}
-            today={today}
-            onMonthChange={setPickedMonth}
-            onToggle={(day) => void onToggleDay(day)}
-          />
-        </div>
-      </details>
 
       <div className="mt-6 flex justify-end">
         <Button variant="ghost" onClick={() => void onArchive()}>
