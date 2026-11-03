@@ -1,7 +1,12 @@
 import { z } from "zod";
 
 import { isDayKey } from "@/lib/date/day-key";
-import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON, HABIT_COLOR_NAMES, HABIT_ICON_NAMES } from "@/lib/habits/appearance";
+import {
+  DEFAULT_HABIT_COLOR,
+  DEFAULT_HABIT_ICON,
+  HABIT_COLOR_NAMES,
+  HABIT_ICON_NAMES,
+} from "@/lib/habits/appearance";
 
 export const dayKeySchema = z.string().refine(isDayKey, "Invalid day key");
 
