@@ -118,7 +118,7 @@ function HabitDetailPage() {
           type="button"
           onClick={() => setEditing(true)}
           aria-label="تعديل العادة"
-          className="grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
+          className="shrink-0 rounded-lg px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted"
         >
           تعديل
         </button>

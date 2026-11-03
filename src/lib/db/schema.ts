@@ -7,6 +7,7 @@ export const dayKeySchema = z.string().refine(isDayKey, "Invalid day key");
 export const habitSchema = z.object({
   id: z.string().min(1),
   name: z.string().trim().min(1).max(60),
+  /** Legacy field retained for existing local data and v1 backup compatibility; not rendered. */
   emoji: z.string().max(8),
   order: z.number().int(),
   createdAt: z.string(),
