@@ -1,5 +1,7 @@
 import Dexie, { type EntityTable } from "dexie";
 
+import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from "@/lib/habits/appearance";
+
 import type { Habit, HabitLog } from "./schema";
 
 export const DB_NAME = "nawy-habit";
@@ -15,6 +17,17 @@ export class NawyHabitDB extends Dexie {
       habits: "id, order, archivedAt",
       logs: "id, habitId, day, [habitId+day]",
     });
+    this.version(2)
+      .stores({
+        habits: "id, order, archivedAt",
+        logs: "id, habitId, day, [habitId+day]",
+      })
+      .upgrade((tx) =>
+        tx.table("habits").toCollection().modify((habit: Habit) => {
+          if (!habit.icon) habit.icon = DEFAULT_HABIT_ICON;
+          if (!habit.color) habit.color = DEFAULT_HABIT_COLOR;
+        }),
+      );
   }
 }
 
