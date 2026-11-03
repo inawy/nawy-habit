@@ -9,6 +9,7 @@ import {
   type OverviewMode,
 } from "@/features/habits/habit-overview";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
+import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { lastDays, parseDayKey } from "@/lib/date/day-key";
@@ -81,6 +82,10 @@ function TodayPage() {
             {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
           </p>
           <div className="flex items-center gap-2">
+            {view && totalCount > 0 && (
+              <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
+            )}
+            <InstallAppButton />
             <Link
               to="/settings"
               aria-label="الإعدادات"
@@ -89,9 +94,6 @@ function TodayPage() {
             >
               <Icon name="settings" className="size-5" />
             </Link>
-            {view && totalCount > 0 && (
-              <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
-            )}
           </div>
         </div>
         <div className="mt-3 flex items-end justify-between gap-4">
