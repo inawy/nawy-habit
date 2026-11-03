@@ -114,12 +114,10 @@ export function InstallAppButton() {
           </DialogHeader>
           <div className="space-y-3 text-sm leading-6 text-muted-foreground">
             <p>
-              <span className="font-semibold text-foreground">على الكمبيوتر:</span>{" "}
-              افتح قائمة المتصفح واختر «تثبيت ناوي للعادات» أو «Install app».
+              <span className="font-semibold text-foreground">على الكمبيوتر:</span> افتح قائمة المتصفح واختر «تثبيت ناوي للعادات» أو «Install app».
             </p>
             <p>
-              <span className="font-semibold text-foreground">على الموبايل:</span>{" "}
-              افتح قائمة المشاركة أو قائمة المتصفح واختر «إضافة إلى الشاشة الرئيسية».
+              <span className="font-semibold text-foreground">على الموبايل:</span> افتح قائمة المشاركة أو قائمة المتصفح واختر «إضافة إلى الشاشة الرئيسية».
             </p>
           </div>
           <DialogFooter>
