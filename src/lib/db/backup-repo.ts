@@ -45,8 +45,8 @@ function upgradeBackup(raw: unknown): unknown {
       const savedHabit = habit as Record<string, unknown>;
       return {
         ...savedHabit,
-        icon: savedHabit.icon ?? DEFAULT_HABIT_ICON,
-        color: savedHabit.color ?? DEFAULT_HABIT_COLOR,
+        icon: savedHabit["icon"] ?? DEFAULT_HABIT_ICON,
+        color: savedHabit["color"] ?? DEFAULT_HABIT_COLOR,
       };
     }),
   };
