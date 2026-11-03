@@ -231,35 +231,42 @@ const viewOptions: { value: OverviewMode; label: string; icon: IconName }[] = [
   { value: "compact", label: "مختصر", icon: "view_compact" },
 ];
 
-export function HabitViewSwitcher({
+export function HabitViewCycleButton({
   value,
   onChange,
 }: {
   value: OverviewMode;
   onChange: (mode: OverviewMode) => void;
 }) {
+  const currentIndex = viewOptions.findIndex((option) => option.value === value);
+  const fallbackOption = {
+    value: "compact",
+    label: "مختصر",
+    icon: "view_compact",
+  } as const;
+  const currentOption = viewOptions[currentIndex] ?? fallbackOption;
+
+  const cycleMode = () => {
+    const nextOption = viewOptions[(currentIndex + 1) % viewOptions.length] ?? fallbackOption;
+    onChange(nextOption.value);
+    const message =
+      nextOption.value === "cards"
+        ? "عرض البطاقات"
+        : nextOption.value === "checklist"
+          ? "عرض القائمة"
+          : "العرض المختصر";
+    toast(message, { duration: 1200 });
+  };
+
   return (
-    <nav
-      aria-label="طريقة عرض العادات"
-      className="habit-view-switcher fixed bottom-[calc(env(safe-area-inset-bottom)+1.1rem)] left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-full border p-1.5 shadow-xl backdrop-blur-xl"
+    <button
+      type="button"
+      onClick={cycleMode}
+      aria-label={`طريقة العرض الحالية: ${currentOption.label}. اضغط للتغيير`}
+      title={`الوضع الحالي: ${currentOption.label} — تغيير طريقة العرض`}
+      className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-accent-foreground transition-colors hover:bg-accent"
     >
-      {viewOptions.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          aria-label={`عرض ${option.label}`}
-          title={option.label}
-          aria-pressed={value === option.value}
-          onClick={() => onChange(option.value)}
-          className={
-            value === option.value
-              ? "grid size-10 place-items-center rounded-full bg-accent text-accent-foreground shadow-sm"
-              : "grid size-10 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          }
-        >
-          <Icon name={option.icon} className="size-5" />
-        </button>
-      ))}
-    </nav>
+      <Icon name={currentOption.icon} className="size-5" />
+    </button>
   );
 }
