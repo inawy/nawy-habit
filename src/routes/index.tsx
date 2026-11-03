@@ -1,15 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  HabitOverview,
+  HabitViewSwitcher,
+  type OverviewMode,
+} from "@/features/habits/habit-overview";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
-import { HabitRow } from "@/features/habits/habit-row";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { lastDays, parseDayKey } from "@/lib/date/day-key";
 import { arabicFmt, num } from "@/lib/format/numbers";
-import type { Habit } from "@/lib/db/schema";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,7 +24,7 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:title", content: "ناوي للعادات" },
       {
-        property: "og:description",
+        name: "og:description",
         content: "متتبع عادات هادئ يعمل بدون إنترنت ويحفظ بياناتك على جهازك.",
       },
       { property: "og:type", content: "website" },
@@ -32,141 +35,153 @@ export const Route = createFileRoute("/")({
 });
 
 const dateFmt = arabicFmt({ weekday: "long", day: "numeric", month: "long" });
-const weekdayFmt = arabicFmt({ weekday: "short" });
-const dayNumberFmt = arabicFmt({ day: "numeric" });
-const dateRangeFmt = arabicFmt({ day: "numeric", month: "short" });
+const OVERVIEW_MODE_KEY = "nawy-habit-overview-mode";
+
+function isOverviewMode(value: string | null): value is OverviewMode {
+  return value === "cards" || value === "checklist" || value === "compact";
+}
 
 function TodayPage() {
   const today = useToday();
   const view = useHabitsView();
-  const recentDays = today ? lastDays(today, 5) : [];
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editing, setEditing] = useState<Habit | null>(null);
+  const [overviewMode, setOverviewMode] = useState<OverviewMode>("compact");
 
-  const openNew = () => {
-    setEditing(null);
-    setDialogOpen(true);
-  };
-  const openEdit = (h: Habit) => {
-    setEditing(h);
-    setDialogOpen(true);
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(OVERVIEW_MODE_KEY);
+      if (isOverviewMode(saved)) setOverviewMode(saved);
+    } catch {
+      // Keep compact mode when local preferences are unavailable.
+    }
+  }, []);
+
+  const chooseOverviewMode = (mode: OverviewMode) => {
+    setOverviewMode(mode);
+    try {
+      window.localStorage.setItem(OVERVIEW_MODE_KEY, mode);
+    } catch {
+      // The selected mode remains active for this page session.
+    }
   };
 
+  const openNew = () => setDialogOpen(true);
   const doneCount =
-    today && view ? view.habits.filter((h) => view.daysByHabit.get(h.id)?.has(today)).length : 0;
+    today && view
+      ? view.habits.filter((habit) => view.daysByHabit.get(habit.id)?.has(today)).length
+      : 0;
+  const totalCount = view?.habits.length ?? 0;
+  const completionRate = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+  const recentDays = today ? lastDays(today, 5) : [];
 
   return (
-    <main className="mx-auto min-h-screen max-w-xl px-4 pb-36 pt-6">
-      <header className="mb-4">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
+    <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
+      <header className="mb-5">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-medium text-muted-foreground">
             {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
           </p>
           <Link
             to="/settings"
             aria-label="الإعدادات"
-            className="rounded-full p-2 text-muted-foreground hover:bg-muted"
+            title="الإعدادات"
+            className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <Icon name="settings" className="size-5" />
           </Link>
         </div>
-        <h1 className="mt-1 text-3xl font-bold">اليوم</h1>
-        {view && view.habits.length > 0 && (
-          <p className="mt-1 text-sm text-muted-foreground" aria-live="polite">
-            أنجزت {num(doneCount)} من {num(view.habits.length)}
-          </p>
+        <div className="mt-3 flex items-end justify-between gap-4">
+          <div className="min-w-0">
+            <h1 className="text-[1.85rem] font-bold leading-tight tracking-tight">اليوم</h1>
+            {view && totalCount > 0 && (
+              <p className="mt-1 text-sm text-muted-foreground" aria-live="polite">
+                أنجزت {num(doneCount)} من {num(totalCount)} عادات
+              </p>
+            )}
+          </div>
+          {view && totalCount > 0 && (
+            <div className="shrink-0 text-end">
+              <span className="text-2xl font-bold tabular-nums">{num(completionRate)}٪</span>
+              <span className="mt-0.5 block text-[10px] text-muted-foreground">إنجاز اليوم</span>
+            </div>
+          )}
+        </div>
+        {view && totalCount > 0 && (
+          <div
+            className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted"
+            role="progressbar"
+            aria-label="نسبة إنجاز العادات اليوم"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={completionRate}
+          >
+            <div
+              className="h-full rounded-full bg-primary transition-[width] duration-300"
+              style={{ width: `${completionRate}%` }}
+            />
+          </div>
         )}
       </header>
 
-      {view && today && view.habits.length > 0 && (
-        <ReminderBanner today={today} unfinished={view.habits.length - doneCount} />
+      {view && today && totalCount > 0 && (
+        <ReminderBanner today={today} unfinished={totalCount - doneCount} />
       )}
 
       {!view || !today ? (
         <div className="space-y-3" aria-busy>
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-16 animate-pulse rounded-xl bg-muted" />
+          {[0, 1, 2].map((index) => (
+            <div key={index} className="h-16 animate-pulse rounded-2xl bg-muted" />
           ))}
         </div>
-      ) : view.habits.length === 0 ? (
-        <section className="rounded-2xl border border-dashed p-10 text-center">
+      ) : totalCount === 0 ? (
+        <section className="rounded-[1.5rem] border border-dashed bg-card px-6 py-12 text-center">
           <span
-            className="mx-auto grid size-12 place-items-center rounded-full bg-accent"
+            className="mx-auto grid size-14 place-items-center rounded-2xl bg-accent"
             aria-hidden
           >
             <span className="size-3 rounded-full bg-primary" />
           </span>
-          <h2 className="mt-3 text-lg font-semibold">ابدأ بعادة واحدة</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            صغيرة وسهلة، والاستمرار أهم من الكمال.
+          <h2 className="mt-4 text-lg font-bold">ابدأ بعادة واحدة</h2>
+          <p className="mx-auto mt-1 max-w-xs text-sm leading-6 text-muted-foreground">
+            اختار حاجة صغيرة نفسك تواظب عليها، وسجّل إنجازك يومًا بيوم.
           </p>
-          <Button className="mt-5" onClick={openNew}>
+          <Button className="mt-6 rounded-full px-5" onClick={openNew}>
             <Icon name="add" className="size-5" />
-            أضف عادة
+            أضف أول عادة
           </Button>
         </section>
       ) : (
-        <section
-          className="overflow-hidden rounded-xl border bg-card"
-          aria-label="عاداتك خلال آخر خمسة أيام"
-        >
-          <div className="flex items-center justify-between gap-3 px-3 pb-2 pt-3">
-            <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-              آخر {num(5)} أيام
-            </span>
-            <span className="text-[11px] text-muted-foreground">
-              {dateRangeFmt.format(parseDayKey(recentDays[0] ?? today))}
-              {" — "}
-              {dateRangeFmt.format(parseDayKey(today))}
-            </span>
+        <>
+          <div className="mb-2 flex items-center justify-between px-1">
+            <h2 className="text-sm font-semibold">عاداتك</h2>
+            <span className="text-[11px] text-muted-foreground">{num(totalCount)} عادة</span>
           </div>
-          <div className="grid grid-cols-[minmax(0,1fr)_repeat(5,1.75rem)] items-center gap-x-1.5 border-b bg-muted/30 px-3 py-2">
-            <span className="min-w-0 text-[10px] font-medium text-muted-foreground">العادة</span>
-            {recentDays.map((day) => (
-              <span key={day} className="flex min-w-0 flex-col items-center gap-0.5 text-center">
-                <span className="text-[9px] leading-none text-muted-foreground">
-                  {weekdayFmt.format(parseDayKey(day))}
-                </span>
-                <span
-                  className={
-                    day === today
-                      ? "text-[11px] font-bold text-primary"
-                      : "text-[11px] text-foreground"
-                  }
-                >
-                  {dayNumberFmt.format(parseDayKey(day))}
-                </span>
-              </span>
-            ))}
-          </div>
-          <ul className="divide-y divide-border">
-            {view.habits.map((h) => (
-              <HabitRow
-                key={h.id}
-                habit={h}
-                days={view.daysByHabit.get(h.id) ?? new Set()}
-                recentDays={recentDays}
-                today={today}
-                onEdit={openEdit}
-              />
-            ))}
-          </ul>
-        </section>
+          <HabitOverview
+            mode={overviewMode}
+            habits={view.habits}
+            daysByHabit={view.daysByHabit}
+            recentDays={recentDays}
+            today={today}
+          />
+        </>
       )}
 
-      {view && view.habits.length > 0 && (
-        <button
-          type="button"
-          onClick={openNew}
-          aria-label="إضافة عادة جديدة"
-          title="إضافة عادة جديدة"
-          className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-5 z-40 grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:bg-primary-pressed active:scale-95"
-        >
-          <Icon name="add" className="size-6" />
-        </button>
+      {view && totalCount > 0 && (
+        <>
+          <button
+            type="button"
+            onClick={openNew}
+            aria-label="إضافة عادة جديدة"
+            title="إضافة عادة جديدة"
+            className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] end-5 z-40 grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-black/15 transition-transform hover:bg-primary-pressed active:scale-95"
+          >
+            <Icon name="add" className="size-6" />
+          </button>
+          <HabitViewSwitcher value={overviewMode} onChange={chooseOverviewMode} />
+        </>
       )}
 
-      <HabitFormDialog open={dialogOpen} onOpenChange={setDialogOpen} habit={editing} />
+      <HabitFormDialog open={dialogOpen} onOpenChange={setDialogOpen} habit={null} />
     </main>
   );
 }
