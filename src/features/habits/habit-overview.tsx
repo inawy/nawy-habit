@@ -249,13 +249,6 @@ export function HabitViewCycleButton({
   const cycleMode = () => {
     const nextOption = viewOptions[(currentIndex + 1) % viewOptions.length] ?? fallbackOption;
     onChange(nextOption.value);
-    const message =
-      nextOption.value === "cards"
-        ? "عرض البطاقات"
-        : nextOption.value === "checklist"
-          ? "عرض القائمة"
-          : "العرض المختصر";
-    toast(message, { duration: 1200 });
   };
 
   return (
@@ -264,7 +257,7 @@ export function HabitViewCycleButton({
       onClick={cycleMode}
       aria-label={`طريقة العرض الحالية: ${currentOption.label}. اضغط للتغيير`}
       title={`الوضع الحالي: ${currentOption.label} — تغيير طريقة العرض`}
-      className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-accent-foreground transition-colors hover:bg-accent"
+      className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
     >
       <Icon name={currentOption.icon} className="size-5" />
     </button>
