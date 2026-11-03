@@ -9,6 +9,10 @@ Reference: [inawy/design-system](https://github.com/inawy/design-system), review
 - Functional Lucide/emoji UI icons replaced with locally vendored Google Material Symbols — Outlined SVG assets.
 - SVG assets are stored in `src/assets/icons`, include the upstream Apache-2.0 license, and render through a small currentColor mask component.
 - Visible decorative emoji were removed from empty, error, reminder, and habit surfaces. Habit identity now uses the Nawy dot motif.
+- The floating add action is a circular, icon-only Nawy-style button with a clear accessible label.
+- New habits can choose from a curated set of local Google Material Symbols and eight identity colors.
+- Existing habits receive a default icon/color through a Dexie v2 migration; v1 JSON backups are upgraded during import without dropping their historical emoji field.
+- Light, dark, and system appearance preferences are stored locally and applied before the first paint to avoid a theme flash.
 - Form alignment and the floating primary action use logical alignment where applicable.
 - Global `:focus-visible` treatment and `prefers-reduced-motion` support were added.
 - Placeholder number style now follows the app's Latin-digit formatting convention.
@@ -22,7 +26,8 @@ Reference: [inawy/design-system](https://github.com/inawy/design-system), review
 
 ## Remaining verification
 
-- Run visual checks on a small phone and a wide viewport, including Arabic/Latin mixed content.
+- Run visual checks on a small phone and a wide viewport in light, dark, and system appearance modes, including Arabic/Latin mixed content.
+- Confirm the theme follows OS changes only while the preference is set to «حسب الجهاز».
 - Verify WCAG 2.2 AA contrast for every component state, plus keyboard navigation, 200% zoom, touch targets, and safe-area behavior.
 - English/LTR is not yet an implemented product mode.
 - Confirm the exact Cairo font loading and fallback behavior on a clean offline install.
