@@ -268,8 +268,7 @@
   background: color-mix(in srgb, var(--habit-color) 9%, var(--card));
 }
 
-.habit-toolbar-action,
-.habit-view-switcher button {
+.habit-toolbar-action {
   -webkit-tap-highlight-color: transparent;
 }
 .habit-compact-panel {
