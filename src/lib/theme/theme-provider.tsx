@@ -23,7 +23,7 @@ function applyTheme(preference: ThemePreference) {
   const resolved = preference === "system" ? getSystemTheme() : preference;
   const root = document.documentElement;
 
-  root.dataset.theme = resolved;
+  root.dataset["theme"] = resolved;
   root.classList.toggle("dark", resolved === "dark");
   root.style.colorScheme = resolved;
 
