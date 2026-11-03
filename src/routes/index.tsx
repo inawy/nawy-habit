@@ -60,7 +60,7 @@ function TodayPage() {
           </p>
           <Link
             to="/settings"
-            aria-label="بياناتك والنسخ الاحتياطي"
+            aria-label="الإعدادات"
             className="rounded-full p-2 text-muted-foreground hover:bg-muted"
           >
             <Icon name="settings" className="size-5" />
@@ -97,9 +97,7 @@ function TodayPage() {
             صغيرة وسهلة، والاستمرار أهم من الكمال.
           </p>
           <Button className="mt-5" onClick={openNew}>
-            <span aria-hidden className="text-xl leading-none">
-              +
-            </span>{" "}
+            <Icon name="add" className="size-5" />
             أضف عادة
           </Button>
         </section>
@@ -118,16 +116,15 @@ function TodayPage() {
       )}
 
       {view && view.habits.length > 0 && (
-        <Button
-          size="lg"
+        <button
+          type="button"
           onClick={openNew}
-          className="fixed bottom-6 start-1/2 h-14 -translate-x-1/2 rounded-full px-6 shadow-lg"
+          aria-label="إضافة عادة جديدة"
+          title="إضافة عادة جديدة"
+          className="fixed bottom-6 end-6 z-40 grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:bg-primary-pressed active:scale-95"
         >
-          <span aria-hidden className="text-xl leading-none">
-            +
-          </span>{" "}
-          عادة جديدة
-        </Button>
+          <Icon name="add" className="size-6" />
+        </button>
       )}
 
       <HabitFormDialog open={dialogOpen} onOpenChange={setDialogOpen} habit={editing} />
