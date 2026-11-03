@@ -52,8 +52,8 @@ function TodayPage() {
     today && view ? view.habits.filter((h) => view.daysByHabit.get(h.id)?.has(today)).length : 0;
 
   return (
-    <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-8">
-      <header className="mb-6">
+    <main className="mx-auto min-h-screen max-w-xl px-4 pb-36 pt-6">
+      <header className="mb-4">
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
@@ -68,7 +68,7 @@ function TodayPage() {
         </div>
         <h1 className="mt-1 text-3xl font-bold">اليوم</h1>
         {view && view.habits.length > 0 && (
-          <p className="mt-2 text-muted-foreground" aria-live="polite">
+          <p className="mt-1 text-sm text-muted-foreground" aria-live="polite">
             أنجزت {num(doneCount)} من {num(view.habits.length)}
           </p>
         )}
@@ -80,8 +80,8 @@ function TodayPage() {
 
       {!view || !today ? (
         <div className="space-y-3" aria-busy>
-          {[0, 1].map((i) => (
-            <div key={i} className="h-36 animate-pulse rounded-2xl bg-muted" />
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-16 animate-pulse rounded-xl bg-muted" />
           ))}
         </div>
       ) : view.habits.length === 0 ? (
@@ -102,7 +102,7 @@ function TodayPage() {
           </Button>
         </section>
       ) : (
-        <ul className="space-y-3">
+        <ul className="space-y-2">
           {view.habits.map((h) => (
             <HabitRow
               key={h.id}
@@ -121,7 +121,7 @@ function TodayPage() {
           onClick={openNew}
           aria-label="إضافة عادة جديدة"
           title="إضافة عادة جديدة"
-          className="fixed bottom-6 end-6 z-40 grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:bg-primary-pressed active:scale-95"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-5 z-40 grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:bg-primary-pressed active:scale-95"
         >
           <Icon name="add" className="size-6" />
         </button>

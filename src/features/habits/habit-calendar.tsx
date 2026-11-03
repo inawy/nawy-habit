@@ -34,7 +34,7 @@ export function HabitCalendar({ month, days, today, onMonthChange, onToggle }: P
   const cells = monthGrid(month);
   const header = weekDays(firstDayOfMonth(month)).map((d) => weekdayFmt.format(parseDayKey(d)));
   const label = monthFmt.format(parseDayKey(firstDayOfMonth(month)));
-  const isThisMonth = month === toMonthKey(today);
+  const isCurrentOrFutureMonth = month >= toMonthKey(today);
 
   return (
     <section className="rounded-2xl border bg-card p-4 shadow-sm">
@@ -51,7 +51,7 @@ export function HabitCalendar({ month, days, today, onMonthChange, onToggle }: P
         <button
           type="button"
           onClick={() => onMonthChange(addMonths(month, 1))}
-          disabled={isThisMonth}
+          disabled={isCurrentOrFutureMonth}
           aria-label="الشهر التالي"
           className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-40"
         >
