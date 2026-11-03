@@ -32,3 +32,15 @@ Reference: [inawy/design-system](https://github.com/inawy/design-system), review
 ## Result
 
 Core visual brand foundations and interaction defaults are now aligned in code. This is not a claim that the full application has passed a comprehensive accessibility or production-readiness audit.
+
+## Contrast follow-up
+
+The first alignment pass used the literal Nawy Blue `#3D7BFF` as a filled-control background with dark labels. Although the dark foreground exceeded 4.5:1 contrast, its near-black appearance was visually harsh and did not match the intended Nawy button treatment.
+
+The interaction palette now separates brand identity from filled-control contrast:
+
+- Brand accent / focus ring / document theme color: `#3D7BFF`.
+- Filled primary controls: `#2F6CEB` with white labels (approximately 4.70:1 contrast).
+- Hover / pressed controls: `#2459CC` with white labels (approximately 6.22:1 contrast).
+
+This keeps Nawy Blue as the recognizable brand color while using its documented darker interaction shades for white-on-blue text. Contrast values are calculated for opaque sRGB colors; translucent/disabled states still require review in the rendered UI.
