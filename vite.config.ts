@@ -8,7 +8,7 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { VitePWA } from "vite-plugin-pwa";
 
 // GH_PAGES=1 builds a static copy for GitHub Pages under /nawy-habit/.
-const ghPages = process.env.GH_PAGES === "1";
+const ghPages = process.env["GH_PAGES"] === "1";
 const base = ghPages ? "/nawy-habit/" : "/";
 
 export default defineConfig({
