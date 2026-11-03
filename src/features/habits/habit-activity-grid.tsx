@@ -15,7 +15,7 @@ export function HabitActivityGrid({ days, today }: Props) {
   const completed = dates.filter((day) => days.has(day)).length;
 
   return (
-    <div className="mt-4">
+    <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <span>آخر {num(12)} أسبوع</span>
         <span>{num(completed)} يوم إنجاز</span>
