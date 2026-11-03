@@ -21,6 +21,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-pressed: var(--primary-pressed);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -51,16 +52,21 @@
 :root {
   --radius: 1rem;
 
-  /* Nawy light neutrals — brand blue is the only primary accent. */
+  /* Nawy brand palette: reserve #3D7BFF for brand accents; filled controls use
+     the darker interaction shade so white labels retain WCAG AA contrast. */
+  --nawy-brand: #3D7BFF;
+  --nawy-brand-hover: #2F6CEB;
+  --nawy-brand-pressed: #2459CC;
+
   --background: #F7F8FA;
   --foreground: #17202B;
   --card: #FFFFFF;
   --card-foreground: #17202B;
   --popover: #FFFFFF;
   --popover-foreground: #17202B;
-  --primary: #3D7BFF;
-  /* Dark text maintains WCAG AA contrast on Nawy Blue for normal-sized labels. */
-  --primary-foreground: #101828;
+  --primary: var(--nawy-brand-hover);
+  --primary-foreground: #FFFFFF;
+  --primary-pressed: var(--nawy-brand-pressed);
   --secondary: #EEF2F7;
   --secondary-foreground: #344054;
   --muted: #F2F4F7;
@@ -71,20 +77,20 @@
   --destructive-foreground: #FFFFFF;
   --border: #E4E7EC;
   --input: #D0D5DD;
-  --ring: #3D7BFF;
-  --chart-1: #3D7BFF;
+  --ring: var(--nawy-brand);
+  --chart-1: var(--nawy-brand);
   --chart-2: #16A36A;
   --chart-3: #D99017;
   --chart-4: #8B5CF6;
   --chart-5: #D64545;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #17202B;
-  --sidebar-primary: #3D7BFF;
-  --sidebar-primary-foreground: #101828;
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #E8F0FF;
   --sidebar-accent-foreground: #1D4ED8;
   --sidebar-border: #E4E7EC;
-  --sidebar-ring: #3D7BFF;
+  --sidebar-ring: var(--nawy-brand);
 }
 
 .dark,
@@ -95,8 +101,9 @@
   --card-foreground: #F2F4F7;
   --popover: #1C2430;
   --popover-foreground: #F2F4F7;
-  --primary: #3D7BFF;
-  --primary-foreground: #101828;
+  --primary: var(--nawy-brand-hover);
+  --primary-foreground: #FFFFFF;
+  --primary-pressed: var(--nawy-brand-pressed);
   --secondary: #1C2430;
   --secondary-foreground: #E4E7EC;
   --muted: #1C2430;
@@ -107,7 +114,7 @@
   --destructive-foreground: #160B0B;
   --border: #303A48;
   --input: #3A4656;
-  --ring: #3D7BFF;
+  --ring: var(--nawy-brand);
   --chart-1: #79A5FF;
   --chart-2: #4CCB91;
   --chart-3: #F3B84E;
@@ -115,12 +122,12 @@
   --chart-5: #FF8585;
   --sidebar: #151B23;
   --sidebar-foreground: #F2F4F7;
-  --sidebar-primary: #3D7BFF;
-  --sidebar-primary-foreground: #101828;
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #1C2F54;
   --sidebar-accent-foreground: #B7CAFF;
   --sidebar-border: #303A48;
-  --sidebar-ring: #3D7BFF;
+  --sidebar-ring: var(--nawy-brand);
 }
 
 @layer base {
