@@ -148,15 +148,14 @@ function TodayPage() {
 
       {view && totalCount > 0 && (
         <>
-          <button
+          <Button
             type="button"
             onClick={openNew}
-            aria-label="إضافة عادة جديدة"
-            title="إضافة عادة جديدة"
-            className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] end-5 z-40 grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-black/15 transition-transform hover:bg-primary-pressed active:scale-95"
+            className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 h-14 rounded-full px-5 text-base font-semibold shadow-xl shadow-primary/20 transition-transform active:scale-[0.98] sm:end-6"
           >
             <Icon name="add" className="size-6" />
-          </button>
+            إضافة عادة
+          </Button>
         </>
       )}
 

@@ -3,16 +3,15 @@ import { toast } from "sonner";
 
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import {
   DEFAULT_HABIT_COLOR,
   DEFAULT_HABIT_ICON,
@@ -68,13 +67,21 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent dir="rtl" className="max-h-[calc(100dvh-2rem)] overflow-y-auto text-start">
-        <form onSubmit={onSubmit} className="space-y-5">
-          <DialogHeader className="text-start sm:text-start">
-            <DialogTitle>{habit ? "تعديل العادة" : "عادة جديدة"}</DialogTitle>
-            <DialogDescription>ابدأ بشيء صغير تقدر تكرره كل يوم.</DialogDescription>
-          </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        dir="rtl"
+        className="mx-auto flex max-h-[min(88dvh,46rem)] w-full max-w-xl flex-col gap-0 overflow-y-auto rounded-t-[2rem] border-x border-t bg-card px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-7 shadow-2xl sm:rounded-t-[2rem] sm:px-7"
+      >
+        <form onSubmit={onSubmit} className="space-y-6">
+          <SheetHeader className="mb-6 space-y-1.5 pe-9 text-start">
+            <SheetTitle className="text-xl font-bold tracking-tight">
+              {habit ? "تعديل العادة" : "عادة جديدة"}
+            </SheetTitle>
+            <SheetDescription className="text-sm leading-6">
+              ابدأ بشيء صغير تقدر تكرره كل يوم.
+            </SheetDescription>
+          </SheetHeader>
 
           <div className="space-y-2">
             <Label htmlFor="habit-name">اسم العادة</Label>
@@ -102,7 +109,7 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
                   title={option.label}
                   onClick={() => setIcon(option.value)}
                   className={cn(
-                    "grid size-11 place-items-center rounded-xl border transition-colors",
+                    "grid size-12 place-items-center rounded-2xl border transition-all duration-150",
                     icon === option.value
                       ? "border-primary bg-accent text-accent-foreground"
                       : "border-border bg-background text-muted-foreground hover:bg-muted",
@@ -126,7 +133,7 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
                   title={option.label}
                   onClick={() => setColor(option.value)}
                   className={cn(
-                    "grid size-9 place-items-center rounded-full border-2 transition-transform active:scale-95",
+                    "grid size-10 place-items-center rounded-full border-2 transition-transform active:scale-95",
                     color === option.value
                       ? "border-ring ring-2 ring-ring ring-offset-2 ring-offset-background"
                       : "border-transparent",
@@ -141,14 +148,21 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
             </div>
           </fieldset>
 
-          <DialogFooter className="gap-2 sm:justify-start">
-            <Button type="submit">{habit ? "حفظ" : "إضافة"}</Button>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+          <div className="sticky bottom-0 -mx-5 mt-2 flex gap-2 border-t bg-card/95 px-5 pb-1 pt-4 backdrop-blur-sm sm:-mx-7 sm:px-7">
+            <Button type="submit" className="h-12 flex-1 rounded-full text-base font-semibold">
+              {habit ? "حفظ التعديلات" : "إضافة العادة"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-12 rounded-full px-6"
+              onClick={() => onOpenChange(false)}
+            >
               إلغاء
             </Button>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
