@@ -305,6 +305,25 @@
   box-shadow: 0 8px 26px rgb(16 24 40 / 4%);
 }
 
+.habit-month-calendar {
+  --habit-calendar-gap: 0.375rem;
+  padding: 1rem;
+}
+.habit-month-picker,
+.habit-month-nav {
+  min-height: 2.5rem;
+}
+.habit-month-nav {
+  min-width: 2.5rem;
+}
+.habit-month-weekdays,
+.habit-month-days {
+  gap: var(--habit-calendar-gap);
+}
+.habit-month-day-button {
+  min-block-size: 2.5rem;
+}
+
 @media (max-width: 380px) {
   .habit-compact-days-header,
   .habit-compact-row {
@@ -322,5 +341,12 @@
   .habit-compact-row > a .habit-identity svg {
     width: 1rem;
     height: 1rem;
+  }
+  .habit-month-calendar {
+    --habit-calendar-gap: 0.125rem;
+    padding: 0.5rem;
+  }
+  .habit-month-day-button {
+    min-block-size: 2.25rem;
   }
 }

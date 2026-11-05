@@ -93,7 +93,7 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
 
   return (
     <section
-      className="habit-month-calendar rounded-2xl border bg-card p-4 shadow-sm touch-pan-y"
+      className="habit-month-calendar rounded-2xl border bg-card shadow-sm touch-pan-y"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={() => {
@@ -107,7 +107,7 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
           onClick={() => onMonthChange(addMonths(month, -1))}
           disabled={!canGoPrevious}
           aria-label="الشهر السابق"
-          className="grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
+          className="habit-month-nav grid shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
         >
           <Icon name="chevron_right" className="size-5" />
         </button>
@@ -144,7 +144,7 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
           onClick={() => onMonthChange(addMonths(month, 1))}
           disabled={!canGoNext}
           aria-label="الشهر التالي"
-          className="grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
+          className="habit-month-nav grid shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
         >
           <Icon name="chevron_left" className="size-5" />
         </button>
@@ -162,15 +162,15 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
         </div>
       )}
 
-      <div className="mt-3 grid grid-cols-7 gap-1.5" aria-hidden>
+      <div className="habit-month-weekdays mt-3 grid grid-cols-7" aria-hidden>
         {header.map((weekday, index) => (
-          <span key={index} className="text-center text-[11px] text-muted-foreground">
+          <span key={index} className="text-center text-xs text-muted-foreground">
             {weekday}
           </span>
         ))}
       </div>
 
-      <ol className="mt-1.5 grid grid-cols-7 gap-1.5" aria-label={"أيام " + label}>
+      <ol className="habit-month-days mt-1.5 grid grid-cols-7" aria-label={"أيام " + label}>
         {cells.map((day, index) =>
           day === null ? (
             <li key={"gap-" + index} aria-hidden />
@@ -187,7 +187,7 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
                     : fullDateFmt.format(parseDayKey(day)) + " — لم يتم"
                 }
                 className={cn(
-                  "grid aspect-square w-full place-items-center rounded-lg border text-sm tabular-nums transition-colors",
+                  "habit-month-day-button grid aspect-square w-full place-items-center rounded-lg border text-sm tabular-nums transition-colors",
                   days.has(day)
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background hover:border-primary/60",

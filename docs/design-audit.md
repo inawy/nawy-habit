@@ -18,6 +18,7 @@ Reference: [inawy/design-system](https://github.com/inawy/design-system), review
 - Placeholder number style now follows the app's Latin-digit formatting convention.
 - The full history grid keeps a minimum weekly column width and scrolls horizontally on narrow detail screens; compact embedded grids remain fitted.
 - The full history scroll region is keyboard-focusable and shows a mobile swipe hint.
+- The monthly calendar gives day cells more width on small phones, with 40px month controls and selectors and a 36px minimum day-cell height.
 
 ## Deliberate compatibility choices
 
