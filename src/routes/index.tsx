@@ -1,14 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { HabitMonthOverview } from "@/features/habits/habit-month-overview";
+import {
+  HabitOverview,
+  HabitViewCycleButton,
+  type OverviewMode,
+} from "@/features/habits/habit-overview";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
-import { parseDayKey } from "@/lib/date/day-key";
+import { lastDays, parseDayKey } from "@/lib/date/day-key";
 import { arabicFmt, num } from "@/lib/format/numbers";
 
 export const Route = createFileRoute("/")({
@@ -32,11 +36,35 @@ export const Route = createFileRoute("/")({
 });
 
 const dateFmt = arabicFmt({ weekday: "long", day: "numeric", month: "long" });
+const OVERVIEW_MODE_KEY = "nawy-habit-overview-mode";
+
+function isOverviewMode(value: string | null): value is OverviewMode {
+  return value === "cards" || value === "checklist" || value === "compact";
+}
 
 function TodayPage() {
   const today = useToday();
   const view = useHabitsView();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [overviewMode, setOverviewMode] = useState<OverviewMode>("compact");
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(OVERVIEW_MODE_KEY);
+      if (isOverviewMode(saved)) setOverviewMode(saved);
+    } catch {
+      // Keep compact mode when local preferences are unavailable.
+    }
+  }, []);
+
+  const chooseOverviewMode = (mode: OverviewMode) => {
+    setOverviewMode(mode);
+    try {
+      window.localStorage.setItem(OVERVIEW_MODE_KEY, mode);
+    } catch {
+      // The selected mode remains active for this page session.
+    }
+  };
 
   const openNew = () => setDialogOpen(true);
   const doneCount =
@@ -44,6 +72,7 @@ function TodayPage() {
       ? view.habits.filter((habit) => view.daysByHabit.get(habit.id)?.has(today)).length
       : 0;
   const totalCount = view?.habits.length ?? 0;
+  const recentDays = today ? lastDays(today, 5) : [];
 
   return (
     <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
@@ -62,6 +91,9 @@ function TodayPage() {
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2 pt-1">
+          {view && totalCount > 0 && (
+            <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
+          )}
           <InstallAppButton />
           <Link
             to="/settings"
@@ -109,19 +141,27 @@ function TodayPage() {
               {num(totalCount)} عادة
             </span>
           </div>
-          <HabitMonthOverview habits={view.habits} daysByHabit={view.daysByHabit} today={today} />
+          <HabitOverview
+            mode={overviewMode}
+            habits={view.habits}
+            daysByHabit={view.daysByHabit}
+            recentDays={recentDays}
+            today={today}
+          />
         </>
       )}
 
       {view && totalCount > 0 && (
-        <Button
-          type="button"
-          onClick={openNew}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 h-14 rounded-full px-5 text-base font-semibold shadow-xl shadow-primary/20 transition-transform active:scale-[0.98] sm:end-6"
-        >
-          <Icon name="add" className="size-6" />
-          إضافة عادة
-        </Button>
+        <>
+          <Button
+            type="button"
+            onClick={openNew}
+            className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 h-14 rounded-full px-5 text-base font-semibold shadow-xl shadow-primary/20 transition-transform active:scale-[0.98] sm:end-6"
+          >
+            <Icon name="add" className="size-6" />
+            إضافة عادة
+          </Button>
+        </>
       )}
 
       <HabitFormDialog open={dialogOpen} onOpenChange={setDialogOpen} habit={null} />
