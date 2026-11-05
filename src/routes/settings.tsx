@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { AppBackButton } from "@/components/app-back-button";
+import { Icon } from "@/components/icon";
 
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -97,9 +99,13 @@ function SettingsPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-16 pt-8">
-      <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground">
+      <AppBackButton
+        label="العودة"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <Icon name="chevron_right" className="size-4" />
         رجوع
-      </Link>
+      </AppBackButton>
       <h1 className="mt-3 text-3xl font-bold">الإعدادات</h1>
       <p className="mt-2 text-muted-foreground">
         ظبّط شكل التطبيق، واحتفظ بنسخة من عاداتك عشان ما تضيعش.
