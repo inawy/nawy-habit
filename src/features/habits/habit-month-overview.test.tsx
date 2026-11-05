@@ -36,9 +36,7 @@ const habits: Habit[] = [
 ];
 
 function renderOverview() {
-  const days = new Map<string, Set<DayKey>>([
-    ["reading", new Set<DayKey>([today])],
-  ]);
+  const days = new Map<string, Set<DayKey>>([["reading", new Set<DayKey>([today])]]);
   return render(<HabitMonthOverview habits={habits} daysByHabit={days} today={today} />);
 }
 
