@@ -75,7 +75,10 @@ function HabitMonthCard({
     : "لم تبدأ بعد";
 
   return (
-    <li className="habit-month-card rounded-[1.35rem] border bg-card p-3.5" data-habit-color={habit.color}>
+    <li
+      className="habit-month-card rounded-[1.35rem] border bg-card p-3.5"
+      data-habit-color={habit.color}
+    >
       <div className="mb-3 flex min-w-0 items-center justify-between gap-2">
         <Link
           to="/habit/$habitId"
@@ -102,14 +105,23 @@ function HabitMonthCard({
 
       <div className="grid grid-cols-7 gap-1.5" aria-label={`أيام الشهر للعادة ${habit.name}`}>
         {weekdays.map((weekday, index) => (
-          <span key={index} className="pb-1 text-center text-[10px] font-medium text-muted-foreground">
+          <span
+            key={index}
+            className="pb-1 text-center text-[10px] font-medium text-muted-foreground"
+          >
             {weekday}
           </span>
         ))}
 
         {cells.map((day, index) => {
           if (day === null || day < startDay) {
-            return <span key={`empty-${index}`} aria-hidden="true" className="habit-month-day-empty" />;
+            return (
+              <span
+                key={`empty-${index}`}
+                aria-hidden="true"
+                className="habit-month-day-empty"
+              />
+            );
           }
 
           const complete = days.has(day);
