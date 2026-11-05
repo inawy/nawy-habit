@@ -156,10 +156,11 @@ function TodayPage() {
           <Button
             type="button"
             onClick={openNew}
-            className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 h-14 rounded-full px-5 text-base font-semibold shadow-xl shadow-primary/20 transition-transform active:scale-[0.98] sm:end-6"
+            aria-label="إضافة عادة"
+            title="إضافة عادة"
+            className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 grid size-14 place-items-center rounded-full p-0 shadow-xl shadow-primary/20 transition-transform active:scale-[0.96] sm:end-6"
           >
             <Icon name="add" className="size-6" />
-            إضافة عادة
           </Button>
         </>
       )}
