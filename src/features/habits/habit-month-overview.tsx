@@ -116,11 +116,7 @@ function HabitMonthCard({
         {cells.map((day, index) => {
           if (day === null || day < startDay) {
             return (
-              <span
-                key={`empty-${index}`}
-                aria-hidden="true"
-                className="habit-month-day-empty"
-              />
+              <span key={`empty-${index}`} aria-hidden="true" className="habit-month-day-empty" />
             );
           }
 
