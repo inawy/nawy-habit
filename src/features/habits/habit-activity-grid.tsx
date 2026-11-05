@@ -69,7 +69,7 @@ export function HabitActivityGrid({
       : [];
   });
   const oldestWeekDate = weekStarts[weekStarts.length - 1] ?? currentWeekStart;
-  const isScrollable = !compact && weekCount > MIN_WEEK_COUNT;
+  const isScrollable = !compact;
   const gridMinWidth = isScrollable ? String(weekCount * 10) + "px" : "100%";
   const historyLabel =
     weekCount > MIN_WEEK_COUNT
@@ -80,6 +80,9 @@ export function HabitActivityGrid({
     <div
       className={cn("habit-heatmap", isScrollable && "overflow-x-auto")}
       data-habit-color={color}
+      role={isScrollable ? "region" : undefined}
+      aria-label={isScrollable ? "سجل الإنجازات؛ الأسابيع الأحدث جهة اليمين" : undefined}
+      tabIndex={isScrollable ? 0 : undefined}
     >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
         <span>{compact ? "آخر سنة" : historyLabel}</span>
@@ -152,6 +155,11 @@ export function HabitActivityGrid({
           <span>{dateFmt.format(parseDayKey(oldestWeekDate))}</span>
           <span>اليوم</span>
         </div>
+      )}
+      {!compact && (
+        <p className="habit-heatmap-scroll-hint mt-2 text-center text-[10px] text-muted-foreground">
+          اسحب أفقيًا لعرض الأسابيع الأقدم
+        </p>
       )}
     </div>
   );
