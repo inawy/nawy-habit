@@ -1,5 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
+import type { ReactNode } from "react";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@tanstack/react-router")>();
+  return {
+    ...actual,
+    Link: ({ children }: { children: ReactNode }) => <a href="/habit">{children}</a>,
+  };
+});
 
 import { HabitMonthOverview } from "@/features/habits/habit-month-overview";
 import type { DayKey } from "@/lib/date/day-key";
