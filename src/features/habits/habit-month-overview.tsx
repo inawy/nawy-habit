@@ -182,12 +182,14 @@ export function HabitMonthOverview({ habits, daysByHabit, today }: Props) {
     const distance = event.clientX - start.x;
     if (Math.abs(distance) < 48) return;
 
+    // Treat a horizontal gesture as navigation even at a month boundary;
+    // never let the same gesture accidentally activate a day or habit link.
+    suppressClick.current = true;
+
     // RTL: swipe right for the previous month, left for the next month.
     if (distance > 0 && canGoPrevious) {
-      suppressClick.current = true;
       setSelectedMonth(addMonths(month, -1));
     } else if (distance < 0 && canGoNext) {
-      suppressClick.current = true;
       setSelectedMonth(addMonths(month, 1));
     }
   }
