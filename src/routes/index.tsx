@@ -76,30 +76,33 @@ function TodayPage() {
 
   return (
     <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
-      <header className="mb-5">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-medium text-muted-foreground">
-            {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
-          </p>
-          <div className="flex items-center gap-2">
-            {view && totalCount > 0 && (
-              <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
+      <header className="mb-5 flex items-start justify-between gap-3">
+        <div className="min-w-0 pt-0.5">
+          <h1 className="text-[1.85rem] font-bold leading-tight tracking-tight">اليوم</h1>
+          <p className="mt-1 flex min-w-0 items-center gap-1.5 text-sm font-medium text-muted-foreground">
+            <Icon name="calendar_month" className="size-4" />
+            {today ? (
+              <time dateTime={today} className="truncate">
+                {dateFmt.format(parseDayKey(today))}
+              </time>
+            ) : (
+              "\u00a0"
             )}
-            <InstallAppButton />
-            <Link
-              to="/settings"
-              aria-label="الإعدادات"
-              title="الإعدادات"
-              className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              <Icon name="settings" className="size-5" />
-            </Link>
-          </div>
+          </p>
         </div>
-        <div className="mt-3 flex items-end justify-between gap-4">
-          <div className="min-w-0">
-            <h1 className="text-[1.85rem] font-bold leading-tight tracking-tight">اليوم</h1>
-          </div>
+        <div className="flex shrink-0 items-center gap-2 pt-1">
+          {view && totalCount > 0 && (
+            <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
+          )}
+          <InstallAppButton />
+          <Link
+            to="/settings"
+            aria-label="الإعدادات"
+            title="الإعدادات"
+            className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <Icon name="settings" className="size-5" />
+          </Link>
         </div>
       </header>
 
@@ -132,9 +135,11 @@ function TodayPage() {
         </section>
       ) : (
         <>
-          <div className="mb-2 flex items-center justify-between px-1">
-            <h2 className="text-sm font-semibold">عاداتك</h2>
-            <span className="text-[11px] text-muted-foreground">{num(totalCount)} عادة</span>
+          <div className="mb-3 flex items-center justify-between px-1">
+            <h2 className="text-base font-bold">عاداتك</h2>
+            <span className="rounded-full border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground">
+              {num(totalCount)} عادة
+            </span>
           </div>
           <HabitOverview
             mode={overviewMode}
