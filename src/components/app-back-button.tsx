@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useCanGoBack, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 
 interface AppBackButtonProps {
   label: string;
@@ -18,11 +18,10 @@ export function AppBackButton({
   children,
   fallbackTo = "/",
 }: AppBackButtonProps) {
-  const canGoBack = useCanGoBack();
   const router = useRouter();
 
   const handleBack = () => {
-    if (canGoBack) {
+    if (router.history.canGoBack()) {
       router.history.back();
       return;
     }
