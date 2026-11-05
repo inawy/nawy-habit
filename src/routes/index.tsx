@@ -109,11 +109,7 @@ function TodayPage() {
               {num(totalCount)} عادة
             </span>
           </div>
-          <HabitMonthOverview
-            habits={view.habits}
-            daysByHabit={view.daysByHabit}
-            today={today}
-          />
+          <HabitMonthOverview habits={view.habits} daysByHabit={view.daysByHabit} today={today} />
         </>
       )}
 
