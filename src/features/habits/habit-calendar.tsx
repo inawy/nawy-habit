@@ -1,4 +1,4 @@
-import { useRef, type TouchEvent } from "react";
+import { useRef, type PointerEvent } from "react";
 import { Icon } from "@/components/icon";
 
 import { parseDayKey, type DayKey } from "@/lib/date/day-key";
@@ -34,7 +34,7 @@ interface Props {
 
 /** Swipeable monthly calendar with direct month/year navigation. */
 export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onToggle }: Props) {
-  const touchStartX = useRef<number | null>(null);
+  const pointerStart = useRef<{ id: number; x: number } | null>(null);
   const cells = monthGrid(month);
   const header = weekDays(firstDayOfMonth(month)).map((d) => weekdayFmt.format(parseDayKey(d)));
   const label = monthFmt.format(parseDayKey(firstDayOfMonth(month)));
@@ -55,17 +55,18 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
   const canGoPrevious = month > minMonth;
   const canGoNext = month < currentMonth;
 
-  function handleTouchStart(event: TouchEvent<HTMLElement>) {
-    touchStartX.current = event.touches[0]?.clientX ?? null;
+  function handlePointerDown(event: PointerEvent<HTMLElement>) {
+    if (event.isPrimary === false) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    pointerStart.current = { id: event.pointerId, x: event.clientX };
   }
 
-  function handleTouchEnd(event: TouchEvent<HTMLElement>) {
-    const startX = touchStartX.current;
-    const endX = event.changedTouches[0]?.clientX;
-    touchStartX.current = null;
-    if (startX === null || endX === undefined) return;
+  function handlePointerUp(event: PointerEvent<HTMLElement>) {
+    const start = pointerStart.current;
+    pointerStart.current = null;
+    if (!start || start.id !== event.pointerId) return;
 
-    const distance = endX - startX;
+    const distance = event.clientX - start.x;
     if (Math.abs(distance) < 48) return;
 
     // RTL: swipe right for an older month, left for a newer month.
@@ -94,10 +95,10 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
   return (
     <section
       className="habit-month-calendar rounded-2xl border bg-card shadow-sm touch-pan-y"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={() => {
-        touchStartX.current = null;
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => {
+        pointerStart.current = null;
       }}
       aria-label="تقويم العادة الشهري"
     >
