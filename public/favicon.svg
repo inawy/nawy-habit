@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>Nawy Habit</title>
+  <rect width="512" height="512" fill="#0D1117"/>
+  <path d="M 144.3 144.3 A 158 158 0 1 1 144.3 367.7" fill="none" stroke="#3D7BFF" stroke-width="34" stroke-linecap="round"/>
+  <path d="M 190 258 L 235 303 L 329 209" fill="none" stroke="#F7F8FA" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="110" cy="110" r="15" fill="#3D7BFF"/>
+</svg>
