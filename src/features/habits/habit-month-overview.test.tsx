@@ -76,7 +76,7 @@ describe("HabitMonthOverview", () => {
 
     expect(screen.getByLabelText("اختيار شهر العادات")).toHaveValue("2026-11");
     expect(screen.getAllByRole("link", { name: /عرض التفاصيل والسجل السنوي/ })).toHaveLength(2);
-    expect(screen.getAllByRole("button", { name: /5 نوفمبر/ })).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: /، 5 نوفمبر —/ })).toHaveLength(2);
   });
 
   it("changes the shared month for all habits with the navigation arrows", () => {
@@ -104,7 +104,7 @@ describe("HabitMonthOverview", () => {
 
   it("toggles a day without leaving the monthly view", () => {
     renderOverview();
-    const todayButtons = screen.getAllByRole("button", { name: /5 نوفمبر/ });
+    const todayButtons = screen.getAllByRole("button", { name: /، 5 نوفمبر —/ });
 
     fireEvent.click(todayButtons[0]!);
 
@@ -116,6 +116,6 @@ describe("HabitMonthOverview", () => {
     renderOverview();
     fireEvent.click(screen.getByRole("button", { name: "الشهر السابق" }));
 
-    expect(screen.getAllByRole("button", { name: /9 أكتوبر/ })).toHaveLength(1);
+    expect(screen.getAllByRole("button", { name: /، 9 أكتوبر —/ })).toHaveLength(1);
   });
 });
