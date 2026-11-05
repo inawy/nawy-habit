@@ -33,10 +33,7 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
   }
 
   return (
-    <li
-      className="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
-      data-habit-color={habit.color}
-    >
+    <li className="habit-compact-row grid items-center px-3 py-2.5" data-habit-color={habit.color}>
       <Link
         to="/habit/$habitId"
         params={{ habitId: habit.id }}
@@ -70,11 +67,17 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
             title={label}
             data-complete={complete}
             data-today={isToday}
-            className={cn(
-              "habit-day-cell grid size-8 shrink-0 place-items-center rounded-[10px] border transition-transform active:scale-95",
-              complete && "is-complete",
-            )}
-          />
+            className="habit-day-toggle grid shrink-0 place-items-center rounded-xl transition-colors hover:bg-muted"
+          >
+            <span
+              aria-hidden="true"
+              data-today={isToday}
+              className={cn(
+                "habit-day-cell grid size-6 place-items-center rounded-[8px] border transition-transform",
+                complete && "is-complete",
+              )}
+            />
+          </button>
         );
       })}
     </li>
