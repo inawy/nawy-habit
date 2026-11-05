@@ -16,6 +16,8 @@ Reference: [inawy/design-system](https://github.com/inawy/design-system), review
 - Form alignment and the floating primary action use logical alignment where applicable.
 - Global `:focus-visible` treatment and `prefers-reduced-motion` support were added.
 - Placeholder number style now follows the app's Latin-digit formatting convention.
+- The full history grid keeps a minimum weekly column width and scrolls horizontally on narrow detail screens; compact embedded grids remain fitted.
+- The full history scroll region is keyboard-focusable and shows a mobile swipe hint.
 
 ## Deliberate compatibility choices
 

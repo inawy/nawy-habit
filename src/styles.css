@@ -265,6 +265,14 @@
   outline: 1px solid var(--foreground);
   outline-offset: -2px;
 }
+.habit-heatmap-scroll-hint {
+  display: none;
+}
+@media (max-width: 480px) {
+  .habit-heatmap-scroll-hint {
+    display: block;
+  }
+}
 .habit-history-panel {
   background: color-mix(in srgb, var(--card) 96%, var(--habit-color));
 }
