@@ -25,7 +25,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       - run: bun run test
-      - run: GH_PAGES=1 bun run build
+      # ada.nawy.app is a custom domain, so assets must resolve from the origin root.
+      - run: GH_PAGES=1 GH_PAGES_BASE=/ bun run build
       # Static SPA shell: index.html for the root, 404.html so deep links (/nawy-habit/settings) load the app.
       # Outside Lovable the build writes to .output/public; inside it uses dist/client.
       - run: |
