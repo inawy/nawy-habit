@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AppBackButton } from "@/components/app-back-button";
 import { Icon } from "@/components/icon";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -99,14 +100,12 @@ function HabitDetailPage() {
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-5">
       <div className="flex items-center justify-between">
-        <Link
-          to="/"
-          aria-label="العودة للعادات"
-          title="العودة للعادات"
+        <AppBackButton
+          label="العودة للعادات"
           className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
         >
           <Icon name="chevron_right" className="size-5" />
-        </Link>
+        </AppBackButton>
         <button
           type="button"
           onClick={() => setEditing(true)}
