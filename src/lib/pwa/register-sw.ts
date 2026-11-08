@@ -15,12 +15,16 @@ function isBlockedHost(host: string): boolean {
 }
 
 async function unregisterAppSw(): Promise<void> {
-  const regs = await navigator.serviceWorker.getRegistrations();
-  await Promise.all(
-    regs
-      .filter((r) => (r.active ?? r.installing ?? r.waiting)?.scriptURL.endsWith(SW_URL))
-      .map((r) => r.unregister()),
-  );
+  try {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(
+      regs
+        .filter((r) => (r.active ?? r.installing ?? r.waiting)?.scriptURL.endsWith(SW_URL))
+        .map((r) => r.unregister()),
+    );
+  } catch (error) {
+    console.error("Unable to clean up the previous Nawy service worker.", error);
+  }
 }
 
 export async function registerServiceWorker(): Promise<void> {
@@ -36,6 +40,16 @@ export async function registerServiceWorker(): Promise<void> {
     await unregisterAppSw();
     return;
   }
-  const { registerSW } = await import("virtual:pwa-register");
-  registerSW({ immediate: true });
+
+  try {
+    const { registerSW } = await import("virtual:pwa-register");
+    registerSW({
+      immediate: true,
+      onRegisterError(error) {
+        console.error("Unable to register the Nawy service worker.", error);
+      },
+    });
+  } catch (error) {
+    console.error("Unable to load the Nawy service-worker registrar.", error);
+  }
 }
