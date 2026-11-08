@@ -45,7 +45,7 @@ function isPng(buffer, expectedSize) {
 
 const deployed = await retry(() => get("/"), "deployed homepage");
 const html = Buffer.from(deployed.body).toString("utf8");
-assert(/<html[\\s>]/i.test(html), "Homepage does not contain an HTML document");
+assert(html.toLowerCase().includes("<html"), "Homepage does not contain an HTML document");
 assert(html.includes("/manifest.webmanifest"), "Homepage does not link the PWA manifest");
 
 const manifestResult = await retry(() => get("/manifest.webmanifest"), "PWA manifest");
@@ -69,7 +69,7 @@ const sw = Buffer.from(swResult.body).toString("utf8");
 assert(sw.includes("precacheAndRoute"), "Deployed service worker has no Workbox precache handler");
 assert(sw.includes("_shell.html"), "Deployed service worker does not precache the offline app shell");
 
-const rootAssetPattern = /(?:src|href)="(\\/assets\\/[^"]+)"/g;
+const rootAssetPattern = new RegExp('(?:src|href)="(/assets/[^"]+)"', "g");
 const assetPaths = [...shell.matchAll(rootAssetPattern)].map((match) => match[1]);
 assert(assetPaths.length > 0, "Offline shell has no root-relative built assets");
 for (const path of [...new Set(assetPaths)].slice(0, 3)) {
