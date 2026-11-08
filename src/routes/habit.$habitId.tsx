@@ -61,7 +61,7 @@ function HabitDetailPage() {
         <h1 className="mt-3 text-lg font-semibold">ما لقينا هذه العادة</h1>
         <p className="mt-1 text-sm text-muted-foreground">يمكن اتحذفت، أو الرابط مش مظبوط.</p>
         <Button asChild className="mt-5">
-          <Link to="/">ارجع لليوم</Link>
+          <Link to="/" replace>ارجع لليوم</Link>
         </Button>
       </main>
     );
@@ -101,6 +101,7 @@ function HabitDetailPage() {
       <div className="flex items-center justify-between">
         <Link
           to="/"
+          replace
           aria-label="العودة للعادات"
           title="العودة للعادات"
           className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
