@@ -1,4 +1,4 @@
-import { useRef, type PointerEvent } from "react";
+import { useRef, type TouchEvent } from "react";
 import { Icon } from "@/components/icon";
 
 import { parseDayKey, type DayKey } from "@/lib/date/day-key";
@@ -34,7 +34,7 @@ interface Props {
 
 /** Swipeable monthly calendar with direct month/year navigation. */
 export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onToggle }: Props) {
-  const pointerStart = useRef<{ id: number; x: number } | null>(null);
+  const touchStartX = useRef<number | null>(null);
   const cells = monthGrid(month);
   const header = weekDays(firstDayOfMonth(month)).map((d) => weekdayFmt.format(parseDayKey(d)));
   const label = monthFmt.format(parseDayKey(firstDayOfMonth(month)));
@@ -55,18 +55,17 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
   const canGoPrevious = month > minMonth;
   const canGoNext = month < currentMonth;
 
-  function handlePointerDown(event: PointerEvent<HTMLElement>) {
-    if (event.isPrimary === false) return;
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    pointerStart.current = { id: event.pointerId, x: event.clientX };
+  function handleTouchStart(event: TouchEvent<HTMLElement>) {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
   }
 
-  function handlePointerUp(event: PointerEvent<HTMLElement>) {
-    const start = pointerStart.current;
-    pointerStart.current = null;
-    if (!start || start.id !== event.pointerId) return;
+  function handleTouchEnd(event: TouchEvent<HTMLElement>) {
+    const startX = touchStartX.current;
+    const endX = event.changedTouches[0]?.clientX;
+    touchStartX.current = null;
+    if (startX === null || endX === undefined) return;
 
-    const distance = event.clientX - start.x;
+    const distance = endX - startX;
     if (Math.abs(distance) < 48) return;
 
     // RTL: swipe right for an older month, left for a newer month.
@@ -94,11 +93,11 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
 
   return (
     <section
-      className="habit-month-calendar rounded-2xl border bg-card shadow-sm touch-pan-y"
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={() => {
-        pointerStart.current = null;
+      className="habit-month-calendar rounded-2xl border bg-card p-4 shadow-sm touch-pan-y"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={() => {
+        touchStartX.current = null;
       }}
       aria-label="تقويم العادة الشهري"
     >
@@ -108,7 +107,7 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
           onClick={() => onMonthChange(addMonths(month, -1))}
           disabled={!canGoPrevious}
           aria-label="الشهر السابق"
-          className="habit-month-nav grid shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
+          className="grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
         >
           <Icon name="chevron_right" className="size-5" />
         </button>
@@ -145,7 +144,7 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
           onClick={() => onMonthChange(addMonths(month, 1))}
           disabled={!canGoNext}
           aria-label="الشهر التالي"
-          className="habit-month-nav grid shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
+          className="grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
         >
           <Icon name="chevron_left" className="size-5" />
         </button>
@@ -163,15 +162,15 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
         </div>
       )}
 
-      <div className="habit-month-weekdays mt-3 grid grid-cols-7" aria-hidden>
+      <div className="mt-3 grid grid-cols-7 gap-1.5" aria-hidden>
         {header.map((weekday, index) => (
-          <span key={index} className="text-center text-xs text-muted-foreground">
+          <span key={index} className="text-center text-[11px] text-muted-foreground">
             {weekday}
           </span>
         ))}
       </div>
 
-      <ol className="habit-month-days mt-1.5 grid grid-cols-7" aria-label={"أيام " + label}>
+      <ol className="mt-1.5 grid grid-cols-7 gap-1.5" aria-label={"أيام " + label}>
         {cells.map((day, index) =>
           day === null ? (
             <li key={"gap-" + index} aria-hidden />
@@ -188,7 +187,7 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
                     : fullDateFmt.format(parseDayKey(day)) + " — لم يتم"
                 }
                 className={cn(
-                  "habit-month-day-button grid aspect-square w-full place-items-center rounded-lg border text-sm tabular-nums transition-colors",
+                  "grid aspect-square w-full place-items-center rounded-lg border text-sm tabular-nums transition-colors",
                   days.has(day)
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background hover:border-primary/60",

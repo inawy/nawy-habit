@@ -1,5 +1,5 @@
 import { lastDays, type DayKey } from "@/lib/date/day-key";
-import { daysInMonth, monthDays, toMonthKey, type MonthKey } from "@/lib/date/month";
+import { monthDays, type MonthKey } from "@/lib/date/month";
 
 export interface MonthProgress {
   month: MonthKey;
@@ -19,17 +19,15 @@ export function monthProgress(
   days: Iterable<DayKey>,
   month: MonthKey,
   today: DayKey,
+  startDate?: DayKey,
 ): MonthProgress {
   const set = new Set(days);
-  // Days ahead of today never count as done either, so done and elapsed stay comparable.
-  const done = monthDays(month).filter((d) => d <= today && set.has(d)).length;
-  const total = daysInMonth(month);
-  const current = toMonthKey(today);
-
-  let elapsed: number;
-  if (month < current) elapsed = total;
-  else if (month > current) elapsed = 0;
-  else elapsed = Number(today.slice(8, 10));
+  // Generate real calendar days with identical bounds for numerator and denominator.
+  const eligible = monthDays(month).filter(
+    (day) => day <= today && (!startDate || day >= startDate),
+  );
+  const done = eligible.filter((day) => set.has(day)).length;
+  const elapsed = eligible.length;
 
   return { month, done, elapsed, rate: elapsed === 0 ? null : done / elapsed };
 }

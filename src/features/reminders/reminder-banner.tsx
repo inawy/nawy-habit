@@ -32,7 +32,7 @@ export function ReminderBanner({ today, unfinished }: Props) {
       </span>
       <div className="min-w-0 flex-1">
         <h2 className="text-sm font-semibold">فكّرنا نذكّرك</h2>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="text-xs leading-5 text-muted-foreground">
           حتى 3 تنبيهات يومية أثناء تشغيل التطبيق
         </p>
       </div>

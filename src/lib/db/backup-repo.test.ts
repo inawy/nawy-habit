@@ -41,14 +41,14 @@ describe("backup", () => {
       JSON.stringify({
         app: "nawy-habit",
         version: 1,
-        exportedAt: "x",
+        exportedAt: "2026-10-14T12:00:00.000Z",
         habits: [
           {
             id: "h1",
             name: "مشي",
             emoji: "🚶",
             order: 0,
-            createdAt: "x",
+            createdAt: "2026-10-14T12:00:00.000Z",
             archivedAt: null,
           },
         ],
@@ -65,7 +65,7 @@ describe("backup", () => {
       JSON.stringify({
         app: "nawy-habit",
         version: 2,
-        exportedAt: "x",
+        exportedAt: "2026-10-14T12:00:00.000Z",
         habits: [
           {
             id: "saving",
@@ -74,7 +74,7 @@ describe("backup", () => {
             icon: "savings",
             color: "green",
             order: 0,
-            createdAt: "x",
+            createdAt: "2026-10-14T12:00:00.000Z",
             archivedAt: null,
           },
           {
@@ -84,7 +84,7 @@ describe("backup", () => {
             icon: "volunteer_activism",
             color: "blue",
             order: 1,
-            createdAt: "x",
+            createdAt: "2026-10-14T12:00:00.000Z",
             archivedAt: null,
           },
         ],
@@ -104,7 +104,7 @@ describe("backup", () => {
       JSON.stringify({
         app: "nawy-habit",
         version: 3,
-        exportedAt: "x",
+        exportedAt: "2026-10-14T12:00:00.000Z",
         habits: [
           {
             id: "giving",
@@ -113,7 +113,7 @@ describe("backup", () => {
             icon: "redeem",
             color: "blue",
             order: 0,
-            createdAt: "x",
+            createdAt: "2026-10-14T12:00:00.000Z",
             archivedAt: null,
           },
         ],
@@ -125,17 +125,73 @@ describe("backup", () => {
     expect(backup.habits[0]?.icon).toBe("volunteer_activism");
   });
 
-  it("drops logs of unknown habits", () => {
-    const b = parseBackup(
-      JSON.stringify({
-        app: "nawy-habit",
-        version: 1,
-        exportedAt: "x",
-        habits: [],
-        logs: [{ id: "a:2026-10-14", habitId: "a", day: "2026-10-14", createdAt: "x" }],
-      }),
-    );
-    expect(b.logs).toEqual([]);
+  it("rejects logs of unknown habits without silently dropping them", () => {
+    expect(() =>
+      parseBackup(
+        JSON.stringify({
+          app: "nawy-habit",
+          version: 4,
+          exportedAt: "2026-10-14T12:00:00.000Z",
+          habits: [],
+          logs: [
+            {
+              id: "a:2026-10-14",
+              habitId: "a",
+              day: "2026-10-14",
+              createdAt: "2026-10-14T12:00:00.000Z",
+            },
+          ],
+        }),
+      ),
+    ).toThrow("غير موجودة");
+  });
+
+  it("rejects invalid timestamps", async () => {
+    await createHabit({ name: "قراءة" });
+    const backup = await exportBackup();
+    expect(() => parseBackup(JSON.stringify({ ...backup, exportedAt: "not-a-date" }))).toThrow();
+    const habit = backup.habits[0];
+    expect(() =>
+      parseBackup(JSON.stringify({ ...backup, habits: [{ ...habit, createdAt: "x" }] })),
+    ).toThrow();
+  });
+
+  it("rejects duplicate habits", async () => {
+    await createHabit({ name: "قراءة" });
+    const backup = await exportBackup();
+    expect(() =>
+      parseBackup(JSON.stringify({ ...backup, habits: [...backup.habits, ...backup.habits] })),
+    ).toThrow("عادات مكررة");
+  });
+
+  it("rejects duplicate logs", async () => {
+    const h = await createHabit({ name: "قراءة" });
+    await toggleLog(h.id, "2026-10-14");
+    const backup = await exportBackup();
+    expect(() =>
+      parseBackup(JSON.stringify({ ...backup, logs: [...backup.logs, ...backup.logs] })),
+    ).toThrow("تسجيلات مكررة");
+  });
+
+  it("rejects inconsistent log identifiers before replacing any data", async () => {
+    const h = await createHabit({ name: "قراءة" });
+    await toggleLog(h.id, "2026-10-14");
+    const backup = await exportBackup();
+    const invalid = { ...backup, logs: backup.logs.map((log) => ({ ...log, id: "wrong" })) };
+    await expect(importBackup(invalid)).rejects.toThrow("غير متطابقة");
+    expect(await exportBackup()).toMatchObject({ habits: backup.habits, logs: backup.logs });
+  });
+
+  it("rolls back replacement if storage fails after clearing data", async () => {
+    const current = await createHabit({ name: "قراءة" });
+    await toggleLog(current.id, "2026-10-14");
+    const backup = await exportBackup();
+    db.habits.hook("creating", () => {
+      throw new Error("Storage failure");
+    });
+    await expect(importBackup(backup)).rejects.toThrow("Storage failure");
+    expect(await listActiveHabits()).toEqual(backup.habits);
+    expect(await listLogs()).toEqual(backup.logs);
   });
 });
 

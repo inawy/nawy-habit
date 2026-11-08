@@ -174,8 +174,6 @@
 .dark .habit-identity[data-habit-color="slate"], [data-theme="dark"] .habit-identity[data-habit-color="slate"] { --habit-ink: #CBD5E1; --habit-soft: #273444; }
 
 .habit-day-cell {
-  width: 1.5rem;
-  height: 1.5rem;
   background: #EEF1F5;
   border-color: transparent;
 }
@@ -189,26 +187,6 @@
 .habit-day-cell[data-today="true"] {
   outline: 1.5px solid var(--foreground);
   outline-offset: -3px;
-}
-
-.habit-compact-days-header,
-.habit-compact-row {
-  --habit-day-target: 2.5rem;
-  grid-template-columns: minmax(0, 1fr) repeat(5, var(--habit-day-target));
-  column-gap: 0.375rem;
-}
-.habit-day-toggle {
-  width: var(--habit-day-target);
-  height: var(--habit-day-target);
-  justify-self: center;
-  -webkit-tap-highlight-color: transparent;
-}
-.habit-day-toggle:active .habit-day-cell {
-  transform: scale(0.92);
-}
-.habit-day-toggle:focus-visible {
-  position: relative;
-  z-index: 1;
 }
 
 .habit-today-toggle {
@@ -265,14 +243,6 @@
   outline: 1px solid var(--foreground);
   outline-offset: -2px;
 }
-.habit-heatmap-scroll-hint {
-  display: none;
-}
-@media (max-width: 480px) {
-  .habit-heatmap-scroll-hint {
-    display: block;
-  }
-}
 .habit-history-panel {
   background: color-mix(in srgb, var(--card) 96%, var(--habit-color));
 }
@@ -305,48 +275,9 @@
   box-shadow: 0 8px 26px rgb(16 24 40 / 4%);
 }
 
-.habit-month-calendar {
-  --habit-calendar-gap: 0.375rem;
-  padding: 1rem;
-}
-.habit-month-picker,
-.habit-month-nav {
-  min-height: 2.5rem;
-}
-.habit-month-nav {
-  min-width: 2.5rem;
-}
-.habit-month-weekdays,
-.habit-month-days {
-  gap: var(--habit-calendar-gap);
-}
-.habit-month-day-button {
-  min-block-size: 2.5rem;
-}
-
 @media (max-width: 380px) {
-  .habit-compact-days-header,
   .habit-compact-row {
-    --habit-day-target: 2.25rem;
-    column-gap: 0.125rem;
-    padding-inline: 0.5rem;
-  }
-  .habit-compact-row > a {
-    gap: 0.25rem;
-  }
-  .habit-compact-row > a .habit-identity {
-    width: 1.75rem;
-    height: 1.75rem;
-  }
-  .habit-compact-row > a .habit-identity svg {
-    width: 1rem;
-    height: 1rem;
-  }
-  .habit-month-calendar {
-    --habit-calendar-gap: 0.125rem;
-    padding: 0.5rem;
-  }
-  .habit-month-day-button {
-    min-block-size: 2.25rem;
+    grid-template-columns: minmax(0, 1fr) repeat(5, 1.75rem);
+    column-gap: 0.375rem;
   }
 }

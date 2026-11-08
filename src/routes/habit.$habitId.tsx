@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AppBackButton } from "@/components/app-back-button";
 import { Icon } from "@/components/icon";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -70,13 +69,13 @@ function HabitDetailPage() {
 
   const { habit, days } = view;
   const streaks = computeStreaks(days, today);
-  const progress = monthProgress(days, month, today);
+  const habitStartDay = toDayKey(new Date(habit.createdAt));
+  const progress = monthProgress(days, month, today, habitStartDay);
   const percent = progress.rate === null ? null : Math.round(progress.rate * 100);
   const monthLabel = arabicFmt({ month: "long", year: "numeric" }).format(
     parseDayKey(month + "-01"),
   );
   const currentMonth = toMonthKey(today);
-  const habitStartDay = toDayKey(new Date(habit.createdAt));
   const oldestLogDay = Array.from(days).sort()[0] ?? habitStartDay;
   const historyStartDay = habitStartDay < oldestLogDay ? habitStartDay : oldestLogDay;
   const minMonth = toMonthKey(historyStartDay);
@@ -100,12 +99,14 @@ function HabitDetailPage() {
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-5">
       <div className="flex items-center justify-between">
-        <AppBackButton
-          label="العودة للعادات"
+        <Link
+          to="/"
+          aria-label="العودة للعادات"
+          title="العودة للعادات"
           className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
         >
           <Icon name="chevron_right" className="size-5" />
-        </AppBackButton>
+        </Link>
         <button
           type="button"
           onClick={() => setEditing(true)}
