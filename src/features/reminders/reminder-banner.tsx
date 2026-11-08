@@ -33,7 +33,7 @@ export function ReminderBanner({ today, unfinished }: Props) {
       <div className="min-w-0 flex-1">
         <h2 className="text-sm font-semibold">فكّرنا نذكّرك</h2>
         <p className="text-xs leading-5 text-muted-foreground">
-          حتى 3 تنبيهات يومية أثناء تشغيل التطبيق
+          حتى 3 تنبيهات يومية والتطبيق مفتوح قدامك
         </p>
       </div>
       <Button size="sm" className="h-8 shrink-0 px-3" onClick={() => void request()}>
