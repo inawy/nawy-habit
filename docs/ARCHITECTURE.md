@@ -36,7 +36,7 @@ This project predates the current Nawy starter baseline and retains TanStack Sta
 
 ## Navigation and history
 
-- Return links from settings and habit details replace the current history entry instead of pushing another copy of the home route. This prevents stale nested screens from resurfacing when Android resumes an installed PWA and the user presses Back.
+- Return links from settings and habit details replace the current history entry instead of pushing another copy of the home route. The root-level not-found and error recovery links also replace the current entry, avoiding stale error screens in the Back stack.
 - Opening settings from the home screen remains a normal push, so the system Back button returns to the home screen as expected.
 
 ## Network, hosting, and PWA
