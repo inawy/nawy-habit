@@ -27,26 +27,32 @@ This project predates the current Nawy starter baseline and retains TanStack Sta
 - `src/lib/db/*-repo.ts` contains Dexie access.
 - `src/lib/date` and `src/lib/habits` contain pure date and progress logic.
 - IndexedDB database name: `nawy-habit`.
-- Current schema version: Dexie v1.
+- Current Dexie schema version: v4. Released versions are immutable; changes require a new version and an explicit upgrade.
+- Current JSON backup format: v4. Import upgrades supported v1-v3 backup files before validation.
 - Habit logs use local calendar keys (`YYYY-MM-DD`).
-- JSON export/import validates payloads with Zod.
-- The legacy `Habit.emoji` field remains persisted for compatibility, but the UI no longer displays or edits it. A later removal must include a Dexie migration and v1 backup conversion.
+- JSON export/import validates timestamps, IDs, log references, and duplicates before replacement.
+- Import replaces habits and logs in one Dexie transaction; invalid data must never clear existing records.
+- The legacy `Habit.emoji` field remains persisted for compatibility, but the UI no longer displays or edits it. Removing it requires a Dexie migration and backup conversion.
 
 ## Network, hosting, and PWA
 
-- GitHub Pages is built as a static SPA under `/nawy-habit/`.
-- Lovable hosting is also retained for the existing editor workflow.
-- The service worker is registered only in production.
+- GitHub Pages serves the static SPA from the custom-domain root (`/`), not a repository subpath.
+- `GH_PAGES=1` directs the PWA build output to `.output/public`, the directory that the Pages workflow publishes. The existing Lovable/editor build continues to use its separate `dist/client` PWA output.
+- The Pages workflow validates that `sw.js`, the Workbox runtime, hashed application assets, and the app shell are present before deployment.
+- The service worker is registered only in production, outside editor previews and iframes.
+- Hashed application assets and the offline shell are precached. Navigations use NetworkFirst, with the cached app shell as a fallback when a route has not been visited before and the device is offline.
 - Core records are not sent to a remote service by the current repository.
 - There is no authentication, cloud database, sync engine, or cross-product shared database.
-- Cairo currently loads from Google Fonts; Workbox has runtime font caching, but the font is not bundled for first-load offline use.
+- Cairo currently loads from Google Fonts; Workbox has runtime font caching, but the font is not bundled for first-load offline use. The app uses system font fallbacks.
+- The first successful online visit is required to install the service worker and populate its caches; offline use cannot be guaranteed before that visit.
 
 ## Known limitations
 
-- Reminder checks are driven by a timer while the page is open or active in the browser. This is not a guaranteed alarm after the page/browser is closed or suspended.
+- Reminder checks are driven by a timer while the page is open and active. They are not guaranteed after the page/browser is closed or suspended.
 - Cross-tab coordination for reminder slots is not fully guaranteed.
 - The PWA PNG icon artwork has not yet been brought into alignment with the current Nawy brand.
 - Full English/LTR support and comprehensive accessibility verification remain open.
+- Browser-level verification of installation, offline navigation, service-worker updates, and data persistence is required on Chrome desktop, Android Chrome, and Samsung Internet before production sign-off.
 
 ## Quality commands
 
@@ -58,4 +64,4 @@ bun run build
 bun run check
 ```
 
-GitHub Actions runs lint, typecheck, tests, and production build for push and pull-request events.
+GitHub Actions runs lint, typecheck, tests, and production build for push and pull-request events. The GitHub Pages workflow separately validates the static PWA output before deploying it.
