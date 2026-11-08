@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { createRouter, rootRouteId } from "@tanstack/react-router";
+import { createMemoryHistory, createRouter, rootRouteId } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
@@ -21,5 +21,19 @@ describe("App routing", () => {
     const matches = router.matchRoutes("/habit/abc-123");
 
     expect(matches.at(-1)?.routeId).toBe("/habit/$habitId");
+  });
+
+  it("replaces the current history entry when returning from settings", async () => {
+    const history = createMemoryHistory({ initialEntries: ["/", "/settings"] });
+    const router = createRouter({
+      routeTree,
+      history,
+      context: { queryClient: new QueryClient() },
+    });
+
+    await router.navigate({ to: "/", replace: true });
+
+    expect(history.location.pathname).toBe("/");
+    expect(history.length).toBe(2);
   });
 });
