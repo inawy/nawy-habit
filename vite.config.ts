@@ -32,7 +32,7 @@ export default defineConfig({
         // TanStack Start publishes GitHub Pages from .output/public, not dist/client.
         outDir: pwaOutDir,
         workbox: {
-          globPatterns: ["**/*.{js,css,woff2,png,svg,ico,webmanifest}"],
+          globPatterns: ["**/*.{html,js,css,woff2,png,svg,ico,webmanifest}"],
           navigateFallback: null,
           cleanupOutdatedCaches: true,
           runtimeCaching: [
@@ -44,6 +44,7 @@ export default defineConfig({
                 cacheName: "pages",
                 networkTimeoutSeconds: 3,
                 expiration: { maxEntries: 50 },
+                precacheFallback: { fallbackURL: "/_shell.html" },
               },
             },
             {
