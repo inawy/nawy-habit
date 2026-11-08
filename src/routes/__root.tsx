@@ -131,7 +131,9 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => {
-    void registerServiceWorker();
+    void registerServiceWorker().catch((error) => {
+      console.error("Service worker startup failed.", error);
+    });
   }, []);
 
   return (
