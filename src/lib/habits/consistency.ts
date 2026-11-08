@@ -23,7 +23,9 @@ export function monthProgress(
 ): MonthProgress {
   const set = new Set(days);
   // Generate real calendar days with identical bounds for numerator and denominator.
-  const eligible = monthDays(month).filter((day) => day <= today && (!startDate || day >= startDate));
+  const eligible = monthDays(month).filter(
+    (day) => day <= today && (!startDate || day >= startDate),
+  );
   const done = eligible.filter((day) => set.has(day)).length;
   const elapsed = eligible.length;
 

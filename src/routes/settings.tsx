@@ -54,7 +54,10 @@ function SettingsPage() {
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    void navigator.storage?.persisted?.().then(setPersisted).catch(() => setPersisted(null));
+    void navigator.storage
+      ?.persisted?.()
+      .then(setPersisted)
+      .catch(() => setPersisted(null));
   }, []);
 
   const downloadBackup = async () => {
@@ -158,7 +161,9 @@ function SettingsPage() {
       <section className="mt-6 space-y-3 rounded-2xl border p-5">
         <h2 className="font-semibold">نسخة احتياطية</h2>
         <div className="flex flex-wrap gap-2">
-          <Button disabled={busy} onClick={() => void onExport()}>حفظ نسخة</Button>
+          <Button disabled={busy} onClick={() => void onExport()}>
+            حفظ نسخة
+          </Button>
           <Button disabled={busy} variant="outline" onClick={() => fileRef.current?.click()}>
             استرجاع من ملف
           </Button>
@@ -197,12 +202,20 @@ function SettingsPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <label className="flex items-start gap-2 text-sm">
-            <input type="checkbox" checked={saveFirst} disabled={busy} onChange={(e) => setSaveFirst(e.target.checked)} className="mt-1 size-4 shrink-0 accent-primary" />
+            <input
+              type="checkbox"
+              checked={saveFirst}
+              disabled={busy}
+              onChange={(e) => setSaveFirst(e.target.checked)}
+              className="mt-1 size-4 shrink-0 accent-primary"
+            />
             حفظ نسخة من بياناتي الحالية قبل الاستبدال
           </label>
           <AlertDialogFooter className="gap-2 sm:space-x-0">
             <AlertDialogCancel disabled={busy}>إلغاء</AlertDialogCancel>
-            <Button disabled={busy} onClick={() => void confirmImport()}>{busy ? "جارٍ الاسترجاع…" : "استرجاع"}</Button>
+            <Button disabled={busy} onClick={() => void confirmImport()}>
+              {busy ? "جارٍ الاسترجاع…" : "استرجاع"}
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

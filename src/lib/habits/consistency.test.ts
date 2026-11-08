@@ -4,19 +4,35 @@ import { lastWeeks, monthProgress } from "./consistency";
 
 describe("monthProgress", () => {
   it("counts only days from habit creation", () => {
-    expect(monthProgress(["2026-10-01", "2026-10-12", "2026-10-14", "2026-10-15"], "2026-10", "2026-10-14", "2026-10-12"))
-      .toEqual({ month: "2026-10", done: 2, elapsed: 3, rate: 2 / 3 });
+    expect(
+      monthProgress(
+        ["2026-10-01", "2026-10-12", "2026-10-14", "2026-10-15"],
+        "2026-10",
+        "2026-10-14",
+        "2026-10-12",
+      ),
+    ).toEqual({ month: "2026-10", done: 2, elapsed: 3, rate: 2 / 3 });
   });
   it("has no rate for a month before habit creation", () => {
-    expect(monthProgress(["2026-09-30"], "2026-09", "2026-10-14", "2026-10-12"))
-      .toEqual({ month: "2026-09", done: 0, elapsed: 0, rate: null });
+    expect(monthProgress(["2026-09-30"], "2026-09", "2026-10-14", "2026-10-12")).toEqual({
+      month: "2026-09",
+      done: 0,
+      elapsed: 0,
+      rate: null,
+    });
   });
   it("counts the creation day as one eligible day", () => {
     expect(monthProgress(["2026-10-14"], "2026-10", "2026-10-14", "2026-10-14").rate).toBe(1);
   });
   it("uses valid unique calendar days only", () => {
-    expect(monthProgress(["2026-02-28", "2026-02-28", "2026-02-30"], "2026-02", "2026-03-01", "2026-02-27"))
-      .toEqual({ month: "2026-02", done: 1, elapsed: 2, rate: 0.5 });
+    expect(
+      monthProgress(
+        ["2026-02-28", "2026-02-28", "2026-02-30"],
+        "2026-02",
+        "2026-03-01",
+        "2026-02-27",
+      ),
+    ).toEqual({ month: "2026-02", done: 1, elapsed: 2, rate: 0.5 });
   });
   it("counts a past month over all its days", () => {
     const days = ["2026-09-01", "2026-09-02", "2026-09-03"];

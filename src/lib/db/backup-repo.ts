@@ -14,7 +14,9 @@ export const backupSchema = z.object({
   app: z.literal(BACKUP_APP),
   version: z.literal(BACKUP_VERSION),
   exportedAt: timestampSchema,
-  habits: z.array(habitSchema.extend({ createdAt: timestampSchema, archivedAt: timestampSchema.nullable() })),
+  habits: z.array(
+    habitSchema.extend({ createdAt: timestampSchema, archivedAt: timestampSchema.nullable() }),
+  ),
   logs: z.array(habitLogSchema.extend({ createdAt: timestampSchema })),
 });
 export type Backup = z.infer<typeof backupSchema>;
@@ -87,7 +89,8 @@ function validateBackup(raw: unknown): Backup {
   const logIds = new Set<string>();
   for (const log of result.data.logs) {
     if (!ids.has(log.habitId)) throw new BackupError("الملف يحتوي على تسجيلات لعادات غير موجودة");
-    if (log.id !== `${log.habitId}:${log.day}`) throw new BackupError("بيانات تسجيلات الملف غير متطابقة");
+    if (log.id !== `${log.habitId}:${log.day}`)
+      throw new BackupError("بيانات تسجيلات الملف غير متطابقة");
     if (logIds.has(log.id)) throw new BackupError("الملف يحتوي على تسجيلات مكررة");
     logIds.add(log.id);
   }
