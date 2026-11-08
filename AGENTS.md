@@ -23,3 +23,5 @@ Local-first, offline-capable, mobile-first habit tracker in the Nawy ecosystem. 
 - Habit history grids share HabitActivityGrid and derive cells from local day-key helpers, with no extra persisted state or chart dependency — keeps Today and detail views consistent and offline-safe.
 - Daily reminders are local-only: fixed slots (max 3/day) in src/lib/reminders, no user-configurable times, and the UI never implies times are adjustable — keeps the local-first promise and honest UX.
 - GitHub Pages copy: `GH_PAGES=1` build switches to SPA mode under base /nawy-habit/ (workflow .github/workflows/pages.yml); app paths use import.meta.env.BASE_URL — keeps one codebase for Lovable hosting and Pages.
+
+- Backup export and import share timestamp and referential-integrity validation before atomic replacement — invalid files must never clear local records.

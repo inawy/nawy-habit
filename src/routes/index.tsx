@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:title", content: "ناوي للعادات" },
       {
-        name: "og:description",
+        property: "og:description",
         content: "متتبع عادات هادئ يعمل بدون إنترنت ويحفظ بياناتك على جهازك.",
       },
       { property: "og:type", content: "website" },
@@ -75,7 +75,7 @@ function TodayPage() {
   const recentDays = today ? lastDays(today, 5) : [];
 
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
+    <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-5 sm:px-5">
       <header className="mb-5">
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs font-medium text-muted-foreground">
@@ -151,7 +151,7 @@ function TodayPage() {
           <Button
             type="button"
             onClick={openNew}
-            className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 h-14 rounded-full px-5 text-base font-semibold shadow-xl shadow-primary/20 transition-transform active:scale-[0.98] sm:end-6"
+            className="mt-4 h-12 w-full rounded-lg text-base font-semibold"
           >
             <Icon name="add" className="size-6" />
             إضافة عادة
