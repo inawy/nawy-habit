@@ -8,7 +8,8 @@ export type ReminderPermission = "granted" | "denied" | "default";
 
 /**
  * Daily reminder scheduler, local-only. Fires at most 3 fixed slots per day
- * while the app is open (including browser background), never when closed.
+ * while the page is open and active. It is not a background alarm and never
+ * runs after the app or browser has been closed.
  */
 export function useReminders(today: string | null, unfinished: number | null) {
   const [permission, setPermission] = useState<ReminderPermission | null>(null);
@@ -28,20 +29,35 @@ export function useReminders(today: string | null, unfinished: number | null) {
   useEffect(() => {
     if (!today || unfinished === null || unfinished <= 0 || permission !== "granted") return;
 
-    const tick = () => {
+    let sending = false;
+
+    const tick = async () => {
+      if (sending) return;
+
       const { sent } = getTodayState(today);
       const slot = dueSlot(new Date(), sent);
       if (slot === null) return;
-      recordSlotSent(today, slot);
-      void showHabitReminder(unfinished);
+
+      sending = true;
+      try {
+        const displayed = await showHabitReminder(unfinished);
+        // Do not consume a reminder slot when the browser failed to display it.
+        if (displayed) recordSlotSent(today, slot);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        sending = false;
+      }
     };
 
-    tick();
-    const id = setInterval(tick, 30_000);
-    window.addEventListener("focus", tick);
+    void tick();
+    const id = window.setInterval(() => void tick(), 30_000);
+    const onFocus = () => void tick();
+    window.addEventListener("focus", onFocus);
+
     return () => {
-      clearInterval(id);
-      window.removeEventListener("focus", tick);
+      window.clearInterval(id);
+      window.removeEventListener("focus", onFocus);
     };
   }, [today, unfinished, permission]);
 
