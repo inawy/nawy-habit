@@ -127,7 +127,7 @@ function SettingsPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-16 pt-8">
-      <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground">
+      <Link to="/" replace className="inline-flex items-center gap-1 text-sm text-muted-foreground">
         رجوع
       </Link>
       <h1 className="mt-3 text-3xl font-bold">الإعدادات</h1>
