@@ -34,6 +34,11 @@ This project predates the current Nawy starter baseline and retains TanStack Sta
 - Import replaces habits and logs in one Dexie transaction; invalid data must never clear existing records.
 - The legacy `Habit.emoji` field remains persisted for compatibility, but the UI no longer displays or edits it. Removing it requires a Dexie migration and backup conversion.
 
+## Navigation and history
+
+- Return links from settings and habit details replace the current history entry instead of pushing another copy of the home route. This prevents stale nested screens from resurfacing when Android resumes an installed PWA and the user presses Back.
+- Opening settings from the home screen remains a normal push, so the system Back button returns to the home screen as expected.
+
 ## Network, hosting, and PWA
 
 - GitHub Pages serves the static SPA from the custom-domain root (`/`), not a repository subpath.
