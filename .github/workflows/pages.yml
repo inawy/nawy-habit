@@ -89,3 +89,7 @@ jobs:
           path: site
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Smoke-test the deployed site
+        env:
+          PAGES_URL: https://ada.nawy.app/
+        run: node scripts/smoke-pages.mjs
