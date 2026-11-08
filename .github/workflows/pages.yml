@@ -42,13 +42,18 @@ jobs:
             (name) => name.startsWith("workbox-") && name.endsWith(".js"),
           );
           const precachesAssets = sw.includes("precacheAndRoute") && sw.includes("assets/");
-const shellUsesRootAssets = shell.includes('src="/assets/') || shell.includes('href="/assets/');
+          const precachesAppShell = sw.includes("_shell.html");
+          const shellUsesRootAssets =
+            shell.includes('src="/assets/') || shell.includes('href="/assets/');
 
           if (!workboxFiles.length) {
             throw new Error("PWA build failed: Workbox runtime is missing from .output/public");
           }
           if (!precachesAssets) {
             throw new Error("PWA build failed: service worker has no precached application assets");
+          }
+          if (!precachesAppShell) {
+            throw new Error("PWA build failed: offline app shell is missing from the precache manifest");
           }
           if (!shellUsesRootAssets) {
             throw new Error("Static shell does not reference assets from the custom-domain root");
