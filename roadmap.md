@@ -14,6 +14,6 @@
 - [x] Explain local-notification limits and optional Cloud costs/hosting without enabling Cloud.
 - [x] Design-system alignment — Nawy Blue, Cairo, local Material Symbols SVG, logical form/floating-action alignment, global focus-visible and reduced-motion defaults. Remaining visual/accessibility verification is listed in docs/design-audit.md.
 
-- [ ] Fair monthly consistency — count from habit creation, with regression tests.
-- [ ] Safer backups — validate dates, duplicates and log references; preserve data on failure and offer a backup before replacement.
-- [ ] Today usability — preserve view choices and grids; keep the add control from covering content; verify mobile and desktop.
+- [x] Fair monthly consistency — count from habit creation, with regression tests.
+- [x] Safer backups — validate dates, duplicates and log references; preserve data on failure and offer a backup before replacement. Verified downloads and replacement readback through the UI.
+- [x] Today usability — preserved view choices and grids; add control follows content instead of covering it; verified mobile and desktop.
