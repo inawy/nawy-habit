@@ -26,15 +26,51 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run test
       - run: GH_PAGES=1 bun run build
-      # Static SPA shell: index.html for the root, 404.html so deep links (/nawy-habit/settings) load the app.
-      # Outside Lovable the build writes to .output/public; inside it uses dist/client.
-      - run: |
+      - name: Validate published PWA files
+        run: |
+          set -eu
           OUT=.output/public
-          [ -f "$OUT/_shell.html" ] || OUT=dist/client
+          test -s "$OUT/_shell.html"
+          test -s "$OUT/sw.js"
+          node --input-type=module <<'NODE'
+          import { readFileSync, readdirSync } from "node:fs";
+
+          const dir = ".output/public";
+          const sw = readFileSync(`${dir}/sw.js`, "utf8");
+          const shell = readFileSync(`${dir}/_shell.html`, "utf8");
+          const workboxFiles = readdirSync(dir).filter(
+            (name) => name.startsWith("workbox-") && name.endsWith(".js"),
+          );
+          const precachesAssets = sw.includes("precacheAndRoute") && sw.includes("assets/");
+          const shellUsesRootAssets = /(?:src|href)=["']\\/assets\\//.test(shell);
+
+          if (!workboxFiles.length) {
+            throw new Error("PWA build failed: Workbox runtime is missing from .output/public");
+          }
+          if (!precachesAssets) {
+            throw new Error("PWA build failed: service worker has no precached application assets");
+          }
+          if (!shellUsesRootAssets) {
+            throw new Error("Static shell does not reference assets from the custom-domain root");
+          }
+
+          console.log(
+            `PWA output verified: sw.js, ${workboxFiles.length} Workbox file(s), and precached assets.`,
+          );
+          NODE
+      # GitHub Pages serves this app from the custom domain root; 404.html enables deep links.
+      - name: Prepare static SPA
+        run: |
+          set -eu
+          OUT=.output/public
           cp "$OUT/_shell.html" "$OUT/index.html"
           cp "$OUT/_shell.html" "$OUT/404.html"
           touch "$OUT/.nojekyll"
-          rm -rf site && cp -r "$OUT" site
+          rm -rf site
+          cp -r "$OUT" site
+          test -s site/index.html
+          test -s site/404.html
+          test -s site/sw.js
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
