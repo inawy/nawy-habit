@@ -35,5 +35,9 @@ describe("App routing", () => {
 
     expect(history.location.pathname).toBe("/");
     expect(history.length).toBe(2);
+
+    history.back();
+
+    expect(history.location.pathname).toBe("/");
   });
 });
