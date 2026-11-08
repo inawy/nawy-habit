@@ -55,6 +55,10 @@ assert(
   "Manifest start_url/scope must target the domain root",
 );
 assert(manifest.display === "standalone", "Manifest display mode must be standalone");
+assert(
+  manifest.theme_color === manifest.background_color,
+  "Manifest theme_color should match the app background to avoid a mismatched system bar",
+);
 assert(Array.isArray(manifest.icons), "Manifest icons are missing");
 
 for (const size of [192, 512]) {
