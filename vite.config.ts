@@ -7,9 +7,10 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { VitePWA } from "vite-plugin-pwa";
 
-// GH_PAGES=1 enables a static SPA build. The custom domain serves from its root.
+// GH_PAGES=1 builds a static SPA at the custom domain root.
 const ghPages = process.env["GH_PAGES"] === "1";
 const base = "/";
+const pwaOutDir = ghPages ? ".output/public" : "dist/client";
 
 export default defineConfig({
   tanstackStart: {
@@ -28,7 +29,8 @@ export default defineConfig({
         manifest: false, // served from public/manifest.webmanifest
         devOptions: { enabled: false },
         filename: "sw.js",
-        outDir: "dist/client",
+        // TanStack Start publishes GitHub Pages from .output/public, not dist/client.
+        outDir: pwaOutDir,
         workbox: {
           globPatterns: ["**/*.{js,css,woff2,png,svg,ico,webmanifest}"],
           navigateFallback: null,
