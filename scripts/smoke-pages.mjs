@@ -50,7 +50,10 @@ assert(html.includes("/manifest.webmanifest"), "Homepage does not link the PWA m
 
 const manifestResult = await retry(() => get("/manifest.webmanifest"), "PWA manifest");
 const manifest = JSON.parse(Buffer.from(manifestResult.body).toString("utf8"));
-assert(manifest.start_url === "/" && manifest.scope === "/", "Manifest start_url/scope must target the domain root");
+assert(
+  manifest.start_url === "/" && manifest.scope === "/",
+  "Manifest start_url/scope must target the domain root",
+);
 assert(manifest.display === "standalone", "Manifest display mode must be standalone");
 assert(Array.isArray(manifest.icons), "Manifest icons are missing");
 
@@ -67,7 +70,10 @@ const shell = Buffer.from(shellResult.body).toString("utf8");
 const swResult = await retry(() => get("/sw.js"), "service worker");
 const sw = Buffer.from(swResult.body).toString("utf8");
 assert(sw.includes("precacheAndRoute"), "Deployed service worker has no Workbox precache handler");
-assert(sw.includes("_shell.html"), "Deployed service worker does not precache the offline app shell");
+assert(
+  sw.includes("_shell.html"),
+  "Deployed service worker does not precache the offline app shell",
+);
 
 const rootAssetPattern = new RegExp('(?:src|href)="(/assets/[^"]+)"', "g");
 const assetPaths = [...shell.matchAll(rootAssetPattern)].map((match) => match[1]);
@@ -85,4 +91,6 @@ assert(
   "The /settings deep link did not receive the application shell",
 );
 
-console.log(`PAGES_SMOKE_OK: ${root.origin} — homepage, manifest, 192/512px PNG icons, service worker, app shell, built assets, and /settings deep link.`);
+console.log(
+  `PAGES_SMOKE_OK: ${root.origin} — homepage, manifest, 192/512px PNG icons, service worker, app shell, built assets, and /settings deep link.`,
+);
