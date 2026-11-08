@@ -1,9 +1,9 @@
 import { num } from "@/lib/format/numbers";
 
 /**
- * Shows the daily reminder through the service worker in production
- * (works while the app is in the background), falling back to a plain
- * Notification. Returns false when notifications are unavailable.
+ * Displays a daily reminder through the service worker when registered,
+ * falling back to the Notification API. Scheduling still depends on the
+ * app's active page timer; this function is not a background alarm.
  */
 export async function showHabitReminder(unfinished: number): Promise<boolean> {
   if (typeof window === "undefined" || typeof Notification === "undefined") return false;
