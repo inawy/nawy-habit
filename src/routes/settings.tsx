@@ -34,9 +34,9 @@ const themeOptions: readonly { value: ThemePreference; label: string }[] = [
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "الإعدادات — ناوي للعادات" },
+      { title: "الإعدادات — عادة" },
       { name: "description", content: "اختار مظهر التطبيق واحتفظ بنسخة احتياطية من عاداتك." },
-      { property: "og:title", content: "الإعدادات — ناوي للعادات" },
+      { property: "og:title", content: "الإعدادات — عادة" },
       { property: "og:description", content: "نسخ احتياطي واسترجاع لعاداتك بملف واحد." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
