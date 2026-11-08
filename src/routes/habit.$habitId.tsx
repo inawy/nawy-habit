@@ -19,12 +19,12 @@ import { computeStreaks } from "@/lib/habits/streak";
 export const Route = createFileRoute("/habit/$habitId")({
   head: () => ({
     meta: [
-      { title: "تفاصيل العادة — عادة" },
+      { title: "عادة — تفاصيل العادة" },
       {
         name: "description",
         content: "سجل الإنجاز ونسبة الالتزام، مع إمكانية تعديل الأيام السابقة.",
       },
-      { property: "og:title", content: "تفاصيل العادة — عادة" },
+      { property: "og:title", content: "عادة — تفاصيل العادة" },
       {
         property: "og:description",
         content: "شوف سجل إنجازك ونسبة التزامك، وعدّل أي يوم سابق.",
