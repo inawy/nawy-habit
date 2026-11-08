@@ -5,7 +5,6 @@ import { toast } from "sonner";
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -50,13 +49,15 @@ function SettingsPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState<Backup | null>(null);
   const [persisted, setPersisted] = useState<boolean | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [saveFirst, setSaveFirst] = useState(true);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    void navigator.storage?.persisted?.().then(setPersisted);
+    void navigator.storage?.persisted?.().then(setPersisted).catch(() => setPersisted(null));
   }, []);
 
-  const onExport = async () => {
+  const downloadBackup = async () => {
     const data = await exportBackup();
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -70,29 +71,55 @@ function SettingsPage() {
     toast.success(`تم حفظ ${num(data.habits.length)} عادة في الملف`);
   };
 
+  const onExport = async () => {
+    setBusy(true);
+    try {
+      await downloadBackup();
+    } catch {
+      toast.error("تعذّر حفظ النسخة، بياناتك الحالية لم تتغيّر");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const onFile = async (file: File | undefined) => {
     if (!file) return;
+    setBusy(true);
     try {
       setPending(parseBackup(await file.text()));
+      setSaveFirst(true);
     } catch (e) {
       toast.error(e instanceof BackupError ? e.message : "تعذّر قراءة الملف");
     } finally {
+      setBusy(false);
       if (fileRef.current) fileRef.current.value = "";
     }
   };
 
   const confirmImport = async () => {
-    if (!pending) return;
-    await importBackup(pending);
-    toast.success(`تم استرجاع ${num(pending.habits.length)} عادة`);
-    setPending(null);
+    if (!pending || busy) return;
+    setBusy(true);
+    try {
+      if (saveFirst) await downloadBackup();
+      await importBackup(pending);
+      toast.success(`تم استرجاع ${num(pending.habits.length)} عادة`);
+      setPending(null);
+    } catch {
+      toast.error("تعذّر الاسترجاع، بياناتك الحالية لم تتغيّر. حاول مرة أخرى");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const onPersist = async () => {
-    const ok = await requestPersistentStorage();
-    setPersisted(ok);
-    if (ok) toast.success("تمام، المتصفح هيحافظ على بياناتك");
-    else toast.message("المتصفح رفض الطلب حاليًا — احتفظ بنسخة احتياطية للأمان");
+    try {
+      const ok = await requestPersistentStorage();
+      setPersisted(ok);
+      if (ok) toast.success("تمام، المتصفح هيحافظ على بياناتك");
+      else toast.message("المتصفح رفض الطلب حاليًا — احتفظ بنسخة احتياطية للأمان");
+    } catch {
+      toast.error("تعذّر حماية التخزين، احتفظ بنسخة احتياطية للأمان");
+    }
   };
 
   return (
@@ -131,8 +158,8 @@ function SettingsPage() {
       <section className="mt-6 space-y-3 rounded-2xl border p-5">
         <h2 className="font-semibold">نسخة احتياطية</h2>
         <div className="flex flex-wrap gap-2">
-          <Button onClick={onExport}>حفظ نسخة</Button>
-          <Button variant="outline" onClick={() => fileRef.current?.click()}>
+          <Button disabled={busy} onClick={() => void onExport()}>حفظ نسخة</Button>
+          <Button disabled={busy} variant="outline" onClick={() => fileRef.current?.click()}>
             استرجاع من ملف
           </Button>
           <input
@@ -160,18 +187,22 @@ function SettingsPage() {
         )}
       </section>
 
-      <AlertDialog open={pending !== null} onOpenChange={(o) => !o && setPending(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
+      <AlertDialog open={pending !== null} onOpenChange={(o) => !o && !busy && setPending(null)}>
+        <AlertDialogContent dir="rtl" className="max-w-[min(32rem,calc(100%-2rem))] rounded-lg">
+          <AlertDialogHeader className="text-start sm:text-start">
             <AlertDialogTitle>استبدال بياناتك الحالية؟</AlertDialogTitle>
             <AlertDialogDescription>
               الملف فيه {num(pending?.habits.length ?? 0)} عادة و{num(pending?.logs.length ?? 0)}{" "}
               تسجيل. البيانات الموجودة دلوقتي هتتشال وتتحط مكانها.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>إلغاء</AlertDialogCancel>
-            <AlertDialogAction onClick={() => void confirmImport()}>استرجاع</AlertDialogAction>
+          <label className="flex items-start gap-2 text-sm">
+            <input type="checkbox" checked={saveFirst} disabled={busy} onChange={(e) => setSaveFirst(e.target.checked)} className="mt-1 size-4 shrink-0 accent-primary" />
+            حفظ نسخة من بياناتي الحالية قبل الاستبدال
+          </label>
+          <AlertDialogFooter className="gap-2 sm:space-x-0">
+            <AlertDialogCancel disabled={busy}>إلغاء</AlertDialogCancel>
+            <Button disabled={busy} onClick={() => void confirmImport()}>{busy ? "جارٍ الاسترجاع…" : "استرجاع"}</Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
