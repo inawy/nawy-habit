@@ -18,12 +18,12 @@ import { arabicFmt, num } from "@/lib/format/numbers";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "اليوم — عادة" },
+      { title: "عادة — اليوم" },
       {
         name: "description",
         content: "سجّل عاداتك اليومية بضغطة واحدة، وبياناتك محفوظة على جهازك.",
       },
-      { property: "og:title", content: "عادة" },
+      { property: "og:title", content: "عادة — اليوم" },
       {
         property: "og:description",
         content: "متتبع عادات هادئ يعمل بدون إنترنت ويحفظ بياناتك على جهازك.",
