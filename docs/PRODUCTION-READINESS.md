@@ -12,6 +12,9 @@ This checklist is the release gate for `ada.nawy.app`. Do not mark the app produ
 - [x] Keep automatic service-worker updates enabled and clean outdated caches.
 - [x] Catch service-worker registration errors without preventing the app from starting.
 - [x] Verify CI and the GitHub Pages deployment for the current commit.
+- [x] Run a post-deployment HTTP smoke test against `https://ada.nawy.app/` for the homepage, manifest, icon dimensions, service worker, built assets, app shell, and `/settings` deep link.
+
+The post-deployment check is implemented in `scripts/smoke-pages.mjs` and runs immediately after `actions/deploy-pages`. It verifies the live response, but it does not replace real browser installation, offline, or IndexedDB-retention tests.
 
 ## 2. User data and recovery
 
