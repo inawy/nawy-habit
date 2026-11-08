@@ -61,7 +61,9 @@ function HabitDetailPage() {
         <h1 className="mt-3 text-lg font-semibold">ما لقينا هذه العادة</h1>
         <p className="mt-1 text-sm text-muted-foreground">يمكن اتحذفت، أو الرابط مش مظبوط.</p>
         <Button asChild className="mt-5">
-          <Link to="/" replace>ارجع لليوم</Link>
+          <Link to="/" replace>
+            ارجع لليوم
+          </Link>
         </Button>
       </main>
     );
