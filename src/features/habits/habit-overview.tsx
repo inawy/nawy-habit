@@ -79,6 +79,7 @@ function HabitContextMenu({
   onEdit,
   onArchive,
   onShare,
+  triggerClassName,
   children,
 }: {
   habit: Habit;
@@ -87,6 +88,7 @@ function HabitContextMenu({
   onEdit: (habit: Habit) => void;
   onArchive: (habit: Habit) => void;
   onShare: (habit: Habit) => void;
+  triggerClassName: string;
   children: ReactNode;
 }) {
   const yesterday = addDays(today, -1);
@@ -109,7 +111,9 @@ function HabitContextMenu({
         aria-label={`خيارات ${habit.name}`}
         title="اضغط مطولًا لخيارات العادة"
       >
-        {children}
+        <li className={triggerClassName} data-habit-color={habit.color}>
+          {children}
+        </li>
       </ContextMenuTrigger>
       <ContextMenuContent
         dir="rtl"
@@ -172,10 +176,7 @@ function HabitChecklistItem({
   const complete = days.has(today);
 
   return (
-    <li
-      className="habit-checklist-row flex items-center gap-3 px-3 py-3"
-      data-habit-color={habit.color}
-    >
+    <>
       <Link
         to="/habit/$habitId"
         params={{ habitId: habit.id }}
@@ -195,7 +196,7 @@ function HabitChecklistItem({
         </span>
       </Link>
       <TodayToggle habit={habit} today={today} complete={complete} />
-    </li>
+    </>
   );
 }
 
@@ -212,10 +213,7 @@ function HabitOverviewCard({
   const complete = days.has(today);
 
   return (
-    <li
-      className="habit-overview-card rounded-[1.35rem] border bg-card p-3.5"
-      data-habit-color={habit.color}
-    >
+    <>
       <div className="flex min-w-0 items-center gap-3">
         <Link
           to="/habit/$habitId"
@@ -240,7 +238,7 @@ function HabitOverviewCard({
       <div className="habit-overview-history mt-3.5 border-t pt-3">
         <HabitActivityGrid days={days} today={today} color={habit.color} compact />
       </div>
-    </li>
+    </>
   );
 }
 
@@ -268,6 +266,7 @@ export function HabitOverview({
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
               onShare={onShareHabit}
+              triggerClassName="habit-overview-card rounded-[1.35rem] border bg-card p-3.5"
             >
               <HabitOverviewCard habit={habit} days={days} today={today} />
             </HabitContextMenu>
@@ -291,6 +290,7 @@ export function HabitOverview({
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
               onShare={onShareHabit}
+              triggerClassName="habit-checklist-row flex items-center gap-3 px-3 py-3"
             >
               <HabitChecklistItem habit={habit} days={days} today={today} />
             </HabitContextMenu>
@@ -346,6 +346,7 @@ export function HabitOverview({
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
               onShare={onShareHabit}
+              triggerClassName="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
             >
               <HabitRow habit={habit} days={days} recentDays={recentDays} today={today} />
             </HabitContextMenu>
