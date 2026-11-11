@@ -25,7 +25,7 @@ export function HabitActivityGrid({
   startDate,
 }: Props) {
   if (compact) {
-    // Keep overview cards compact: two rows of fourteen for the latest 28 days.
+    // Keep overview cards light: one line of 28 small daily marks.
     // The detail screen below still shows the full recorded history.
     const compactStart = addDays(today, -27);
     const compactDays = Array.from({ length: 28 }, (_, index) => addDays(compactStart, index));
@@ -33,12 +33,12 @@ export function HabitActivityGrid({
 
     return (
       <div className="habit-heatmap" data-habit-color={color}>
-        <div className="mb-1.5 flex items-center justify-between gap-3 text-[10px] text-muted-foreground">
+        <div className="mb-1 flex items-center justify-between gap-3 text-[10px] text-muted-foreground">
           <span className="font-medium">آخر {num(28)} يومًا</span>
           <span>{num(compactCompleted)} إنجاز</span>
         </div>
         <ol
-          className="habit-heatmap-grid grid w-full grid-cols-[repeat(14,minmax(0,1fr))] gap-1"
+          className="habit-heatmap-grid grid w-full grid-cols-[repeat(28,minmax(0,1fr))] gap-1"
           aria-label={`إنجازات العادة خلال آخر ${num(28)} يومًا`}
         >
           {compactDays.map((day) => {
@@ -55,7 +55,7 @@ export function HabitActivityGrid({
                 title={label}
                 aria-label={label}
                 className={cn(
-                  "habit-heatmap-cell aspect-square min-w-0 rounded-[5px] border transition-colors",
+                  "habit-heatmap-cell mx-auto aspect-square w-full max-w-[9px] min-w-0 rounded-[3px] border transition-colors",
                   complete ? "is-complete" : "is-empty",
                   day === today && "is-today",
                 )}
