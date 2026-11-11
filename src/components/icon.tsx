@@ -1,4 +1,5 @@
 import add from "@/assets/icons/add.svg?url";
+import archive from "@/assets/icons/archive.svg?url";
 import autoAwesome from "@/assets/icons/auto_awesome.svg?url";
 import bedtime from "@/assets/icons/bedtime.svg?url";
 import calendarMonth from "@/assets/icons/calendar_month.svg?url";
@@ -6,10 +7,12 @@ import check from "@/assets/icons/check.svg?url";
 import chevronLeft from "@/assets/icons/chevron_left.svg?url";
 import chevronRight from "@/assets/icons/chevron_right.svg?url";
 import directionsWalk from "@/assets/icons/directions_walk.svg?url";
+import edit from "@/assets/icons/edit.svg?url";
 import favorite from "@/assets/icons/favorite.svg?url";
 import fitnessCenter from "@/assets/icons/fitness_center.svg?url";
 import gridView from "@/assets/icons/grid_view.svg?url";
 import installMobile from "@/assets/icons/install_mobile.svg?url";
+import iosShare from "@/assets/icons/ios_share.svg?url";
 import localFireDepartment from "@/assets/icons/local_fire_department.svg?url";
 import menuBook from "@/assets/icons/menu_book.svg?url";
 import moreHoriz from "@/assets/icons/more_horiz.svg?url";
@@ -27,6 +30,7 @@ import { cn } from "@/lib/utils";
 
 const icons = {
   add,
+  archive,
   auto_awesome: autoAwesome,
   bedtime,
   calendar_month: calendarMonth,
@@ -34,10 +38,12 @@ const icons = {
   chevron_left: chevronLeft,
   chevron_right: chevronRight,
   directions_walk: directionsWalk,
+  edit,
   favorite,
   fitness_center: fitnessCenter,
   grid_view: gridView,
   install_mobile: installMobile,
+  ios_share: iosShare,
   local_fire_department: localFireDepartment,
   menu_book: menuBook,
   more_horiz: moreHoriz,
