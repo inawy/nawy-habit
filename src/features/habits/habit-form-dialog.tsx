@@ -71,11 +71,11 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
       <SheetContent
         side="bottom"
         dir="rtl"
-        className="mx-auto flex max-h-[min(88dvh,46rem)] w-full max-w-xl flex-col gap-0 overflow-y-auto rounded-t-[2rem] border-x border-t bg-card px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-7 shadow-2xl sm:rounded-t-[2rem] sm:px-7"
+        className="mx-auto flex max-h-[min(84dvh,42rem)] w-full max-w-xl flex-col gap-0 overflow-y-auto rounded-t-2xl border-x border-t bg-card px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-5 shadow-lg sm:rounded-t-2xl sm:px-6"
       >
-        <form onSubmit={onSubmit} className="space-y-6">
-          <SheetHeader className="mb-6 space-y-1.5 pe-9 text-start">
-            <SheetTitle className="text-xl font-bold tracking-tight">
+        <form onSubmit={onSubmit} className="space-y-4">
+          <SheetHeader className="mb-4 space-y-1 pe-9 text-start">
+            <SheetTitle className="text-lg font-semibold tracking-tight">
               {habit ? "تعديل العادة" : "عادة جديدة"}
             </SheetTitle>
             <SheetDescription className="text-sm leading-6">
@@ -115,7 +115,7 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
                       : "border-border bg-background text-muted-foreground hover:bg-muted",
                   )}
                 >
-                  <Icon name={option.value} className="size-6" />
+                  <Icon name={option.value} className="size-5" />
                 </button>
               ))}
             </div>
@@ -123,7 +123,7 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
 
           <fieldset className="space-y-2">
             <legend className="text-sm font-medium">لون العادة</legend>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
               {HABIT_COLOR_OPTIONS.map((option) => (
                 <button
                   key={option.value}
@@ -133,7 +133,7 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
                   title={option.label}
                   onClick={() => setColor(option.value)}
                   className={cn(
-                    "grid size-10 place-items-center rounded-full border-2 transition-transform active:scale-95",
+                    "grid size-9 place-items-center rounded-full border-2 transition-colors",
                     color === option.value
                       ? "border-ring ring-2 ring-ring ring-offset-2 ring-offset-background"
                       : "border-transparent",
@@ -148,14 +148,14 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
             </div>
           </fieldset>
 
-          <div className="sticky bottom-0 -mx-5 mt-2 flex gap-2 border-t bg-card/95 px-5 pb-1 pt-4 backdrop-blur-sm sm:-mx-7 sm:px-7">
-            <Button type="submit" className="h-12 flex-1 rounded-full text-base font-semibold">
+          <div className="sticky bottom-0 -mx-4 mt-1 flex gap-2 border-t bg-card px-4 pb-1 pt-3 sm:-mx-6 sm:px-6">
+            <Button type="submit" className="h-10 flex-1 rounded-full text-sm font-semibold">
               {habit ? "حفظ التعديلات" : "إضافة العادة"}
             </Button>
             <Button
               type="button"
               variant="outline"
-              className="h-12 rounded-full px-6"
+              className="h-10 rounded-full px-5 text-sm"
               onClick={() => onOpenChange(false)}
             >
               إلغاء

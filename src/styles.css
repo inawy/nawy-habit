@@ -214,16 +214,17 @@
 }
 
 .habit-overview-card {
-  border-color: var(--border);
-  box-shadow: 0 8px 24px rgb(16 24 40 / 4%);
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  border-color: color-mix(in srgb, var(--border) 82%, transparent);
+  box-shadow: none;
+  transition: border-color 140ms ease, background-color 140ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .habit-overview-card:hover {
-  border-color: color-mix(in srgb, var(--habit-color) 36%, var(--border));
-  box-shadow: 0 12px 28px rgb(16 24 40 / 7%);
+  border-color: color-mix(in srgb, var(--habit-color) 28%, var(--border));
+  background-color: color-mix(in srgb, var(--card) 96%, var(--habit-color));
 }
 .habit-overview-history {
-  border-color: var(--border);
+  border-color: transparent;
 }
 .habit-heatmap-cell.is-complete {
   background: var(--habit-color);
@@ -273,7 +274,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 .habit-compact-panel {
-  box-shadow: 0 8px 26px rgb(16 24 40 / 4%);
+  box-shadow: none;
 }
 
 @media (max-width: 380px) {
