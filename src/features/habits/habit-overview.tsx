@@ -65,7 +65,7 @@ function TodayToggle({
       aria-label={complete ? `إلغاء إنجاز ${habit.name} اليوم` : `تسجيل إنجاز ${habit.name} اليوم`}
       aria-pressed={complete}
       data-complete={complete}
-      className="habit-today-toggle grid size-10 shrink-0 place-items-center rounded-full border transition-all active:scale-95"
+      className="habit-today-toggle grid size-9 shrink-0 place-items-center rounded-full border transition-all active:scale-95"
     >
       <Icon name={complete ? "check" : "add"} className="size-5" />
     </button>
@@ -183,7 +183,7 @@ function HabitChecklistItem({
         className="flex min-w-0 flex-1 items-center gap-3 rounded-lg"
       >
         <span
-          className="habit-identity grid size-10 shrink-0 place-items-center rounded-xl"
+          className="habit-identity grid size-9 shrink-0 place-items-center rounded-xl"
           data-habit-color={habit.color}
         >
           <Icon name={habit.icon} className="size-5" />
@@ -235,7 +235,7 @@ function HabitOverviewCard({
         </Link>
         <TodayToggle habit={habit} today={today} complete={complete} />
       </div>
-      <div className="habit-overview-history mt-3.5 border-t pt-3">
+      <div className="habit-overview-history mt-2 pt-1.5">
         <HabitActivityGrid days={days} today={today} color={habit.color} compact />
       </div>
     </>
@@ -254,7 +254,7 @@ export function HabitOverview({
 }: OverviewProps) {
   if (mode === "cards") {
     return (
-      <ul className="grid gap-3">
+      <ul className="grid gap-2">
         {habits.map((habit) => {
           const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
           return (
@@ -266,7 +266,7 @@ export function HabitOverview({
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
               onShare={onShareHabit}
-              triggerClassName="habit-overview-card rounded-[1.35rem] border bg-card p-3.5"
+              triggerClassName="habit-overview-card rounded-2xl border bg-card px-3 py-2.5"
             >
               <HabitOverviewCard habit={habit} days={days} today={today} />
             </HabitContextMenu>
