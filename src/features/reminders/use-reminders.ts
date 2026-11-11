@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { dueSlot } from "@/lib/reminders/slots";
-import { getTodayState, recordSlotSent } from "@/lib/reminders/reminders-store";
+import { getTodayState } from "@/lib/reminders/reminders-store";
+import { releaseSlot, tryClaimSlot } from "@/lib/reminders/slot-claim";
 import { showHabitReminder } from "@/lib/reminders/notify";
 
 export type ReminderPermission = "granted" | "denied" | "default";
