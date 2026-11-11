@@ -27,7 +27,7 @@ function applyTheme(preference: ThemePreference) {
   root.classList.toggle("dark", resolved === "dark");
   root.style.colorScheme = resolved;
 
-  const themeColor = resolved === "dark" ? "#0D1117" : "#F7F8FA";
+  const themeColor = resolved === "dark" ? "#121212" : "#F7F8FA";
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", themeColor);
 }
 

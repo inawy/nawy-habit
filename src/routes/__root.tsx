@@ -118,7 +118,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{var p=localStorage.getItem('nawy-habit-theme');var dark=p==='dark'||(p!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var t=dark?'dark':'light';var r=document.documentElement;r.dataset.theme=t;r.classList.toggle('dark',dark);r.style.colorScheme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',dark?'#0D1117':'#F7F8FA');}catch(e){}})();",
+              "(function(){try{var p=localStorage.getItem('nawy-habit-theme');var dark=p==='dark'||(p!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var t=dark?'dark':'light';var r=document.documentElement;r.dataset.theme=t;r.classList.toggle('dark',dark);r.style.colorScheme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',dark?'#121212':'#F7F8FA');}catch(e){}})();",
           }}
         />
       </head>
