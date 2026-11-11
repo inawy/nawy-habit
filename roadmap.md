@@ -18,3 +18,4 @@
 - [x] Fair monthly consistency — count from habit creation, with regression tests.
 - [x] Safer backups — validate dates, duplicates and log references; preserve data on failure and offer a backup before replacement. Verified downloads and replacement readback through the UI.
 - [x] Today usability — preserved view choices and grids; add control follows content instead of covering it; verified mobile and desktop.
+- [ ] Drag-and-drop habit ordering — use a mature open-source library, support touch and keyboard, and persist the order locally across reloads.
