@@ -39,12 +39,6 @@ export const Route = createFileRoute("/")({
 });
 
 const dateFmt = arabicFmt({ weekday: "long", day: "numeric", month: "long" });
-const OVERVIEW_MODE_KEY = "nawy-habit-overview-mode-v2";
-
-function isOverviewMode(value: string | null): value is OverviewMode {
-  return value === "cards" || value === "checklist" || value === "compact";
-}
-
 function TodayPage() {
   const today = useToday();
   const view = useHabitsView();
@@ -53,21 +47,16 @@ function TodayPage() {
   const [overviewMode, setOverviewMode] = useState<OverviewMode>("cards");
 
   useEffect(() => {
+    // Clear the old saved layout preference so the restored card grid is shown.
     try {
-      const saved = window.localStorage.getItem(OVERVIEW_MODE_KEY);
-      if (isOverviewMode(saved)) setOverviewMode(saved);
+      window.localStorage.removeItem("nawy-habit-overview-mode-v2");
     } catch {
-      // Keep compact mode when local preferences are unavailable.
+      // The default card grid remains active for this session.
     }
   }, []);
 
   const chooseOverviewMode = (mode: OverviewMode) => {
     setOverviewMode(mode);
-    try {
-      window.localStorage.setItem(OVERVIEW_MODE_KEY, mode);
-    } catch {
-      // The selected mode remains active for this page session.
-    }
   };
 
   const openNew = () => setDialogOpen(true);
