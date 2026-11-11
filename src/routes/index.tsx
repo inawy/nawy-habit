@@ -39,7 +39,7 @@ export const Route = createFileRoute("/")({
 });
 
 const dateFmt = arabicFmt({ weekday: "long", day: "numeric", month: "long" });
-const OVERVIEW_MODE_KEY = "nawy-habit-overview-mode";
+const OVERVIEW_MODE_KEY = "nawy-habit-overview-mode-v2";
 
 function isOverviewMode(value: string | null): value is OverviewMode {
   return value === "cards" || value === "checklist" || value === "compact";
@@ -50,7 +50,7 @@ function TodayPage() {
   const view = useHabitsView();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
-  const [overviewMode, setOverviewMode] = useState<OverviewMode>("compact");
+  const [overviewMode, setOverviewMode] = useState<OverviewMode>("cards");
 
   useEffect(() => {
     try {
