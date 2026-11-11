@@ -16,7 +16,7 @@ interface Props {
   startDate?: DayKey;
 }
 
-/** A year at minimum; the detail view expands to the habit's full recorded lifetime. */
+/** Overview cards show a rolling 28-day window; the detail view keeps the full recorded lifetime. */
 export function HabitActivityGrid({
   days,
   today,
@@ -40,8 +40,8 @@ export function HabitActivityGrid({
           <span>{num(compactCompleted)} إنجاز</span>
         </div>
         <ol
-          className="habit-heatmap-grid ms-auto grid w-full max-w-64 grid-cols-7 gap-1.5"
-          aria-label="إنجازات العادة خلال آخر 28 يومًا"
+          className="habit-heatmap-grid me-auto grid w-full max-w-64 grid-cols-7 gap-1.5"
+          aria-label={`إنجازات العادة خلال آخر ${num(28)} يومًا`}
         >
           {compactDays.map((day) => {
             const complete = days.has(day);
