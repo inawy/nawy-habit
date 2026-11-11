@@ -28,9 +28,7 @@ export function HabitActivityGrid({
     // Keep overview cards calm and readable: four compact rows for the latest 28 days.
     // The detail screen below still shows the full recorded history.
     const compactStart = addDays(today, -27);
-    const compactDays = Array.from({ length: 28 }, (_, index) =>
-      addDays(compactStart, index),
-    );
+    const compactDays = Array.from({ length: 28 }, (_, index) => addDays(compactStart, index));
     const compactCompleted = compactDays.filter((day) => days.has(day)).length;
 
     return (
