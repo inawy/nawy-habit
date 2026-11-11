@@ -25,7 +25,7 @@ export function HabitActivityGrid({
   startDate,
 }: Props) {
   if (compact) {
-    // Keep overview cards light: one line of 28 small daily marks.
+    // Keep overview cards light: 28 daily marks arranged in two rows of 14.
     // The detail screen below still shows the full recorded history.
     const compactStart = addDays(today, -27);
     const compactDays = Array.from({ length: 28 }, (_, index) => addDays(compactStart, index));
@@ -38,7 +38,7 @@ export function HabitActivityGrid({
           <span>{num(compactCompleted)} إنجاز</span>
         </div>
         <ol
-          className="habit-heatmap-grid grid w-full grid-cols-[repeat(28,minmax(0,1fr))] gap-1"
+          className="habit-heatmap-grid grid w-full grid-cols-[repeat(14,minmax(0,1fr))] grid-rows-2 gap-1"
           aria-label={`إنجازات العادة خلال آخر ${num(28)} يومًا`}
         >
           {compactDays.map((day) => {
