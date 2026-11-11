@@ -24,6 +24,51 @@ export function HabitActivityGrid({
   compact = false,
   startDate,
 }: Props) {
+  if (compact) {
+    // Keep overview cards calm and readable: four compact rows for the latest 28 days.
+    // The detail screen below still shows the full recorded history.
+    const compactStart = addDays(today, -27);
+    const compactDays = Array.from({ length: 28 }, (_, index) =>
+      addDays(compactStart, index),
+    );
+    const compactCompleted = compactDays.filter((day) => days.has(day)).length;
+
+    return (
+      <div className="habit-heatmap" data-habit-color={color}>
+        <div className="mb-3 flex items-center justify-between gap-3 text-[11px] text-muted-foreground">
+          <span className="font-medium">آخر {num(28)} يومًا</span>
+          <span>{num(compactCompleted)} إنجاز</span>
+        </div>
+        <ol
+          className="habit-heatmap-grid ms-auto grid w-full max-w-64 grid-cols-7 gap-1.5"
+          aria-label="إنجازات العادة خلال آخر 28 يومًا"
+        >
+          {compactDays.map((day) => {
+            const complete = days.has(day);
+            const label =
+              dateFmt.format(parseDayKey(day)) +
+              " — " +
+              (complete ? "تم الإنجاز" : "بدون تسجيل") +
+              (day === today ? " — اليوم" : "");
+
+            return (
+              <li
+                key={day}
+                title={label}
+                aria-label={label}
+                className={cn(
+                  "habit-heatmap-cell aspect-square min-w-0 rounded-[8px] border transition-colors",
+                  complete ? "is-complete" : "is-empty",
+                  day === today && "is-today",
+                )}
+              />
+            );
+          })}
+        </ol>
+      </div>
+    );
+  }
+
   const todayDate = parseDayKey(today);
   const mondayOffset = (todayDate.getDay() + 6) % 7;
   const currentWeekStart = addDays(today, -mondayOffset);
