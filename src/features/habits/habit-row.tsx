@@ -33,10 +33,7 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
   }
 
   return (
-    <li
-      className="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
-      data-habit-color={habit.color}
-    >
+    <>
       <Link
         to="/habit/$habitId"
         params={{ habitId: habit.id }}
@@ -77,6 +74,6 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
           />
         );
       })}
-    </li>
+    </>
   );
 }
