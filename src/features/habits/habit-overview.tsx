@@ -221,7 +221,7 @@ function HabitOverviewCard({
           className="flex min-w-0 flex-1 items-center gap-3 rounded-lg"
         >
           <span
-            className="habit-identity grid size-10 shrink-0 place-items-center rounded-xl"
+            className="habit-identity grid size-9 shrink-0 place-items-center rounded-xl"
             data-habit-color={habit.color}
           >
             <Icon name={habit.icon} className="size-5" />
