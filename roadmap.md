@@ -10,7 +10,8 @@
 - [x] Publish — live at https://nawy-habit.lovable.app (URL renamed from myhabit-vault)
 - [x] Habit Kit inspiration — reviewed repos (HabitKit app is closed-source; used jcortesdev/habit-tracker ideas) and shipped the 12-week achievement grid per habit. GitHub sync and publish re-verified (commit 31c4b28, https://nawy-habit.lovable.app → 200).
 - [x] GitHub Pages copy — workflow ready; user must set Pages source to "GitHub Actions".
-- [ ] Local reminders — resolve storage/cross-tab cap safety and page-timer limitations; verify permission and real delivery before calling production-ready.
+- [x] Local reminders — fixed slots (max 3/day) are claimed through Web Locks so open windows never double-fire; the slot is given back when display fails. Verified on desktop Chromium: one notification per slot, second window silent, second window fires after the day's record is cleared.
+- [ ] Local reminders on real devices — confirm permission prompt and notification delivery on Android Chrome / Samsung Internet before calling production-ready.
 - [x] Explain local-notification limits and optional Cloud costs/hosting without enabling Cloud.
 - [x] Design-system alignment — Nawy Blue, Cairo, local Material Symbols SVG, logical form/floating-action alignment, global focus-visible and reduced-motion defaults. Remaining visual/accessibility verification is listed in docs/design-audit.md.
 
