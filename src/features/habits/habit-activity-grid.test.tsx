@@ -10,9 +10,7 @@ describe("HabitActivityGrid compact overview", () => {
     const today = "2026-11-11" as DayKey;
     const completedDays = new Set<DayKey>([today, addDays(today, -3), addDays(today, -16)]);
 
-    const { container } = render(
-      <HabitActivityGrid days={completedDays} today={today} compact />,
-    );
+    const { container } = render(<HabitActivityGrid days={completedDays} today={today} compact />);
 
     const grid = container.querySelector(".habit-heatmap-grid");
     expect(grid?.children).toHaveLength(28);
