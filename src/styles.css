@@ -64,25 +64,26 @@
 
 .dark,
 [data-theme="dark"] {
-  --background: #0D1117;
-  --foreground: #F2F4F7;
-  --card: #151B23;
-  --card-foreground: #F2F4F7;
-  --popover: #1C2430;
-  --popover-foreground: #F2F4F7;
+  /* Neutral Android-style surfaces; Nawy Blue stays reserved for interaction. */
+  --background: #121212;
+  --foreground: #F5F5F5;
+  --card: #1E1E1E;
+  --card-foreground: #F5F5F5;
+  --popover: #262626;
+  --popover-foreground: #F5F5F5;
   --primary: var(--nawy-brand-hover);
   --primary-foreground: #FFFFFF;
   --primary-pressed: var(--nawy-brand-pressed);
-  --secondary: #1C2430;
-  --secondary-foreground: #E4E7EC;
-  --muted: #1C2430;
-  --muted-foreground: #A0A8B5;
+  --secondary: #262626;
+  --secondary-foreground: #E0E0E0;
+  --muted: #262626;
+  --muted-foreground: #AAAAAA;
   --accent: #1C2F54;
   --accent-foreground: #B7CAFF;
   --destructive: #E76D6D;
   --destructive-foreground: #160B0B;
-  --border: #303A48;
-  --input: #3A4656;
+  --border: #333333;
+  --input: #404040;
   --ring: var(--nawy-brand);
 }
 
