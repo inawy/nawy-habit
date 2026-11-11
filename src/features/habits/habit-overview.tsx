@@ -65,9 +65,9 @@ function TodayToggle({
       aria-label={complete ? `إلغاء إنجاز ${habit.name} اليوم` : `تسجيل إنجاز ${habit.name} اليوم`}
       aria-pressed={complete}
       data-complete={complete}
-      className="habit-today-toggle grid size-9 shrink-0 place-items-center rounded-full border transition-all active:scale-95"
+      className="habit-today-toggle grid size-8 shrink-0 place-items-center rounded-full border transition-colors active:scale-95"
     >
-      <Icon name={complete ? "check" : "add"} className="size-5" />
+      <Icon name={complete ? "check" : "add"} className="size-[18px]" />
     </button>
   );
 }
@@ -183,7 +183,7 @@ function HabitChecklistItem({
         className="flex min-w-0 flex-1 items-center gap-3 rounded-lg"
       >
         <span
-          className="habit-identity grid size-9 shrink-0 place-items-center rounded-xl"
+          className="habit-identity grid size-8 shrink-0 place-items-center rounded-lg"
           data-habit-color={habit.color}
         >
           <Icon name={habit.icon} className="size-5" />
@@ -235,7 +235,7 @@ function HabitOverviewCard({
         </Link>
         <TodayToggle habit={habit} today={today} complete={complete} />
       </div>
-      <div className="habit-overview-history mt-2 pt-1.5">
+      <div className="habit-overview-history mt-1.5 pt-0.5">
         <HabitActivityGrid days={days} today={today} color={habit.color} compact />
       </div>
     </>
@@ -266,7 +266,7 @@ export function HabitOverview({
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
               onShare={onShareHabit}
-              triggerClassName="habit-overview-card rounded-2xl border bg-card px-3 py-2.5"
+              triggerClassName="habit-overview-card rounded-xl border bg-card px-3 py-2"
             >
               <HabitOverviewCard habit={habit} days={days} today={today} />
             </HabitContextMenu>
