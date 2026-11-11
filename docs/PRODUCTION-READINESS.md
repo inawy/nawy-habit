@@ -35,6 +35,8 @@ The post-deployment check is implemented in `scripts/smoke-pages.mjs` and runs i
 - [x] Review past days, monthly history, yearly activity, and streaks.
 - [x] Keep reminder slots local and limited to three per day.
 - [x] Do not mark a reminder slot as consumed when the browser fails to display the notification.
+- [x] Claim each reminder slot through the Web Locks API before sending it, so windows open at the same time cannot both fire it; give the slot back when display fails so a later check can retry.
+- [x] On desktop Chromium, confirm a second window of the same app does not repeat the day's reminder (one notification per slot), and that the second window still fires once the day's record is cleared.
 - [x] Describe reminders honestly: they depend on an active page and are not guaranteed after closing or suspending the app.
 - [ ] Verify reminder permission and notification delivery on supported Android and desktop browsers.
 - [ ] Verify dismissing the reminder banner and daily slot reset.

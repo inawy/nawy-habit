@@ -61,6 +61,13 @@ export function recordSlotSent(day: string, slot: number): void {
   if (!state.sent.includes(slot)) save({ ...state, day, sent: [...state.sent, slot] });
 }
 
+/** Drops a recorded slot — used when the browser failed to display it. */
+export function forgetSlotSent(day: string, slot: number): void {
+  const state = getTodayState(day);
+  if (!state.sent.includes(slot)) return;
+  save({ ...state, day, sent: state.sent.filter((sentSlot) => sentSlot !== slot) });
+}
+
 export function recordDismissed(day: string): void {
   const state = getTodayState(day);
   save({ ...state, dismissedDay: day });
