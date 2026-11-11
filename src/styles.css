@@ -179,7 +179,7 @@
   border-color: transparent;
 }
 .dark .habit-day-cell:not(.is-complete), [data-theme="dark"] .habit-day-cell:not(.is-complete) {
-  background: #202730;
+  background: #262626;
 }
 .habit-day-cell.is-complete {
   background: var(--habit-color);
@@ -201,7 +201,7 @@
   border-color: transparent;
 }
 .dark .habit-today-toggle[data-complete="true"], [data-theme="dark"] .habit-today-toggle[data-complete="true"] {
-  color: #17202B;
+  color: #121212;
 }
 
 .habit-checklist-row,
@@ -234,7 +234,7 @@
   border-color: transparent;
 }
 .dark .habit-heatmap-cell.is-empty, [data-theme="dark"] .habit-heatmap-cell.is-empty {
-  background: #252E39;
+  background: #262626;
 }
 .habit-heatmap-cell.is-future {
   background: transparent;
