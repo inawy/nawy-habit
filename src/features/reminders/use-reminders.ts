@@ -10,7 +10,8 @@ export type ReminderPermission = "granted" | "denied" | "default";
 /**
  * Daily reminder scheduler, local-only. Fires at most 3 fixed slots per day
  * while the page is visible and active. It is not a background alarm and
- * never runs after the app or browser has been closed.
+ * never runs after the app or browser has been closed. Slots are claimed
+ * through the Web Locks API, so windows open at the same time never double-fire.
  */
 export function useReminders(today: string | null, unfinished: number | null) {
   const [permission, setPermission] = useState<ReminderPermission | null>(null);
@@ -39,12 +40,18 @@ export function useReminders(today: string | null, unfinished: number | null) {
       if (slot === null) return;
 
       sendingRef.current = true;
+      // Another open window may own this slot; only the window that claims it sends.
+      if (!(await tryClaimSlot(today, slot))) {
+        sendingRef.current = false;
+        return;
+      }
       try {
         const displayed = await showHabitReminder(unfinished);
         // Do not consume a reminder slot when the browser failed to display it.
-        if (displayed) recordSlotSent(today, slot);
+        if (!displayed) releaseSlot(today, slot);
       } catch (error) {
         console.error(error);
+        releaseSlot(today, slot);
       } finally {
         sendingRef.current = false;
       }
