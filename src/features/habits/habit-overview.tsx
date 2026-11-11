@@ -254,7 +254,7 @@ export function HabitOverview({
 }: OverviewProps) {
   if (mode === "cards") {
     return (
-      <ul className="grid gap-2">
+      <ul className="grid grid-cols-2 gap-2">
         {habits.map((habit) => {
           const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
           return (
