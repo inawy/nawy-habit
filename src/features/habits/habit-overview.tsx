@@ -116,7 +116,7 @@ function HabitContextMenu({
         </li>
       </ContextMenuTrigger>
       <ContextMenuContent
-        dir="rtl"
+        style={{ direction: "rtl" }}
         className="min-w-[14rem] rounded-2xl border bg-popover p-1.5 shadow-2xl"
       >
         <ContextMenuLabel className="truncate px-3 py-2 text-xs font-medium text-muted-foreground">
