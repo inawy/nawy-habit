@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +14,8 @@ import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { lastDays, parseDayKey } from "@/lib/date/day-key";
+import { archiveHabit, restoreHabit } from "@/lib/db/habits-repo";
+import type { Habit } from "@/lib/db/schema";
 import { arabicFmt, num } from "@/lib/format/numbers";
 
 export const Route = createFileRoute("/")({
@@ -46,6 +49,7 @@ function TodayPage() {
   const today = useToday();
   const view = useHabitsView();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [overviewMode, setOverviewMode] = useState<OverviewMode>("compact");
 
   useEffect(() => {
@@ -67,6 +71,54 @@ function TodayPage() {
   };
 
   const openNew = () => setDialogOpen(true);
+
+  async function archiveFromMenu(habit: Habit) {
+    try {
+      await archiveHabit(habit.id);
+      toast(`أُرشفت «${habit.name}»`, {
+        action: {
+          label: "تراجع",
+          onClick: () => {
+            void restoreHabit(habit.id).catch((error) => {
+              console.error(error);
+              toast.error("تعذّرت استعادة العادة");
+            });
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("تعذّرت أرشفة العادة");
+    }
+  }
+
+  async function shareFromMenu(habit: Habit) {
+    const shareText = `ناوي ألتزم بـ «${habit.name}» باستخدام تطبيق عادة من ناوي.`;
+    const appUrl = "https://ada.nawy.app/";
+
+    try {
+      if (typeof navigator.share === "function") {
+        await navigator.share({
+          title: `عادة — ${habit.name}`,
+          text: shareText,
+          url: appUrl,
+        });
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(`${shareText}\n${appUrl}`);
+        toast.success("اتنسخت تفاصيل العادة للمشاركة");
+        return;
+      }
+
+      toast.error("المشاركة غير متاحة على الجهاز ده");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      console.error(error);
+      toast.error("تعذّرت مشاركة العادة");
+    }
+  }
   const doneCount =
     today && view
       ? view.habits.filter((habit) => view.daysByHabit.get(habit.id)?.has(today)).length
@@ -142,6 +194,9 @@ function TodayPage() {
             daysByHabit={view.daysByHabit}
             recentDays={recentDays}
             today={today}
+            onEditHabit={setEditingHabit}
+            onArchiveHabit={(habit) => void archiveFromMenu(habit)}
+            onShareHabit={(habit) => void shareFromMenu(habit)}
           />
         </>
       )}
@@ -162,6 +217,13 @@ function TodayPage() {
       )}
 
       <HabitFormDialog open={dialogOpen} onOpenChange={setDialogOpen} habit={null} />
+      <HabitFormDialog
+        open={editingHabit !== null}
+        onOpenChange={(open) => {
+          if (!open) setEditingHabit(null);
+        }}
+        habit={editingHabit}
+      />
     </main>
   );
 }
