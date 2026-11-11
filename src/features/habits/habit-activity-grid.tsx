@@ -38,7 +38,7 @@ export function HabitActivityGrid({
           <span>{num(compactCompleted)} إنجاز</span>
         </div>
         <ol
-          className="habit-heatmap-grid grid w-full grid-cols-14 gap-1"
+          className="habit-heatmap-grid grid w-full grid-cols-[repeat(14,minmax(0,1fr))] gap-1"
           aria-label={`إنجازات العادة خلال آخر ${num(28)} يومًا`}
         >
           {compactDays.map((day) => {
