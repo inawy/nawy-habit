@@ -76,7 +76,10 @@ describe("reminder slot claiming", () => {
   });
 
   it("gives the slot to exactly one window when both claim at the same instant", async () => {
-    const results = await Promise.all([tryClaimSlot("2026-10-19", 2), tryClaimSlot("2026-10-19", 2)]);
+    const results = await Promise.all([
+      tryClaimSlot("2026-10-19", 2),
+      tryClaimSlot("2026-10-19", 2),
+    ]);
     expect(results.filter(Boolean)).toHaveLength(1);
     expect(getTodayState("2026-10-19").sent).toEqual([2]);
   });
