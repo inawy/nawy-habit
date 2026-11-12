@@ -125,6 +125,32 @@ describe("backup", () => {
     expect(backup.habits[0]?.icon).toBe("volunteer_activism");
   });
 
+  it("upgrades v4 backups with an empty trash timestamp", () => {
+    const backup = parseBackup(
+      JSON.stringify({
+        app: "nawy-habit",
+        version: 4,
+        exportedAt: "2026-10-14T12:00:00.000Z",
+        habits: [
+          {
+            id: "h4",
+            name: "قراءة",
+            emoji: "✨",
+            icon: "auto_awesome",
+            color: "blue",
+            order: 0,
+            createdAt: "2026-10-14T12:00:00.000Z",
+            archivedAt: null,
+          },
+        ],
+        logs: [],
+      }),
+    );
+
+    expect(backup.version).toBe(5);
+    expect(backup.habits[0]?.deletedAt).toBeNull();
+  });
+
   it("rejects logs of unknown habits without silently dropping them", () => {
     expect(() =>
       parseBackup(
