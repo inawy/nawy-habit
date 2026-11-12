@@ -14,7 +14,6 @@ import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { registerServiceWorker } from "../lib/pwa/register-sw";
-import { permanentlyDeleteExpiredHabits } from "../lib/db/habits-repo";
 import { ThemeProvider } from "../lib/theme/theme-provider";
 import { useTheme } from "../lib/theme/theme-context";
 
@@ -134,9 +133,6 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => {
-    void permanentlyDeleteExpiredHabits().catch((error) => {
-      console.error("Trash cleanup failed.", error);
-    });
     void registerServiceWorker().catch((error) => {
       console.error("Service worker startup failed.", error);
     });

@@ -11,8 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as ArchiveRouteImport } from './routes/archive'
-import { Route as TrashRouteImport } from './routes/trash'
 import { Route as HabitHabitIdRouteImport } from './routes/habit.$habitId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -25,16 +23,6 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArchiveRoute = ArchiveRouteImport.update({
-  id: '/archive',
-  path: '/archive',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TrashRoute = TrashRouteImport.update({
-  id: '/trash',
-  path: '/trash',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HabitHabitIdRoute = HabitHabitIdRouteImport.update({
   id: '/habit/$habitId',
   path: '/habit/$habitId',
@@ -44,8 +32,6 @@ const HabitHabitIdRoute = HabitHabitIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/settings': typeof SettingsRoute
-  '/archive': typeof ArchiveRoute
-  '/trash': typeof TrashRoute
   '/habit/$habitId': typeof HabitHabitIdRoute
 }
 export interface FileRoutesByTo {
@@ -61,17 +47,15 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/settings' | '/archive' | '/trash' | '/habit/$habitId'
+  fullPaths: '/' | '/settings' | '/habit/$habitId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/settings' | '/archive' | '/trash' | '/habit/$habitId'
-  id: '__root__' | '/' | '/settings' | '/archive' | '/trash' | '/habit/$habitId'
+  to: '/' | '/settings' | '/habit/$habitId'
+  id: '__root__' | '/' | '/settings' | '/habit/$habitId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SettingsRoute: typeof SettingsRoute
-  ArchiveRoute: typeof ArchiveRoute
-  TrashRoute: typeof TrashRoute
   HabitHabitIdRoute: typeof HabitHabitIdRoute
 }
 
@@ -91,20 +75,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/archive': {
-      id: '/archive'
-      path: '/archive'
-      fullPath: '/archive'
-      preLoaderRoute: typeof ArchiveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/trash': {
-      id: '/trash'
-      path: '/trash'
-      fullPath: '/trash'
-      preLoaderRoute: typeof TrashRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/habit/$habitId': {
       id: '/habit/$habitId'
       path: '/habit/$habitId'
@@ -118,8 +88,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SettingsRoute: SettingsRoute,
-  ArchiveRoute: ArchiveRoute,
-  TrashRoute: TrashRoute,
   HabitHabitIdRoute: HabitHabitIdRoute,
 }
 export const routeTree = rootRouteImport

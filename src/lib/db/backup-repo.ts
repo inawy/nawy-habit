@@ -6,7 +6,7 @@ import { getDb } from "./db";
 import { habitLogSchema, habitSchema } from "./schema";
 
 /** Bump when the backup file shape changes; add a converter in `upgradeBackup`. */
-export const BACKUP_VERSION = 5;
+export const BACKUP_VERSION = 4;
 export const BACKUP_APP = "nawy-habit";
 const timestampSchema = z.string().datetime({ offset: true });
 
@@ -15,11 +15,7 @@ export const backupSchema = z.object({
   version: z.literal(BACKUP_VERSION),
   exportedAt: timestampSchema,
   habits: z.array(
-    habitSchema.extend({
-      createdAt: timestampSchema,
-      archivedAt: timestampSchema.nullable(),
-      deletedAt: timestampSchema.nullable(),
-    }),
+    habitSchema.extend({ createdAt: timestampSchema, archivedAt: timestampSchema.nullable() }),
   ),
   logs: z.array(habitLogSchema.extend({ createdAt: timestampSchema })),
 });
@@ -39,11 +35,11 @@ export async function exportBackup(): Promise<Backup> {
   return validateBackup(data);
 }
 
-/** Upgrades older backups while preserving existing habit data. */
+/** Upgrades older backups, replacing the pig-shaped bank and restoring the hand-with-heart giving icon. */
 function upgradeBackup(raw: unknown): unknown {
   if (typeof raw !== "object" || raw === null) return raw;
   const backup = raw as { version?: unknown; habits?: unknown };
-  if (![1, 2, 3, 4].includes(backup.version as number) || !Array.isArray(backup.habits)) {
+  if (![1, 2, 3].includes(backup.version as number) || !Array.isArray(backup.habits)) {
     return raw;
   }
 
@@ -65,7 +61,6 @@ function upgradeBackup(raw: unknown): unknown {
         ...savedHabit,
         icon,
         color: savedHabit["color"] ?? DEFAULT_HABIT_COLOR,
-        deletedAt: savedHabit["deletedAt"] ?? null,
       };
     }),
   };

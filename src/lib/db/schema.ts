@@ -20,7 +20,6 @@ export const habitSchema = z.object({
   order: z.number().int(),
   createdAt: z.string(),
   archivedAt: z.string().nullable(),
-  deletedAt: z.string().nullable().default(null),
 });
 export type Habit = z.infer<typeof habitSchema>;
 
