@@ -12,6 +12,11 @@ import favorite from "@/assets/icons/favorite.svg?url";
 import fitnessCenter from "@/assets/icons/fitness_center.svg?url";
 import gridView from "@/assets/icons/grid_view.svg?url";
 import installMobile from "@/assets/icons/install_mobile.svg?url";
+import home from "@/assets/icons/home.svg?url";
+import deleteIcon from "@/assets/icons/delete.svg?url";
+import restore from "@/assets/icons/restore.svg?url";
+import deleteForever from "@/assets/icons/delete_forever.svg?url";
+import menu from "@/assets/icons/menu.svg?url";
 import iosShare from "@/assets/icons/ios_share.svg?url";
 import localFireDepartment from "@/assets/icons/local_fire_department.svg?url";
 import menuBook from "@/assets/icons/menu_book.svg?url";
@@ -42,6 +47,11 @@ const icons = {
   favorite,
   fitness_center: fitnessCenter,
   grid_view: gridView,
+  home,
+  delete: deleteIcon,
+  restore,
+  delete_forever: deleteForever,
+  menu,
   install_mobile: installMobile,
   ios_share: iosShare,
   local_fire_department: localFireDepartment,
