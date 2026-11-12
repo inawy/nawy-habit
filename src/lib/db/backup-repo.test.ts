@@ -92,7 +92,7 @@ describe("backup", () => {
       }),
     );
 
-    expect(backup.version).toBe(4);
+    expect(backup.version).toBe(5);
     expect(backup.habits.map((habit) => habit.icon)).toEqual([
       "account_balance_wallet",
       "volunteer_activism",
@@ -121,7 +121,7 @@ describe("backup", () => {
       }),
     );
 
-    expect(backup.version).toBe(4);
+    expect(backup.version).toBe(5);
     expect(backup.habits[0]?.icon).toBe("volunteer_activism");
   });
 
