@@ -12,7 +12,13 @@ import { useHabitDetailView } from "@/features/habits/use-habit-detail";
 import { useToday } from "@/features/habits/use-habits";
 import { parseDayKey, toDayKey, type DayKey } from "@/lib/date/day-key";
 import { toMonthKey, type MonthKey } from "@/lib/date/month";
-import { archiveHabit, moveHabitToTrash, restoreFromTrash, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
+import {
+  archiveHabit,
+  moveHabitToTrash,
+  restoreFromTrash,
+  restoreHabit,
+  toggleLog,
+} from "@/lib/db/habits-repo";
 import { arabicFmt, num } from "@/lib/format/numbers";
 import { monthProgress } from "@/lib/habits/consistency";
 import { computeStreaks } from "@/lib/habits/streak";
@@ -104,7 +110,12 @@ function HabitDetailPage() {
     try {
       await moveHabitToTrash(habit.id);
       toast(`نُقلت «${habit.name}» إلى سلة المحذوفات`, {
-        action: { label: "تراجع", onClick: () => void restoreFromTrash(habit.id) },
+        action: {
+          label: "تراجع",
+          onClick: () => {
+            void restoreFromTrash(habit.id).catch(() => toast.error("تعذّرت استعادة العادة"));
+          },
+        },
       });
       void navigate({ to: "/", replace: true });
     } catch {
@@ -243,7 +254,11 @@ function HabitDetailPage() {
           <Icon name="archive" className="size-4" />
           أرشفة العادة
         </Button>
-        <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={() => void onTrash()}>
+        <Button
+          variant="ghost"
+          className="text-destructive hover:text-destructive"
+          onClick={() => void onTrash()}
+        >
           <Icon name="delete" className="size-4" />
           نقل إلى سلة المحذوفات
         </Button>
