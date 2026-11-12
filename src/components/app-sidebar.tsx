@@ -106,9 +106,7 @@ export function AppSidebar() {
             </span>
             <span className="min-w-0">
               <SheetTitle className="text-xl font-bold tracking-tight">عادة</SheetTitle>
-              <SheetDescription className="mt-0.5 text-xs">
-                مساحتك لعاداتك اليومية
-              </SheetDescription>
+              <SheetDescription className="mt-0.5 text-xs">مساحتك لعاداتك اليومية</SheetDescription>
             </span>
           </div>
         </SheetHeader>
