@@ -14,6 +14,7 @@ import {
   moveHabitToTrash,
   restoreFromTrash,
   permanentlyDeleteExpiredHabits,
+  permanentlyDeleteHabit,
 } from "./habits-repo";
 
 let db: NawyHabitDB;
@@ -67,6 +68,16 @@ describe("habits repository", () => {
     await db.habits.update(h.id, { deletedAt: deletedAt.toISOString() });
     expect(await permanentlyDeleteExpiredHabits(new Date("2026-10-31T12:00:00.000Z"))).toBe(1);
     expect(await db.habits.get(h.id)).toBeUndefined();
+    expect(await listLogs()).toHaveLength(0);
+  });
+
+  it("permanently deletes a habit and its history only when requested", async () => {
+    const habit = await createHabit({ name: "قراءة" });
+    await toggleLog(habit.id, "2026-10-14");
+
+    await permanentlyDeleteHabit(habit.id);
+
+    expect(await db.habits.get(habit.id)).toBeUndefined();
     expect(await listLogs()).toHaveLength(0);
   });
 
