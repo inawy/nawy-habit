@@ -16,7 +16,7 @@ const items = [
   { to: "/archive", label: "الأرشيف", icon: "archive" as const },
   { to: "/trash", label: "سلة المحذوفات", icon: "delete" as const },
   { to: "/settings", label: "الإعدادات", icon: "settings" as const },
-];
+] as const;
 
 export function AppSidebar() {
   const [open, setOpen] = useState(false);
