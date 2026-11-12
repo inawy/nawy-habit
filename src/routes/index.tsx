@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
+import { AppSidebar } from "@/components/app-sidebar";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -127,14 +128,7 @@ function TodayPage() {
               <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
             )}
             <InstallAppButton />
-            <Link
-              to="/settings"
-              aria-label="الإعدادات"
-              title="الإعدادات"
-              className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              <Icon name="settings" className="size-5" />
-            </Link>
+            <AppSidebar />
           </div>
         </div>
         <div className="mt-3 flex items-end justify-between gap-4">
