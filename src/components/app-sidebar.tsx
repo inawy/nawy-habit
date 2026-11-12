@@ -107,17 +107,12 @@ export function AppSidebar() {
             </span>
             <span className="min-w-0">
               <SheetTitle className="text-lg font-bold tracking-tight">عادة</SheetTitle>
-              <SheetDescription className="mt-0.5 text-xs">
-                مساحتك لعاداتك اليومية
-              </SheetDescription>
+              <SheetDescription className="mt-0.5 text-xs">مساحتك لعاداتك اليومية</SheetDescription>
             </span>
           </div>
         </SheetHeader>
 
-        <nav
-          aria-label="القائمة الرئيسية"
-          className="flex-1 space-y-1 overflow-y-auto px-3 py-4"
-        >
+        <nav aria-label="القائمة الرئيسية" className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
           <p className="mb-2 px-3 text-[10px] font-bold tracking-wide text-muted-foreground">
             مساحتي
           </p>
