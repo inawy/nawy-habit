@@ -301,6 +301,7 @@ export function HabitOverview({
               today={today}
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
+              onDelete={onDeleteHabit}
               onShare={onShareHabit}
               triggerClassName="habit-checklist-row flex items-center gap-3 px-3 py-3"
             >
