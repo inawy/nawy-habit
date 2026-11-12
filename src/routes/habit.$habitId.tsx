@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
 import { AppSidebar } from "@/components/app-sidebar";
 import { useState } from "react";
@@ -39,6 +39,7 @@ export const Route = createFileRoute("/habit/$habitId")({
 
 function HabitDetailPage() {
   const { habitId } = Route.useParams();
+  const navigate = useNavigate();
   const today = useToday();
   const view = useHabitDetailView(habitId);
   const [pickedMonth, setPickedMonth] = useState<MonthKey | null>(null);
@@ -105,7 +106,7 @@ function HabitDetailPage() {
       toast(`نُقلت «${habit.name}» إلى سلة المحذوفات`, {
         action: { label: "تراجع", onClick: () => void restoreFromTrash(habit.id) },
       });
-      window.history.back();
+      void navigate({ to: "/", replace: true });
     } catch {
       toast.error("تعذّر نقل العادة إلى سلة المحذوفات");
     }
