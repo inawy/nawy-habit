@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
+import { AppSidebar } from "@/components/app-sidebar";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -14,7 +15,12 @@ import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { lastDays, parseDayKey } from "@/lib/date/day-key";
-import { archiveHabit, restoreHabit } from "@/lib/db/habits-repo";
+import {
+  archiveHabit,
+  moveHabitToTrash,
+  restoreFromTrash,
+  restoreHabit,
+} from "@/lib/db/habits-repo";
 import type { Habit } from "@/lib/db/schema";
 import { arabicFmt, num } from "@/lib/format/numbers";
 
@@ -81,6 +87,26 @@ function TodayPage() {
     }
   }
 
+  async function trashFromMenu(habit: Habit) {
+    try {
+      await moveHabitToTrash(habit.id);
+      toast(`نُقلت «${habit.name}» إلى سلة المحذوفات`, {
+        action: {
+          label: "تراجع",
+          onClick: () => {
+            void restoreFromTrash(habit.id).catch((error) => {
+              console.error(error);
+              toast.error("تعذّرت استعادة العادة");
+            });
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("تعذّر نقل العادة إلى سلة المحذوفات");
+    }
+  }
+
   async function shareFromMenu(habit: Habit) {
     const shareText = `ناوي ألتزم بـ «${habit.name}» باستخدام تطبيق عادة من ناوي.`;
     const appUrl = "https://ada.nawy.app/";
@@ -108,6 +134,7 @@ function TodayPage() {
       toast.error("تعذّرت مشاركة العادة");
     }
   }
+
   const doneCount =
     today && view
       ? view.habits.filter((habit) => view.daysByHabit.get(habit.id)?.has(today)).length
@@ -127,14 +154,7 @@ function TodayPage() {
               <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
             )}
             <InstallAppButton />
-            <Link
-              to="/settings"
-              aria-label="الإعدادات"
-              title="الإعدادات"
-              className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              <Icon name="settings" className="size-5" />
-            </Link>
+            <AppSidebar />
           </div>
         </div>
         <div className="mt-3 flex items-end justify-between gap-4">
@@ -185,24 +205,23 @@ function TodayPage() {
             today={today}
             onEditHabit={setEditingHabit}
             onArchiveHabit={(habit) => void archiveFromMenu(habit)}
+            onDeleteHabit={(habit) => void trashFromMenu(habit)}
             onShareHabit={(habit) => void shareFromMenu(habit)}
           />
         </>
       )}
 
       {view && totalCount > 0 && (
-        <>
-          <Button
-            type="button"
-            onClick={openNew}
-            size="icon"
-            aria-label="إضافة عادة"
-            title="إضافة عادة"
-            className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 size-14 rounded-full p-0 shadow-xl transition-transform active:scale-[0.98] sm:end-6"
-          >
-            <Icon name="add" className="size-7" />
-          </Button>
-        </>
+        <Button
+          type="button"
+          onClick={openNew}
+          size="icon"
+          aria-label="إضافة عادة"
+          title="إضافة عادة"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 size-14 rounded-full p-0 shadow-xl transition-transform active:scale-[0.98] sm:end-6"
+        >
+          <Icon name="add" className="size-7" />
+        </Button>
       )}
 
       <HabitFormDialog open={dialogOpen} onOpenChange={setDialogOpen} habit={null} />

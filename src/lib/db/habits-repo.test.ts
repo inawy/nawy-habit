@@ -6,9 +6,15 @@ import {
   archiveHabit,
   createHabit,
   listActiveHabits,
+  listArchivedHabits,
+  listTrashedHabits,
   listLogs,
   toggleLog,
   updateHabit,
+  moveHabitToTrash,
+  restoreFromTrash,
+  permanentlyDeleteExpiredHabits,
+  permanentlyDeleteHabit,
 } from "./habits-repo";
 
 let db: NawyHabitDB;
@@ -41,6 +47,38 @@ describe("habits repository", () => {
     await archiveHabit(h.id);
     expect(await listActiveHabits()).toEqual([]);
     expect(await listLogs()).toHaveLength(1);
+  });
+
+  it("keeps archive separate from trash and restores trashed habits", async () => {
+    const h = await createHabit({ name: "قراءة" });
+    await archiveHabit(h.id);
+    expect(await listArchivedHabits()).toHaveLength(1);
+    expect(await listTrashedHabits()).toHaveLength(0);
+    await moveHabitToTrash(h.id);
+    expect(await listArchivedHabits()).toHaveLength(0);
+    expect(await listTrashedHabits()).toHaveLength(1);
+    await restoreFromTrash(h.id);
+    expect(await listArchivedHabits()).toHaveLength(1);
+  });
+
+  it("permanently removes trashed habits and their logs after 30 days", async () => {
+    const h = await createHabit({ name: "مشي" });
+    await toggleLog(h.id, "2026-10-14");
+    const deletedAt = new Date("2026-10-01T12:00:00.000Z");
+    await db.habits.update(h.id, { deletedAt: deletedAt.toISOString() });
+    expect(await permanentlyDeleteExpiredHabits(new Date("2026-10-31T12:00:00.000Z"))).toBe(1);
+    expect(await db.habits.get(h.id)).toBeUndefined();
+    expect(await listLogs()).toHaveLength(0);
+  });
+
+  it("permanently deletes a habit and its history only when requested", async () => {
+    const habit = await createHabit({ name: "قراءة" });
+    await toggleLog(habit.id, "2026-10-14");
+
+    await permanentlyDeleteHabit(habit.id);
+
+    expect(await db.habits.get(habit.id)).toBeUndefined();
+    expect(await listLogs()).toHaveLength(0);
   });
 
   it("toggles one log per habit per day", async () => {

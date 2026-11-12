@@ -30,6 +30,7 @@ interface OverviewProps {
   today: DayKey;
   onEditHabit: (habit: Habit) => void;
   onArchiveHabit: (habit: Habit) => void;
+  onDeleteHabit: (habit: Habit) => void;
   onShareHabit: (habit: Habit) => void;
 }
 
@@ -78,6 +79,7 @@ function HabitContextMenu({
   today,
   onEdit,
   onArchive,
+  onDelete,
   onShare,
   triggerClassName,
   children,
@@ -87,6 +89,7 @@ function HabitContextMenu({
   today: DayKey;
   onEdit: (habit: Habit) => void;
   onArchive: (habit: Habit) => void;
+  onDelete: (habit: Habit) => void;
   onShare: (habit: Habit) => void;
   triggerClassName: string;
   children: ReactNode;
@@ -152,11 +155,18 @@ function HabitContextMenu({
         </ContextMenuItem>
         <ContextMenuSeparator className="my-1" />
         <ContextMenuItem
-          className="min-h-11 gap-3 rounded-xl px-3 py-2.5 text-sm text-destructive focus:text-destructive"
+          className="min-h-11 gap-3 rounded-xl px-3 py-2.5 text-sm"
           onSelect={() => onArchive(habit)}
         >
           <Icon name="archive" className="size-[18px]" />
           <span>أرشفة العادة</span>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="min-h-11 gap-3 rounded-xl px-3 py-2.5 text-sm text-destructive focus:text-destructive"
+          onSelect={() => onDelete(habit)}
+        >
+          <Icon name="delete" className="size-[18px]" />
+          <span>نقل إلى سلة المحذوفات</span>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
@@ -250,6 +260,7 @@ export function HabitOverview({
   today,
   onEditHabit,
   onArchiveHabit,
+  onDeleteHabit,
   onShareHabit,
 }: OverviewProps) {
   if (mode === "cards") {
@@ -265,6 +276,7 @@ export function HabitOverview({
               today={today}
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
+              onDelete={onDeleteHabit}
               onShare={onShareHabit}
               triggerClassName="habit-overview-card rounded-xl border bg-card px-3 py-2"
             >
@@ -289,6 +301,7 @@ export function HabitOverview({
               today={today}
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
+              onDelete={onDeleteHabit}
               onShare={onShareHabit}
               triggerClassName="habit-checklist-row flex items-center gap-3 px-3 py-3"
             >
@@ -345,6 +358,7 @@ export function HabitOverview({
               today={today}
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
+              onDelete={onDeleteHabit}
               onShare={onShareHabit}
               triggerClassName="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
             >

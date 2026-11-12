@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
+import { AppSidebar } from "@/components/app-sidebar";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -11,7 +12,13 @@ import { useHabitDetailView } from "@/features/habits/use-habit-detail";
 import { useToday } from "@/features/habits/use-habits";
 import { parseDayKey, toDayKey, type DayKey } from "@/lib/date/day-key";
 import { toMonthKey, type MonthKey } from "@/lib/date/month";
-import { archiveHabit, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
+import {
+  archiveHabit,
+  moveHabitToTrash,
+  restoreFromTrash,
+  restoreHabit,
+  toggleLog,
+} from "@/lib/db/habits-repo";
 import { arabicFmt, num } from "@/lib/format/numbers";
 import { monthProgress } from "@/lib/habits/consistency";
 import { computeStreaks } from "@/lib/habits/streak";
@@ -38,6 +45,7 @@ export const Route = createFileRoute("/habit/$habitId")({
 
 function HabitDetailPage() {
   const { habitId } = Route.useParams();
+  const navigate = useNavigate();
   const today = useToday();
   const view = useHabitDetailView(habitId);
   const [pickedMonth, setPickedMonth] = useState<MonthKey | null>(null);
@@ -98,6 +106,23 @@ function HabitDetailPage() {
     });
   }
 
+  async function onTrash() {
+    try {
+      await moveHabitToTrash(habit.id);
+      toast(`نُقلت «${habit.name}» إلى سلة المحذوفات`, {
+        action: {
+          label: "تراجع",
+          onClick: () => {
+            void restoreFromTrash(habit.id).catch(() => toast.error("تعذّرت استعادة العادة"));
+          },
+        },
+      });
+      void navigate({ to: "/", replace: true });
+    } catch {
+      toast.error("تعذّر نقل العادة إلى سلة المحذوفات");
+    }
+  }
+
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-5">
       <div className="flex items-center justify-between">
@@ -110,14 +135,17 @@ function HabitDetailPage() {
         >
           <Icon name="chevron_right" className="size-5" />
         </Link>
-        <button
-          type="button"
-          onClick={() => setEditing(true)}
-          aria-label="تعديل العادة"
-          className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
-        >
-          <Icon name="more_horiz" className="size-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          <AppSidebar />
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            aria-label="تعديل العادة"
+            className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
+          >
+            <Icon name="more_horiz" className="size-5" />
+          </button>
+        </div>
       </div>
 
       <header className="mt-5 flex items-center gap-3">
@@ -221,9 +249,18 @@ function HabitDetailPage() {
         </div>
       </section>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex flex-wrap justify-end gap-2">
         <Button variant="ghost" onClick={() => void onArchive()}>
+          <Icon name="archive" className="size-4" />
           أرشفة العادة
+        </Button>
+        <Button
+          variant="ghost"
+          className="text-destructive hover:text-destructive"
+          onClick={() => void onTrash()}
+        >
+          <Icon name="delete" className="size-4" />
+          نقل إلى سلة المحذوفات
         </Button>
       </div>
 
