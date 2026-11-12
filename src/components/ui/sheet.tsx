@@ -52,19 +52,24 @@ const sheetVariants = cva(
 interface SheetContentProps
   extends
     React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+  closeButtonClassName?: string;
+}
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
+>(({ side = "right", className, closeButtonClassName, children, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
     <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
       <SheetPrimitive.Close
         aria-label="إغلاق القائمة"
         title="إغلاق القائمة"
-        className="absolute right-4 top-4 z-10 grid size-9 place-items-center rounded-xl bg-background/80 text-muted-foreground ring-offset-background transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+        className={cn(
+          "absolute right-4 top-4 z-10 grid size-9 place-items-center rounded-xl bg-background/80 text-muted-foreground ring-offset-background transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none",
+          closeButtonClassName,
+        )}
       >
         <X className="size-4" />
         <span className="sr-only">إغلاق القائمة</span>

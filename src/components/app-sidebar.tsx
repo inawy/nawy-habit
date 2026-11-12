@@ -98,6 +98,7 @@ export function AppSidebar() {
       <SheetContent
         side="right"
         dir="rtl"
+        closeButtonClassName="left-4 right-auto"
         className="w-[min(20rem,88vw)] gap-0 border-s bg-background p-0 shadow-2xl sm:w-80"
       >
         <SheetHeader className="border-b px-4 pb-5 pt-7 text-right">
