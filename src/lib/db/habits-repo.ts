@@ -21,7 +21,10 @@ export async function permanentlyDeleteExpiredHabits(now = new Date()): Promise<
   return db.transaction("rw", db.habits, db.logs, async () => {
     const expired = await db.habits.where("deletedAt").belowOrEqual(cutoff).primaryKeys();
     if (!expired.length) return 0;
-    await db.logs.where("habitId").anyOf(expired as string[]).delete();
+    await db.logs
+      .where("habitId")
+      .anyOf(expired as string[])
+      .delete();
     await db.habits.bulkDelete(expired);
     return expired.length;
   });
