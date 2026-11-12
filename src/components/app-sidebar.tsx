@@ -44,7 +44,8 @@ export function AppSidebar() {
               key={item.to}
               to={item.to}
               onClick={() => setOpen(false)}
-              className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted [&.active]:bg-accent [&.active]:text-primary"
+              className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              activeProps={{ className: "bg-accent text-primary" }}
               activeOptions={{ exact: item.to === "/" }}
             >
               <Icon name={item.icon} className="size-5" />
