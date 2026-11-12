@@ -12,7 +12,7 @@ import { useHabitDetailView } from "@/features/habits/use-habit-detail";
 import { useToday } from "@/features/habits/use-habits";
 import { parseDayKey, toDayKey, type DayKey } from "@/lib/date/day-key";
 import { toMonthKey, type MonthKey } from "@/lib/date/month";
-import { archiveHabit, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
+import { archiveHabit, moveHabitToTrash, restoreFromTrash, restoreHabit, toggleLog } from "@/lib/db/habits-repo";
 import { arabicFmt, num } from "@/lib/format/numbers";
 import { monthProgress } from "@/lib/habits/consistency";
 import { computeStreaks } from "@/lib/habits/streak";
@@ -97,6 +97,18 @@ function HabitDetailPage() {
     toast(`أُرشفت «${habit.name}»`, {
       action: { label: "تراجع", onClick: () => void restoreHabit(habit.id) },
     });
+  }
+
+  async function onTrash() {
+    try {
+      await moveHabitToTrash(habit.id);
+      toast(`نُقلت «${habit.name}» إلى سلة المحذوفات`, {
+        action: { label: "تراجع", onClick: () => void restoreFromTrash(habit.id) },
+      });
+      window.history.back();
+    } catch {
+      toast.error("تعذّر نقل العادة إلى سلة المحذوفات");
+    }
   }
 
   return (
@@ -225,9 +237,14 @@ function HabitDetailPage() {
         </div>
       </section>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex flex-wrap justify-end gap-2">
         <Button variant="ghost" onClick={() => void onArchive()}>
+          <Icon name="archive" className="size-4" />
           أرشفة العادة
+        </Button>
+        <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={() => void onTrash()}>
+          <Icon name="delete" className="size-4" />
+          نقل إلى سلة المحذوفات
         </Button>
       </div>
 
