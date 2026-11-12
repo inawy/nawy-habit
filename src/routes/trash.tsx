@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { AppSidebar } from "@/components/app-sidebar";
+import { PageBackButton } from "@/components/page-back-button";
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,14 +58,14 @@ function TrashPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-2xl px-4 pb-16 pt-5 sm:px-5">
-      <header className="flex items-center justify-between gap-3">
-        <div>
+      <header className="flex items-center gap-3">
+        <PageBackButton />
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold">سلة المحذوفات</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             العادات هنا لمدة ٣٠ يومًا قبل حذفها نهائيًا.
           </p>
         </div>
-        <AppSidebar />
       </header>
 
       {habits === undefined ? (

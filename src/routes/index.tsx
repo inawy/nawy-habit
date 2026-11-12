@@ -150,11 +150,11 @@ function TodayPage() {
             {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
           </p>
           <div className="flex items-center gap-2">
+            <AppSidebar />
             {view && totalCount > 0 && (
               <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
             )}
             <InstallAppButton />
-            <AppSidebar />
           </div>
         </div>
         <div className="mt-3 flex items-end justify-between gap-4">
