@@ -55,7 +55,7 @@ function NavigationItem({
       activeOptions={{ exact: item.to === "/" }}
       activeProps={{
         className:
-          "bg-accent text-primary ring-1 ring-inset ring-primary/10 [&_.nav-icon]:bg-primary/10 [&_.nav-icon]:text-primary",
+          "active bg-accent text-primary ring-1 ring-inset ring-primary/10 [&_.nav-icon]:bg-primary/10 [&_.nav-icon]:text-primary",
       }}
       className="group flex min-h-[3.75rem] items-center gap-3 rounded-2xl px-3 py-2 text-foreground transition-colors duration-150 hover:bg-muted focus-visible:outline-offset-2"
     >
