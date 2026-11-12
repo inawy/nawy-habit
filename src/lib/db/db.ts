@@ -23,10 +23,13 @@ export class NawyHabitDB extends Dexie {
         logs: "id, habitId, day, [habitId+day]",
       })
       .upgrade((tx) =>
-        tx.table("habits").toCollection().modify((habit: Habit) => {
-          if (!habit.icon) habit.icon = DEFAULT_HABIT_ICON;
-          if (!habit.color) habit.color = DEFAULT_HABIT_COLOR;
-        }),
+        tx
+          .table("habits")
+          .toCollection()
+          .modify((habit: Habit) => {
+            if (!habit.icon) habit.icon = DEFAULT_HABIT_ICON;
+            if (!habit.color) habit.color = DEFAULT_HABIT_COLOR;
+          }),
       );
     this.version(3)
       .stores({
@@ -34,10 +37,13 @@ export class NawyHabitDB extends Dexie {
         logs: "id, habitId, day, [habitId+day]",
       })
       .upgrade((tx) =>
-        tx.table("habits").toCollection().modify((habit: { icon?: string }) => {
-          if (habit.icon === "savings") habit.icon = "account_balance_wallet";
-          if (habit.icon === "volunteer_activism") habit.icon = "redeem";
-        }),
+        tx
+          .table("habits")
+          .toCollection()
+          .modify((habit: { icon?: string }) => {
+            if (habit.icon === "savings") habit.icon = "account_balance_wallet";
+            if (habit.icon === "volunteer_activism") habit.icon = "redeem";
+          }),
       );
     this.version(4)
       .stores({
@@ -45,9 +51,12 @@ export class NawyHabitDB extends Dexie {
         logs: "id, habitId, day, [habitId+day]",
       })
       .upgrade((tx) =>
-        tx.table("habits").toCollection().modify((habit: { icon?: string }) => {
-          if (habit.icon === "redeem") habit.icon = "volunteer_activism";
-        }),
+        tx
+          .table("habits")
+          .toCollection()
+          .modify((habit: { icon?: string }) => {
+            if (habit.icon === "redeem") habit.icon = "volunteer_activism";
+          }),
       );
     this.version(5)
       .stores({
@@ -55,9 +64,12 @@ export class NawyHabitDB extends Dexie {
         logs: "id, habitId, day, [habitId+day]",
       })
       .upgrade((tx) =>
-        tx.table("habits").toCollection().modify((habit: { deletedAt?: string | null }) => {
-          habit.deletedAt ??= null;
-        }),
+        tx
+          .table("habits")
+          .toCollection()
+          .modify((habit: { deletedAt?: string | null }) => {
+            habit.deletedAt ??= null;
+          }),
       );
   }
 }
