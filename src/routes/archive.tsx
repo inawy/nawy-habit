@@ -38,10 +38,13 @@ function ArchivePage() {
       <header className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">الأرشيف</h1>
-          <p className="mt-1 text-sm text-muted-foreground">عادات احتفظت بها بعيدًا عن قائمة اليوم.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            عادات احتفظت بها بعيدًا عن قائمة اليوم.
+          </p>
         </div>
         <AppSidebar />
       </header>
+
       {habits === undefined ? (
         <div className="mt-6 h-24 animate-pulse rounded-2xl bg-muted" />
       ) : habits.length === 0 ? (
@@ -53,15 +56,30 @@ function ArchivePage() {
       ) : (
         <div className="mt-6 space-y-2">
           {habits.map((habit) => (
-            <article key={habit.id} className="flex items-center gap-3 rounded-2xl border bg-card p-3">
+            <article
+              key={habit.id}
+              className="flex items-center gap-3 rounded-2xl border bg-card p-3"
+            >
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-muted">
                 <Icon name={habit.icon} className="size-5" />
               </span>
               <span className="min-w-0 flex-1 truncate text-sm font-semibold">{habit.name}</span>
-              <Button variant="ghost" size="icon" aria-label="إعادة إلى عاداتي" title="استعادة" onClick={() => void restore(habit.id, habit.name)}>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="إعادة إلى عاداتي"
+                title="استعادة"
+                onClick={() => void restore(habit.id, habit.name)}
+              >
                 <Icon name="restore" className="size-5" />
               </Button>
-              <Button variant="ghost" size="icon" aria-label="نقل إلى سلة المحذوفات" title="نقل للسلة" onClick={() => void trash(habit.id, habit.name)}>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="نقل إلى سلة المحذوفات"
+                title="نقل للسلة"
+                onClick={() => void trash(habit.id, habit.name)}
+              >
                 <Icon name="delete" className="size-5" />
               </Button>
             </article>
