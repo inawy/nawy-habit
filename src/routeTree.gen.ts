@@ -51,12 +51,16 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/settings': typeof SettingsRoute
+  '/archive': typeof ArchiveRoute
+  '/trash': typeof TrashRoute
   '/habit/$habitId': typeof HabitHabitIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/settings': typeof SettingsRoute
+  '/archive': typeof ArchiveRoute
+  '/trash': typeof TrashRoute
   '/habit/$habitId': typeof HabitHabitIdRoute
 }
 export interface FileRouteTypes {
