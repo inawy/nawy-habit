@@ -27,9 +27,11 @@ This project predates the current Nawy starter baseline and retains TanStack Sta
 - `src/lib/db/*-repo.ts` contains Dexie access.
 - `src/lib/date` and `src/lib/habits` contain pure date and progress logic.
 - IndexedDB database name: `nawy-habit`.
-- Current Dexie schema version: v4. Released versions are immutable; changes require a new version and an explicit upgrade.
-- Current JSON backup format: v4. Import upgrades supported v1-v3 backup files before validation.
+- Current Dexie schema version: v5. Released versions are immutable; changes require a new version and an explicit upgrade.
+- Current JSON backup format: v5. Import upgrades supported v1-v4 backup files before validation.
 - Habit logs use local calendar keys (`YYYY-MM-DD`).
+- Archived habits remain stored until the user restores them or explicitly moves them to the trash.
+- Trashed habits carry a `deletedAt` timestamp and are permanently removed with their logs after 30 days. Expiration cleanup runs when the app reads the active, archived, or trash collections; the local-only app cannot run cleanup while fully closed.
 - JSON export/import validates timestamps, IDs, log references, and duplicates before replacement.
 - Import replaces habits and logs in one Dexie transaction; invalid data must never clear existing records.
 - The legacy `Habit.emoji` field remains persisted for compatibility, but the UI no longer displays or edits it. Removing it requires a Dexie migration and backup conversion.

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { AppSidebar } from "@/components/app-sidebar";
 import {
   BackupError,
   exportBackup,
@@ -127,13 +128,13 @@ function SettingsPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-16 pt-8">
-      <Link to="/" replace className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-        رجوع
-      </Link>
-      <h1 className="mt-3 text-3xl font-bold">الإعدادات</h1>
-      <p className="mt-2 text-muted-foreground">
-        ظبّط شكل التطبيق، واحتفظ بنسخة من عاداتك عشان ما تضيعش.
-      </p>
+      <header className="flex items-center justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-bold">الإعدادات</h1>
+          <p className="mt-2 text-muted-foreground">ظبّط شكل التطبيق، واحتفظ بنسخة من عاداتك عشان ما تضيعش.</p>
+        </div>
+        <AppSidebar />
+      </header>
 
       <section className="mt-6 space-y-3 rounded-2xl border p-5">
         <div>

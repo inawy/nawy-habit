@@ -9,13 +9,40 @@ import {
   type HabitLog,
 } from "./schema";
 
+export const TRASH_RETENTION_DAYS = 30;
+const DAY_MS = 24 * 60 * 60 * 1000;
 const newId = () => crypto.randomUUID();
 const nowIso = () => new Date().toISOString();
 export const logId = (habitId: string, day: DayKey) => `${habitId}:${day}`;
 
+export async function permanentlyDeleteExpiredHabits(now = new Date()): Promise<number> {
+  const cutoff = new Date(now.getTime() - TRASH_RETENTION_DAYS * DAY_MS).toISOString();
+  const db = getDb();
+  return db.transaction("rw", db.habits, db.logs, async () => {
+    const expired = await db.habits.where("deletedAt").belowOrEqual(cutoff).primaryKeys();
+    if (!expired.length) return 0;
+    await db.logs.where("habitId").anyOf(expired as string[]).delete();
+    await db.habits.bulkDelete(expired);
+    return expired.length;
+  });
+}
+
 export async function listActiveHabits(): Promise<Habit[]> {
+  await permanentlyDeleteExpiredHabits();
   const all = await getDb().habits.orderBy("order").toArray();
-  return all.filter((h) => h.archivedAt === null);
+  return all.filter((h) => h.archivedAt === null && h.deletedAt === null);
+}
+
+export async function listArchivedHabits(): Promise<Habit[]> {
+  await permanentlyDeleteExpiredHabits();
+  const all = await getDb().habits.orderBy("order").toArray();
+  return all.filter((h) => h.archivedAt !== null && h.deletedAt === null);
+}
+
+export async function listTrashedHabits(): Promise<Habit[]> {
+  await permanentlyDeleteExpiredHabits();
+  const habits = await getDb().habits.where("deletedAt").above("").toArray();
+  return habits.sort((a, b) => (b.deletedAt ?? "").localeCompare(a.deletedAt ?? ""));
 }
 
 export async function createHabit(input: HabitInput): Promise<Habit> {
@@ -32,6 +59,7 @@ export async function createHabit(input: HabitInput): Promise<Habit> {
       order: (last?.order ?? -1) + 1,
       createdAt: nowIso(),
       archivedAt: null,
+      deletedAt: null,
     };
     await db.habits.add(habit);
     return habit;
@@ -54,6 +82,22 @@ export async function archiveHabit(id: string): Promise<void> {
 
 export async function restoreHabit(id: string): Promise<void> {
   await getDb().habits.update(id, { archivedAt: null });
+}
+
+export async function moveHabitToTrash(id: string): Promise<void> {
+  await getDb().habits.update(id, { deletedAt: nowIso() });
+}
+
+export async function restoreFromTrash(id: string): Promise<void> {
+  await getDb().habits.update(id, { deletedAt: null });
+}
+
+export async function permanentlyDeleteHabit(id: string): Promise<void> {
+  const db = getDb();
+  await db.transaction("rw", db.habits, db.logs, async () => {
+    await db.logs.where("habitId").equals(id).delete();
+    await db.habits.delete(id);
+  });
 }
 
 /** Toggles the check-in for a day. Returns true when the day is now done. */
