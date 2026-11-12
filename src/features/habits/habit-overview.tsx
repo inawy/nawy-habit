@@ -358,6 +358,7 @@ export function HabitOverview({
               today={today}
               onEdit={onEditHabit}
               onArchive={onArchiveHabit}
+              onDelete={onDeleteHabit}
               onShare={onShareHabit}
               triggerClassName="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
             >
