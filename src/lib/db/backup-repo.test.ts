@@ -296,6 +296,39 @@ describe("database migrations", () => {
     await current.delete();
   });
 
+  it("adds the trash timestamp when migrating schema v4 without losing logs", async () => {
+    const name = `mig-v4-${crypto.randomUUID()}`;
+    const old = new Dexie(name);
+    for (const version of [1, 2, 3, 4]) {
+      old.version(version).stores({
+        habits: "id, order, archivedAt",
+        logs: "id, habitId, day, [habitId+day]",
+      });
+    }
+    await old.table("habits").add({
+      id: "h4",
+      name: "قراءة",
+      emoji: "✨",
+      icon: "auto_awesome",
+      color: "blue",
+      order: 0,
+      createdAt: "2026-10-14T12:00:00.000Z",
+      archivedAt: null,
+    });
+    await old.table("logs").add({
+      id: "h4:2026-10-14",
+      habitId: "h4",
+      day: "2026-10-14",
+      createdAt: "2026-10-14T12:00:00.000Z",
+    });
+    old.close();
+
+    const current = new NawyHabitDB(name);
+    expect(await current.habits.get("h4")).toMatchObject({ deletedAt: null });
+    expect(await current.logs.toArray()).toHaveLength(1);
+    await current.delete();
+  });
+
   it("opens data written by schema v1 without loss", async () => {
     const name = `mig-${crypto.randomUUID()}`;
     const old = new Dexie(name);
