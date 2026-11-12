@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { AppSidebar } from "@/components/app-sidebar";
+import { PageBackButton } from "@/components/page-back-button";
 import {
   BackupError,
   exportBackup,
@@ -128,14 +128,14 @@ function SettingsPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-16 pt-8">
-      <header className="flex items-center justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold">الإعدادات</h1>
-          <p className="mt-2 text-muted-foreground">
+      <header className="flex items-center gap-3">
+        <PageBackButton />
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold sm:text-3xl">الإعدادات</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             ظبّط شكل التطبيق، واحتفظ بنسخة من عاداتك عشان ما تضيعش.
           </p>
         </div>
-        <AppSidebar />
       </header>
 
       <section className="mt-6 space-y-3 rounded-2xl border p-5">
