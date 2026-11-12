@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Icon } from "@/components/icon";
@@ -78,7 +78,42 @@ function NavigationItem({
 
 export function AppSidebar() {
   const [open, setOpen] = useState(false);
+  const swipeStart = useRef<{ x: number; y: number } | null>(null);
+  const swiped = useRef(false);
   const close = () => setOpen(false);
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!event.isPrimary || event.button !== 0) return;
+    const target = event.target;
+    if (
+      target instanceof HTMLElement &&
+      target.closest("a, button, [role='button'], input, textarea, select")
+    ) {
+      swipeStart.current = null;
+      return;
+    }
+    swipeStart.current = { x: event.clientX, y: event.clientY };
+  };
+
+  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!swipeStart.current) return;
+    const deltaX = event.clientX - swipeStart.current.x;
+    const deltaY = event.clientY - swipeStart.current.y;
+    swipeStart.current = null;
+
+    // The panel opens from the right, so a deliberate rightward swipe dismisses it.
+    if (deltaX > 84 && deltaX > Math.abs(deltaY) * 1.25) {
+      swiped.current = true;
+      close();
+    }
+  };
+
+  const handleClickCapture = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!swiped.current) return;
+    event.preventDefault();
+    event.stopPropagation();
+    swiped.current = false;
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -100,6 +135,12 @@ export function AppSidebar() {
         dir="rtl"
         closeButtonClassName="left-4 right-auto"
         className="w-[min(20rem,88vw)] gap-0 border-s bg-background p-0 shadow-2xl sm:w-80"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={() => {
+          swipeStart.current = null;
+        }}
+        onClickCapture={handleClickCapture}
       >
         <SheetHeader className="border-b px-4 pb-5 pt-7 text-right">
           <div className="flex items-center gap-3">
