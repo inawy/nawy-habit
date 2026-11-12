@@ -31,19 +31,16 @@ export async function permanentlyDeleteExpiredHabits(now = new Date()): Promise<
 }
 
 export async function listActiveHabits(): Promise<Habit[]> {
-  await permanentlyDeleteExpiredHabits();
   const all = await getDb().habits.orderBy("order").toArray();
   return all.filter((h) => h.archivedAt === null && h.deletedAt === null);
 }
 
 export async function listArchivedHabits(): Promise<Habit[]> {
-  await permanentlyDeleteExpiredHabits();
   const all = await getDb().habits.orderBy("order").toArray();
   return all.filter((h) => h.archivedAt !== null && h.deletedAt === null);
 }
 
 export async function listTrashedHabits(): Promise<Habit[]> {
-  await permanentlyDeleteExpiredHabits();
   const habits = await getDb().habits.where("deletedAt").above("").toArray();
   return habits.sort((a, b) => (b.deletedAt ?? "").localeCompare(a.deletedAt ?? ""));
 }
