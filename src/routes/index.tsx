@@ -146,16 +146,16 @@ function TodayPage() {
     <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
       <header className="mb-5">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-medium text-muted-foreground">
-            {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
-          </p>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <AppSidebar />
             {view && totalCount > 0 && (
               <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
             )}
             <InstallAppButton />
           </div>
+          <p className="min-w-0 text-xs font-medium text-muted-foreground">
+            {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
+          </p>
         </div>
         <div className="mt-3 flex items-end justify-between gap-4">
           <div className="min-w-0">
