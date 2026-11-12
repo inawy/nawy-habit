@@ -15,7 +15,12 @@ import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { lastDays, parseDayKey } from "@/lib/date/day-key";
-import { archiveHabit, moveHabitToTrash, restoreFromTrash, restoreHabit } from "@/lib/db/habits-repo";
+import {
+  archiveHabit,
+  moveHabitToTrash,
+  restoreFromTrash,
+  restoreHabit,
+} from "@/lib/db/habits-repo";
 import type { Habit } from "@/lib/db/schema";
 import { arabicFmt, num } from "@/lib/format/numbers";
 
@@ -129,6 +134,7 @@ function TodayPage() {
       toast.error("تعذّرت مشاركة العادة");
     }
   }
+
   const doneCount =
     today && view
       ? view.habits.filter((habit) => view.daysByHabit.get(habit.id)?.has(today)).length
@@ -206,18 +212,16 @@ function TodayPage() {
       )}
 
       {view && totalCount > 0 && (
-        <>
-          <Button
-            type="button"
-            onClick={openNew}
-            size="icon"
-            aria-label="إضافة عادة"
-            title="إضافة عادة"
-            className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 size-14 rounded-full p-0 shadow-xl transition-transform active:scale-[0.98] sm:end-6"
-          >
-            <Icon name="add" className="size-7" />
-          </Button>
-        </>
+        <Button
+          type="button"
+          onClick={openNew}
+          size="icon"
+          aria-label="إضافة عادة"
+          title="إضافة عادة"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] end-4 z-40 size-14 rounded-full p-0 shadow-xl transition-transform active:scale-[0.98] sm:end-6"
+        >
+          <Icon name="add" className="size-7" />
+        </Button>
       )}
 
       <HabitFormDialog open={dialogOpen} onOpenChange={setDialogOpen} habit={null} />
