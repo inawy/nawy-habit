@@ -15,6 +15,13 @@ describe("App routing", () => {
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
 
+  it("matches archive and trash pages", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+
+    expect(router.matchRoutes("/archive").at(-1)?.routeId).toBe("/archive");
+    expect(router.matchRoutes("/trash").at(-1)?.routeId).toBe("/trash");
+  });
+
   it("matches the habit detail page", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 
