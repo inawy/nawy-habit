@@ -3,9 +3,6 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { AppSidebar } from "@/components/app-sidebar";
-import { Icon } from "@/components/icon";
-import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -15,6 +12,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { AppSidebar } from "@/components/app-sidebar";
+import { Icon } from "@/components/icon";
+import { Button } from "@/components/ui/button";
 import {
   listTrashedHabits,
   permanentlyDeleteHabit,
@@ -61,7 +61,9 @@ function TrashPage() {
       <header className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">سلة المحذوفات</h1>
-          <p className="mt-1 text-sm text-muted-foreground">العادات هنا لمدة ٣٠ يومًا قبل حذفها نهائيًا.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            العادات هنا لمدة ٣٠ يومًا قبل حذفها نهائيًا.
+          </p>
         </div>
         <AppSidebar />
       </header>
@@ -72,28 +74,48 @@ function TrashPage() {
         <section className="mt-8 rounded-2xl border border-dashed px-5 py-12 text-center">
           <Icon name="delete" className="mx-auto size-8 text-muted-foreground" />
           <h2 className="mt-3 font-semibold">السلة فارغة</h2>
-          <p className="mt-1 text-sm text-muted-foreground">أي عادة تحذفها هتظهر هنا لمدة ٣٠ يومًا.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            أي عادة تحذفها هتظهر هنا لمدة ٣٠ يومًا.
+          </p>
         </section>
       ) : (
         <div className="mt-6 space-y-2">
           {habits.map((habit) => {
-            const expiresAt = new Date(habit.deletedAt ?? Date.now()).getTime() + TRASH_RETENTION_DAYS * DAY_MS;
+            const expiresAt =
+              new Date(habit.deletedAt ?? Date.now()).getTime() + TRASH_RETENTION_DAYS * DAY_MS;
             const daysLeft = Math.max(0, Math.ceil((expiresAt - Date.now()) / DAY_MS));
             return (
-              <article key={habit.id} className="flex items-center gap-3 rounded-2xl border bg-card p-3">
+              <article
+                key={habit.id}
+                className="flex items-center gap-3 rounded-2xl border bg-card p-3"
+              >
                 <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-muted">
                   <Icon name={habit.icon} className="size-5" />
                 </span>
                 <div className="min-w-0 flex-1">
                   <h2 className="truncate text-sm font-semibold">{habit.name}</h2>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {daysLeft === 0 ? "سيُحذف نهائيًا قريبًا" : `متبقي ${num(daysLeft)} يوم على الحذف النهائي`}
+                    {daysLeft === 0
+                      ? "سيُحذف نهائيًا قريبًا"
+                      : `متبقي ${num(daysLeft)} يوم على الحذف النهائي`}
                   </p>
                 </div>
-                <Button variant="ghost" size="icon" aria-label="استعادة العادة" title="استعادة" onClick={() => void restore(habit)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="استعادة العادة"
+                  title="استعادة"
+                  onClick={() => void restore(habit)}
+                >
                   <Icon name="restore" className="size-5" />
                 </Button>
-                <Button variant="ghost" size="icon" aria-label="حذف نهائي" title="حذف نهائي" onClick={() => setPending(habit)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="حذف نهائي"
+                  title="حذف نهائي"
+                  onClick={() => setPending(habit)}
+                >
                   <Icon name="delete_forever" className="size-5" />
                 </Button>
               </article>
@@ -106,11 +128,15 @@ function TrashPage() {
         <AlertDialogContent dir="rtl">
           <AlertDialogHeader className="text-start sm:text-start">
             <AlertDialogTitle>حذف العادة نهائيًا؟</AlertDialogTitle>
-            <AlertDialogDescription>لن يمكن استعادة «{pending?.name}» أو سجل إنجازاتها بعد الحذف.</AlertDialogDescription>
+            <AlertDialogDescription>
+              لن يمكن استعادة «{pending?.name}» أو سجل إنجازاتها بعد الحذف.
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 sm:space-x-0">
             <AlertDialogCancel>إلغاء</AlertDialogCancel>
-            <Button variant="destructive" onClick={() => void removeForever()}>حذف نهائي</Button>
+            <Button variant="destructive" onClick={() => void removeForever()}>
+              حذف نهائي
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
