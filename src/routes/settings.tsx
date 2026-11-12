@@ -135,7 +135,7 @@ function SettingsPage() {
         </div>
         <AppSidebar />
       </header>
- 
+
       <section className="mt-6 space-y-3 rounded-2xl border p-5">
         <div>
           <h2 className="font-semibold">المظهر</h2>
