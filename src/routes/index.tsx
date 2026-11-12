@@ -149,7 +149,12 @@ function TodayPage() {
           <p className="text-xs font-medium text-muted-foreground">
             {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
           </p>
-          <div className="flex items-center gap-2">
+          <div
+            dir="rtl"
+            role="group"
+            aria-label="أدوات التطبيق"
+            className="flex items-center justify-start gap-2"
+          >
             <AppSidebar />
             {view && totalCount > 0 && (
               <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
