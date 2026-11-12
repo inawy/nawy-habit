@@ -15,7 +15,7 @@ import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
 import { lastDays, parseDayKey } from "@/lib/date/day-key";
-import { archiveHabit, restoreHabit } from "@/lib/db/habits-repo";
+import { archiveHabit, moveHabitToTrash, restoreFromTrash, restoreHabit } from "@/lib/db/habits-repo";
 import type { Habit } from "@/lib/db/schema";
 import { arabicFmt, num } from "@/lib/format/numbers";
 
@@ -79,6 +79,26 @@ function TodayPage() {
     } catch (error) {
       console.error(error);
       toast.error("تعذّرت أرشفة العادة");
+    }
+  }
+
+  async function trashFromMenu(habit: Habit) {
+    try {
+      await moveHabitToTrash(habit.id);
+      toast(`نُقلت «${habit.name}» إلى سلة المحذوفات`, {
+        action: {
+          label: "تراجع",
+          onClick: () => {
+            void restoreFromTrash(habit.id).catch((error) => {
+              console.error(error);
+              toast.error("تعذّرت استعادة العادة");
+            });
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("تعذّر نقل العادة إلى سلة المحذوفات");
     }
   }
 
@@ -179,6 +199,7 @@ function TodayPage() {
             today={today}
             onEditHabit={setEditingHabit}
             onArchiveHabit={(habit) => void archiveFromMenu(habit)}
+            onDeleteHabit={(habit) => void trashFromMenu(habit)}
             onShareHabit={(habit) => void shareFromMenu(habit)}
           />
         </>
