@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
+import { AppSidebar } from "@/components/app-sidebar";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -110,14 +111,17 @@ function HabitDetailPage() {
         >
           <Icon name="chevron_right" className="size-5" />
         </Link>
-        <button
-          type="button"
-          onClick={() => setEditing(true)}
-          aria-label="تعديل العادة"
-          className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
-        >
-          <Icon name="more_horiz" className="size-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          <AppSidebar />
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            aria-label="تعديل العادة"
+            className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
+          >
+            <Icon name="more_horiz" className="size-5" />
+          </button>
+        </div>
       </div>
 
       <header className="mt-5 flex items-center gap-3">
