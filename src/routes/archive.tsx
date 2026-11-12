@@ -35,7 +35,7 @@ function ArchivePage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-2xl px-4 pb-16 pt-5 sm:px-5">
-      <header className="flex items-center gap-3">
+      <header className="flex flex-col items-start gap-3">
         <PageBackButton />
         <div className="min-w-0">
           <h1 className="text-2xl font-bold">الأرشيف</h1>
