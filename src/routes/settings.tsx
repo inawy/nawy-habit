@@ -131,7 +131,9 @@ function SettingsPage() {
       <header className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold">الإعدادات</h1>
-          <p className="mt-2 text-muted-foreground">ظبّط شكل التطبيق، واحتفظ بنسخة من عاداتك عشان ما تضيعش.</p>
+          <p className="mt-2 text-muted-foreground">
+            ظبّط شكل التطبيق، واحتفظ بنسخة من عاداتك عشان ما تضيعش.
+          </p>
         </div>
         <AppSidebar />
       </header>
