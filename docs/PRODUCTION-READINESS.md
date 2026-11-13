@@ -77,7 +77,7 @@ Perform these checks on a clean browser profile on each target platform.
 - [ ] Test large text/200% zoom, keyboard access, dialog focus, and screen-reader labels.
 - [ ] Check contrast for muted text, disabled states, habit colors, and progress surfaces.
 - [ ] Confirm touch targets, safe-area padding, and no horizontal overflow.
-- [ ] Align the PWA icon artwork with the current Nawy mark and ensure maskable artwork has safe padding.
+- [x] Align the PWA icon artwork with the current Nawy mark and ensure maskable artwork has safe padding (see docs/app-icon.md).
 
 ## 6. Release decision
 
