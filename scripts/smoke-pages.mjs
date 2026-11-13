@@ -47,6 +47,8 @@ const deployed = await retry(() => get("/"), "deployed homepage");
 const html = Buffer.from(deployed.body).toString("utf8");
 assert(html.toLowerCase().includes("<html"), "Homepage does not contain an HTML document");
 assert(html.includes("/manifest.webmanifest"), "Homepage does not link the PWA manifest");
+assert(html.includes("/apple-touch-icon.png"), "Homepage does not link the Apple touch icon");
+assert(html.includes("/favicon.svg"), "Homepage does not link the SVG favicon");
 
 const manifestResult = await retry(() => get("/manifest.webmanifest"), "PWA manifest");
 const manifest = JSON.parse(Buffer.from(manifestResult.body).toString("utf8"));
@@ -61,13 +63,31 @@ assert(
 );
 assert(Array.isArray(manifest.icons), "Manifest icons are missing");
 
-for (const size of [192, 512]) {
-  const icon = manifest.icons.find((item) => item.sizes === `${size}x${size}`);
-  assert(icon, `Manifest is missing its ${size}px icon`);
+for (const [size, purpose] of [
+  [192, "any"],
+  [512, "any"],
+  [192, "maskable"],
+  [512, "maskable"],
+]) {
+  const icon = manifest.icons.find(
+    (item) => item.sizes === `${size}x${size}` && item.purpose === purpose,
+  );
+  assert(icon, `Manifest is missing its ${size}px ${purpose} icon`);
+  assert(icon.type === "image/png", `Manifest ${size}px ${purpose} icon must be PNG`);
   const iconUrl = new URL(icon.src, manifestResult.url);
-  const iconResponse = await retry(() => get(iconUrl.href), `${size}px PWA icon`);
+  const iconResponse = await retry(() => get(iconUrl.href), `${size}px ${purpose} PWA icon`);
   assert(isPng(iconResponse.body, size), `PWA icon ${icon.src} is not a valid ${size}x${size} PNG`);
 }
+
+const appleIcon = await retry(() => get("/apple-touch-icon.png"), "Apple touch icon");
+assert(isPng(appleIcon.body, 180), "Apple touch icon must be a valid 180x180 PNG");
+const favicon = await retry(() => get("/favicon.ico"), "ICO favicon");
+const faviconBytes = Buffer.from(favicon.body);
+assert(
+  faviconBytes.length > 6 && faviconBytes.readUInt16LE(0) === 0 && faviconBytes.readUInt16LE(2) === 1,
+  "ICO favicon has an invalid header",
+);
+await retry(() => get("/favicon.svg"), "SVG favicon");
 
 const shellResult = await retry(() => get("/_shell.html"), "offline app shell");
 const shell = Buffer.from(shellResult.body).toString("utf8");
@@ -79,8 +99,8 @@ assert(
   "Deployed service worker does not precache the offline app shell",
 );
 
-const rootAssetPattern = new RegExp('(?:src|href)="(/assets/[^"]+)"', "g");
-const assetPaths = [...shell.matchAll(rootAssetPattern)].map((match) => match[1]);
+const rootAssetPattern = new RegExp('(?:src|href)="/assets/[^"]+"', "g");
+const assetPaths = [...shell.matchAll(rootAssetPattern)].map((match) => match[0].slice(5, -1));
 assert(assetPaths.length > 0, "Offline shell has no root-relative built assets");
 for (const path of [...new Set(assetPaths)].slice(0, 3)) {
   await retry(() => get(path), `built asset ${path}`);
@@ -96,5 +116,5 @@ assert(
 );
 
 console.log(
-  `PAGES_SMOKE_OK: ${root.origin} — homepage, manifest, 192/512px PNG icons, service worker, app shell, built assets, and /settings deep link.`,
+  `PAGES_SMOKE_OK: ${root.origin} — homepage, manifest, 192/512px any and maskable icons, Apple touch icon, ICO/SVG favicons, service worker, app shell, built assets, and /settings deep link.`,
 );
