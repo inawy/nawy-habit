@@ -101,8 +101,8 @@ assert(
   "Deployed service worker does not precache the offline app shell",
 );
 
-const rootAssetPattern = new RegExp('(?:src|href)="/assets/[^"]+"', "g");
-const assetPaths = [...shell.matchAll(rootAssetPattern)].map((match) => match[0].slice(5, -1));
+const rootAssetPattern = /(?:src|href)="(\/assets\/[^"]+)"/g;
+const assetPaths = [...shell.matchAll(rootAssetPattern)].map((match) => match[1]);
 assert(assetPaths.length > 0, "Offline shell has no root-relative built assets");
 for (const path of [...new Set(assetPaths)].slice(0, 3)) {
   await retry(() => get(path), `built asset ${path}`);
