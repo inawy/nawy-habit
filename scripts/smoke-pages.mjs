@@ -84,7 +84,9 @@ assert(isPng(appleIcon.body, 180), "Apple touch icon must be a valid 180x180 PNG
 const favicon = await retry(() => get("/favicon.ico"), "ICO favicon");
 const faviconBytes = Buffer.from(favicon.body);
 assert(
-  faviconBytes.length > 6 && faviconBytes.readUInt16LE(0) === 0 && faviconBytes.readUInt16LE(2) === 1,
+  faviconBytes.length > 6 &&
+    faviconBytes.readUInt16LE(0) === 0 &&
+    faviconBytes.readUInt16LE(2) === 1,
   "ICO favicon has an invalid header",
 );
 await retry(() => get("/favicon.svg"), "SVG favicon");
