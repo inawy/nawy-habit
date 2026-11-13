@@ -4,6 +4,7 @@ import type { HabitColorName } from "@/lib/habits/appearance";
 import { cn } from "@/lib/utils";
 
 const MIN_WEEK_COUNT = 52;
+const COMPACT_WEEK_COUNT = 24;
 const dateFmt = arabicFmt({ day: "numeric", month: "long", year: "numeric" });
 const monthFmt = arabicFmt({ month: "short" });
 const yearFmt = arabicFmt({ year: "numeric" });
@@ -16,7 +17,7 @@ interface Props {
   startDate?: DayKey;
 }
 
-/** Overview cards show a rolling 28-day window; the detail view keeps the full recorded lifetime. */
+/** Overview cards show a rolling 24-week window; the detail view keeps the full recorded lifetime. */
 export function HabitActivityGrid({
   days,
   today,
@@ -25,43 +26,55 @@ export function HabitActivityGrid({
   startDate,
 }: Props) {
   if (compact) {
-    // Keep overview cards light: 28 daily marks arranged in two rows of 14.
-    // The detail screen below still shows the full recorded history.
-    const compactStart = addDays(today, -27);
-    const compactDays = Array.from({ length: 28 }, (_, index) => addDays(compactStart, index));
-    const compactCompleted = compactDays.filter((day) => days.has(day)).length;
+    // Overview cards show a light rolling window: 24 week columns x 7 day rows.
+    // The newest week starts at the inline-start edge (right in RTL) and the oldest
+    // weeks fade out at the opposite edge. The detail screen still shows full history.
+    const todayDate = parseDayKey(today);
+    const currentWeekStart = addDays(today, -((todayDate.getDay() + 6) % 7));
+    const compactWeekStarts = Array.from({ length: COMPACT_WEEK_COUNT }, (_, index) =>
+      addDays(currentWeekStart, -index * 7),
+    );
+    const compactCompleted = compactWeekStarts.reduce((count, weekStart) => {
+      for (let offset = 0; offset < 7; offset += 1) {
+        const date = addDays(weekStart, offset);
+        if (date <= today && days.has(date)) count += 1;
+      }
+      return count;
+    }, 0);
 
     return (
       <div className="habit-heatmap" data-habit-color={color}>
-        <div className="mb-1 flex items-center justify-between gap-3 text-[10px] text-muted-foreground">
-          <span className="font-medium">آخر {num(28)} يومًا</span>
-          <span>{num(compactCompleted)} إنجاز</span>
-        </div>
         <ol
-          className="habit-heatmap-grid grid w-full grid-cols-[repeat(14,minmax(0,1fr))] grid-rows-2 gap-1"
-          aria-label={`إنجازات العادة خلال آخر ${num(28)} يومًا`}
+          className="habit-heatmap-grid habit-heatmap-fade grid grid-flow-col grid-rows-7 gap-[3px]"
+          style={{ gridTemplateColumns: `repeat(${COMPACT_WEEK_COUNT}, minmax(0, 1fr))` }}
+          aria-label={`إنجازات العادة خلال آخر ${num(COMPACT_WEEK_COUNT)} أسبوعًا — ${num(compactCompleted)} يوم إنجاز`}
         >
-          {compactDays.map((day) => {
-            const complete = days.has(day);
-            const label =
-              dateFmt.format(parseDayKey(day)) +
-              " — " +
-              (complete ? "تم الإنجاز" : "بدون تسجيل") +
-              (day === today ? " — اليوم" : "");
+          {compactWeekStarts.flatMap((weekStart) =>
+            Array.from({ length: 7 }, (_, dayIndex) => {
+              const day = addDays(weekStart, dayIndex);
+              const isFuture = day > today;
+              const complete = days.has(day);
+              const label =
+                dateFmt.format(parseDayKey(day)) +
+                " — " +
+                (complete ? "تم الإنجاز" : "بدون تسجيل") +
+                (day === today ? " — اليوم" : "");
 
-            return (
-              <li
-                key={day}
-                title={label}
-                aria-label={label}
-                className={cn(
-                  "habit-heatmap-cell mx-auto aspect-square w-full max-w-[9px] min-w-0 rounded-[3px] border transition-colors",
-                  complete ? "is-complete" : "is-empty",
-                  day === today && "is-today",
-                )}
-              />
-            );
-          })}
+              return (
+                <li
+                  key={day}
+                  title={isFuture ? undefined : label}
+                  aria-label={isFuture ? undefined : label}
+                  aria-hidden={isFuture}
+                  className={cn(
+                    "habit-heatmap-cell aspect-square min-w-0 rounded-[28%]",
+                    isFuture ? "is-future" : complete ? "is-complete" : "is-empty",
+                    day === today && "is-today",
+                  )}
+                />
+              );
+            }),
+          )}
         </ol>
       </div>
     );
