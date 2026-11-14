@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { Icon, type IconName } from "@/components/icon";
 import {
   ContextMenu,
@@ -38,6 +38,7 @@ interface OverviewProps {
 const weekdayFmt = arabicFmt({ weekday: "short" });
 const dayNumberFmt = arabicFmt({ day: "numeric" });
 const dateRangeFmt = arabicFmt({ day: "numeric", month: "short" });
+const EMPTY_DAYS = new Set<DayKey>();
 
 async function toggleToday(habit: Habit, today: DayKey) {
   try {
@@ -193,7 +194,7 @@ function HabitContextMenu({
   );
 }
 
-function HabitChecklistItem({
+const HabitChecklistItem = memo(function HabitChecklistItem({
   habit,
   days,
   today,
@@ -229,9 +230,9 @@ function HabitChecklistItem({
       <TodayToggle habit={habit} today={today} complete={complete} />
     </>
   );
-}
+});
 
-function HabitOverviewCard({
+const HabitOverviewCard = memo(function HabitOverviewCard({
   habit,
   days,
   today,
@@ -272,7 +273,7 @@ function HabitOverviewCard({
       </div>
     </>
   );
-}
+});
 
 export function HabitOverview({
   mode,
@@ -291,7 +292,7 @@ export function HabitOverview({
         {(ordered) => (
           <ul className="grid grid-cols-1 gap-3.5">
             {ordered.map((habit) => {
-              const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
+              const days = daysByHabit.get(habit.id) ?? EMPTY_DAYS;
               return (
                 <HabitContextMenu
                   key={habit.id}
@@ -320,7 +321,7 @@ export function HabitOverview({
         {(ordered) => (
           <ul className="habit-checklist overflow-hidden rounded-[1.35rem] border bg-card divide-y divide-border">
             {ordered.map((habit) => {
-              const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
+              const days = daysByHabit.get(habit.id) ?? EMPTY_DAYS;
               return (
                 <HabitContextMenu
                   key={habit.id}
@@ -381,7 +382,7 @@ export function HabitOverview({
         {(ordered) => (
           <ul className="divide-y divide-border/80">
             {ordered.map((habit) => {
-              const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
+              const days = daysByHabit.get(habit.id) ?? EMPTY_DAYS;
               return (
                 <HabitContextMenu
                   key={habit.id}
