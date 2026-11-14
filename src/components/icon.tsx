@@ -6,6 +6,7 @@ import calendarMonth from "@/assets/icons/calendar_month.svg?url";
 import check from "@/assets/icons/check.svg?url";
 import chevronLeft from "@/assets/icons/chevron_left.svg?url";
 import chevronRight from "@/assets/icons/chevron_right.svg?url";
+import close from "@/assets/icons/close.svg?url";
 import directionsWalk from "@/assets/icons/directions_walk.svg?url";
 import edit from "@/assets/icons/edit.svg?url";
 import favorite from "@/assets/icons/favorite.svg?url";
@@ -43,6 +44,7 @@ const icons = {
   check,
   chevron_left: chevronLeft,
   chevron_right: chevronRight,
+  close,
   directions_walk: directionsWalk,
   edit,
   favorite,

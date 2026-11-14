@@ -23,3 +23,5 @@ from the upstream file when convenient).
 Habit identity symbols live in `habit/` and are the **filled** variant
 (`symbols/web/<name>/materialsymbolsoutlined/<name>_fill1_24px.svg`, same Apache-2.0 license).
 They render through `src/components/habit-icon.tsx`; the approved list is in `docs/icon-policy.md`.
+
+Interface icon `close` (outlined, used by the habit form sheet) was added from the same upstream set.
