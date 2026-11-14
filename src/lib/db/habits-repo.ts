@@ -146,6 +146,16 @@ export async function listLogs(): Promise<HabitLog[]> {
   return getDb().logs.toArray();
 }
 
+/**
+ * Reads logs only for the supplied habit ids using the indexed habitId field.
+ * The Today screen uses this so archived and trashed history is not loaded or
+ * observed on every active-habit update.
+ */
+export async function listLogsForHabits(habitIds: string[]): Promise<HabitLog[]> {
+  if (habitIds.length === 0) return [];
+  return getDb().logs.where("habitId").anyOf([...new Set(habitIds)]).toArray();
+}
+
 export async function getHabit(id: string): Promise<Habit | undefined> {
   return getDb().habits.get(id);
 }
