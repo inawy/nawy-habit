@@ -28,4 +28,32 @@ describe("HabitActivityGrid compact overview", () => {
 
     expect(container.querySelectorAll(".habit-heatmap-grid .is-complete")).toHaveLength(0);
   });
+
+  it("rebuilds the shared layout when the day changes", () => {
+    const first = "2026-11-11" as DayKey;
+    const second = "2026-11-12" as DayKey;
+
+    const { container, rerender } = render(
+      <HabitActivityGrid days={new Set()} today={first} compact />,
+    );
+    const todayTitle = () => container.querySelector(".is-today")?.getAttribute("title");
+    const before = todayTitle();
+
+    rerender(<HabitActivityGrid days={new Set([second])} today={second} compact />);
+
+    expect(container.querySelectorAll(".is-today")).toHaveLength(1);
+    expect(container.querySelectorAll(".is-complete")).toHaveLength(1);
+    expect(todayTitle()).not.toBe(before);
+    expect(todayTitle()).toContain("اليوم");
+  });
+
+  it("gives every card the same layout while keeping each card's own completions", () => {
+    const today = "2026-11-11" as DayKey;
+    const a = render(<HabitActivityGrid days={new Set([today])} today={today} compact />);
+    const b = render(<HabitActivityGrid days={new Set()} today={today} compact />);
+
+    expect(a.container.querySelectorAll(".is-complete")).toHaveLength(1);
+    expect(b.container.querySelectorAll(".is-complete")).toHaveLength(0);
+    expect(a.container.querySelectorAll("li")).toHaveLength(b.container.querySelectorAll("li").length);
+  });
 });
