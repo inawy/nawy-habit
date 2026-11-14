@@ -226,7 +226,7 @@ export function AppSidebar() {
         side="right"
         dir="rtl"
         closeButtonClassName="left-4 right-auto"
-        overlayClassName={restored ? "data-[state=open]:!animate-none" : undefined}
+        overlayClassName={restored ? "data-[state=open]:!animate-none" : ""}
         className={`w-[min(20rem,88vw)] touch-pan-y gap-0 border-s bg-background p-0 shadow-2xl sm:w-80 ${
           swipeClosing ? "data-[state=closed]:!animate-none" : ""
         } ${restored ? "data-[state=open]:!animate-none" : ""}`}
