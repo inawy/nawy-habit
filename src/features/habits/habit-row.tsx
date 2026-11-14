@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { memo } from "react";
 import { Icon } from "@/components/icon";
 import { DragHandle } from "@/features/habits/habit-sortable";
 import { toast } from "sonner";
@@ -23,7 +24,7 @@ const fullDateFmt = arabicFmt({
   month: "long",
 });
 
-export function HabitRow({ habit, days, recentDays, today }: Props) {
+export const HabitRow = memo(function HabitRow({ habit, days, recentDays, today }: Props) {
   async function onToggle(day: DayKey) {
     try {
       await toggleLog(habit.id, day);
@@ -80,4 +81,4 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
       })}
     </>
   );
-}
+});
