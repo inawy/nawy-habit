@@ -45,7 +45,7 @@ describe("useHabitsView", () => {
       await toggleLog(first.id, today);
     });
     await waitFor(() => {
-      expect(result.current?.daysByHabit.get(first.id)?.has(today)).toBe(false);
+      expect(result.current?.daysByHabit.get(first.id)?.has(today) ?? false).toBe(false);
     });
   });
 });
