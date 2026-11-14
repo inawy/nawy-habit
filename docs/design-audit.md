@@ -31,7 +31,7 @@ Reference: [inawy/design-system](https://github.com/inawy/design-system), review
 - Verify WCAG 2.2 AA contrast for every component state, plus keyboard navigation, 200% zoom, touch targets, and safe-area behavior.
 - English/LTR is not yet an implemented product mode.
 - Confirm the exact Cairo font loading and fallback behavior on a clean offline install.
-- Revisit PWA icon artwork so the installed app icon matches the Nawy visual identity.
+- ~~Revisit PWA icon artwork~~ Done: new "Noon Grid" icon, see docs/app-icon.md.
 - Local reminders remain a page-timer implementation, not a guaranteed background alarm. Closed or suspended pages cannot guarantee delivery; cross-tab limits and actual notification delivery still require work.
 
 ## Result

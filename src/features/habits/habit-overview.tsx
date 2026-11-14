@@ -54,16 +54,35 @@ function TodayToggle({
   habit,
   today,
   complete,
+  variant = "round",
 }: {
   habit: Habit;
   today: DayKey;
   complete: boolean;
+  variant?: "round" | "card";
 }) {
+  const label = complete ? `إلغاء إنجاز ${habit.name} اليوم` : `تسجيل إنجاز ${habit.name} اليوم`;
+
+  if (variant === "card") {
+    return (
+      <button
+        type="button"
+        onClick={() => void toggleToday(habit, today)}
+        aria-label={label}
+        aria-pressed={complete}
+        data-complete={complete}
+        className="habit-card-toggle grid size-12 shrink-0 place-items-center rounded-2xl border transition-[transform,background-color,color,box-shadow] duration-200 active:scale-95"
+      >
+        <Icon name="check" className="size-6" />
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
       onClick={() => void toggleToday(habit, today)}
-      aria-label={complete ? `إلغاء إنجاز ${habit.name} اليوم` : `تسجيل إنجاز ${habit.name} اليوم`}
+      aria-label={label}
       aria-pressed={complete}
       data-complete={complete}
       className="habit-today-toggle grid size-8 shrink-0 place-items-center rounded-full border transition-colors active:scale-95"
@@ -228,24 +247,24 @@ function HabitOverviewCard({
         <Link
           to="/habit/$habitId"
           params={{ habitId: habit.id }}
-          className="flex min-w-0 flex-1 items-center gap-3 rounded-lg"
+          className="flex min-w-0 flex-1 items-center gap-3.5 rounded-2xl outline-offset-4"
         >
           <span
-            className="habit-identity grid size-9 shrink-0 place-items-center rounded-xl"
+            className="habit-identity grid size-12 shrink-0 place-items-center rounded-2xl"
             data-habit-color={habit.color}
           >
-            <Icon name={habit.icon} className="size-5" />
+            <Icon name={habit.icon} className="size-6" />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-semibold">{habit.name}</span>
-            <span className="mt-0.5 block text-[11px] text-muted-foreground">
+            <span className="block truncate text-[17px] font-bold leading-snug">{habit.name}</span>
+            <span className="mt-0.5 block truncate text-[13px] leading-snug text-muted-foreground">
               {streak > 0 ? `${num(streak)} يوم متتالي` : `${num(days.size)} إنجاز سابق`}
             </span>
           </span>
         </Link>
-        <TodayToggle habit={habit} today={today} complete={complete} />
+        <TodayToggle habit={habit} today={today} complete={complete} variant="card" />
       </div>
-      <div className="habit-overview-history mt-1.5 pt-0.5">
+      <div className="habit-overview-history mt-4">
         <HabitActivityGrid days={days} today={today} color={habit.color} compact />
       </div>
     </>
@@ -265,7 +284,7 @@ export function HabitOverview({
 }: OverviewProps) {
   if (mode === "cards") {
     return (
-      <ul className="grid grid-cols-1 gap-2">
+      <ul className="grid grid-cols-1 gap-3.5">
         {habits.map((habit) => {
           const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
           return (
@@ -278,7 +297,7 @@ export function HabitOverview({
               onArchive={onArchiveHabit}
               onDelete={onDeleteHabit}
               onShare={onShareHabit}
-              triggerClassName="habit-overview-card rounded-xl border bg-card px-3 py-2"
+              triggerClassName="habit-overview-card rounded-[28px] border p-4"
             >
               <HabitOverviewCard habit={habit} days={days} today={today} />
             </HabitContextMenu>

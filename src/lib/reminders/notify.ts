@@ -15,6 +15,7 @@ export async function showHabitReminder(unfinished: number): Promise<boolean> {
   const options: NotificationOptions = {
     body,
     icon: `${import.meta.env.BASE_URL}icon-192.png`,
+    badge: `${import.meta.env.BASE_URL}badge-96.png`,
     lang: "ar",
     dir: "rtl",
     tag: "nawy-reminder",

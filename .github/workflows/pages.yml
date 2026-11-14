@@ -48,9 +48,25 @@ jobs:
             shell.includes('src="/assets/') || shell.includes('href="/assets/');
           const hasRootManifest = manifest.start_url === "/" && manifest.scope === "/";
           const hasMatchedThemeColor = manifest.theme_color === manifest.background_color;
-          const hasRequiredIcons = [192, 512].every((size) =>
-            manifest.icons.some((icon) => icon.sizes === `${size}x${size}` && existsSync(`${dir}/${icon.src}`)),
+          const requiredIcons = [
+            ["icon-192.png", "192x192", "any"],
+            ["icon-512.png", "512x512", "any"],
+            ["icon-maskable-192.png", "192x192", "maskable"],
+            ["icon-maskable-512.png", "512x512", "maskable"],
+          ];
+          const hasRequiredIcons = requiredIcons.every(([src, sizes, purpose]) =>
+            manifest.icons.some(
+              (icon) =>
+                icon.src === src &&
+                icon.sizes === sizes &&
+                icon.type === "image/png" &&
+                icon.purpose === purpose &&
+                existsSync(`${dir}/${src}`),
+            ),
           );
+          const hasAppleIcon = existsSync(`${dir}/apple-touch-icon.png`);
+          const hasFavicons =
+            existsSync(`${dir}/favicon.svg`) && existsSync(`${dir}/favicon.ico`);
 
           if (!workboxFiles.length) {
             throw new Error("PWA build failed: Workbox runtime is missing from .output/public");
@@ -64,12 +80,20 @@ jobs:
           if (!shellUsesRootAssets) {
             throw new Error("Static shell does not reference assets from the custom-domain root");
           }
-          if (!hasRootManifest || !hasRequiredIcons || !hasMatchedThemeColor) {
-            throw new Error("PWA manifest must use the custom-domain root and include valid 192px/512px icons");
+          if (
+            !hasRootManifest ||
+            !hasRequiredIcons ||
+            !hasAppleIcon ||
+            !hasFavicons ||
+            !hasMatchedThemeColor
+          ) {
+            throw new Error(
+              "PWA output must include root-scoped manifest, any/maskable PNG icons, Apple touch icon, SVG/ICO favicons, and matching theme colors",
+            );
           }
 
           console.log(
-            `PWA output verified: sw.js, ${workboxFiles.length} Workbox file(s), and precached assets.`,
+            `PWA output verified: sw.js, ${workboxFiles.length} Workbox file(s), app shell, and complete icon set.`,
           );
           NODE
       # GitHub Pages serves this app from the custom domain root; 404.html enables deep links.
