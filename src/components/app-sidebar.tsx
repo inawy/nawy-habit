@@ -238,7 +238,7 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
           aria-haspopup="dialog"
           aria-expanded={open}
           title="القائمة"
-          className="habit-toolbar-action grid size-10 shrink-0 place-items-center rounded-xl border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="habit-toolbar-action grid size-10 shrink-0 place-items-center rounded-xl border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground outline-none focus:outline-none focus-visible:outline-none"
         >
           <Icon name="menu" className="size-5" />
         </button>
