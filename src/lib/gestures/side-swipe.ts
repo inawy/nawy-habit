@@ -36,7 +36,7 @@ export function detectSideSwipe(
   if (Math.abs(dx) < Math.abs(dy) * HORIZONTAL_DOMINANCE) return null;
 
   const zone = viewportWidth * SIDE_ZONE_RATIO;
-  if (start.x >= viewportWidth - zone && dx < 0) return "right";
-  if (start.x <= zone && dx > 0) return "left";
+  if (start.x > viewportWidth - zone && dx < 0) return "right";
+  if (start.x < zone && dx > 0) return "left";
   return null;
 }
