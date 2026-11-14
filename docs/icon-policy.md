@@ -48,5 +48,6 @@ Current approved picker set (37): `auto_awesome`, `mosque`, `menu_book`, `water_
 `account_balance_wallet` (wallet), and `volunteer_activism` (hands holding a heart). All artwork was
 visually reviewed.
 
-Retired from the picker but still rendered for existing habits and backups: `directions_walk` and
-`self_improvement` (both show a human figure).
+Retired from the picker: `directions_walk` and `self_improvement` (both show a human figure). Stored
+habits move to `footprint` and `eco` through the Dexie v6 upgrade, and backups replace them on
+import (`replaceLegacyHabitIcon`). The identifiers stay valid in the schema as a safety net.

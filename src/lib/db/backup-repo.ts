@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from "@/lib/habits/appearance";
+import {
+  DEFAULT_HABIT_COLOR,
+  DEFAULT_HABIT_ICON,
+  replaceLegacyHabitIcon,
+} from "@/lib/habits/appearance";
 
 import { getDb } from "./db";
 import { habitLogSchema, habitSchema } from "./schema";
@@ -43,6 +47,17 @@ export async function exportBackup(): Promise<Backup> {
 function upgradeBackup(raw: unknown): unknown {
   if (typeof raw !== "object" || raw === null) return raw;
   const backup = raw as { version?: unknown; habits?: unknown };
+  if (backup.version === BACKUP_VERSION && Array.isArray(backup.habits)) {
+    // Current backups keep their shape; only icons retired from the picker are replaced.
+    return {
+      ...backup,
+      habits: backup.habits.map((habit) => {
+        if (typeof habit !== "object" || habit === null) return habit;
+        const savedHabit = habit as Record<string, unknown>;
+        return { ...savedHabit, icon: replaceLegacyHabitIcon(savedHabit["icon"]) };
+      }),
+    };
+  }
   if (![1, 2, 3, 4].includes(backup.version as number) || !Array.isArray(backup.habits)) {
     return raw;
   }
@@ -59,7 +74,7 @@ function upgradeBackup(raw: unknown): unknown {
           ? "account_balance_wallet"
           : previousIcon === "redeem"
             ? "volunteer_activism"
-            : (previousIcon ?? DEFAULT_HABIT_ICON);
+            : replaceLegacyHabitIcon(previousIcon ?? DEFAULT_HABIT_ICON);
 
       return {
         ...savedHabit,

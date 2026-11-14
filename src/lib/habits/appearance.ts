@@ -55,6 +55,20 @@ export const HABIT_PICKER_ICON_NAMES = [
  */
 export const LEGACY_HABIT_ICON_NAMES = ["directions_walk", "self_improvement"] as const;
 
+/** Figure-free replacements used when migrating stored habits and importing older backups. */
+export const LEGACY_HABIT_ICON_REPLACEMENTS = {
+  directions_walk: "footprint",
+  self_improvement: "eco",
+} as const satisfies Record<(typeof LEGACY_HABIT_ICON_NAMES)[number], string>;
+
+/** Maps a retired icon identifier to its replacement; any other value is returned unchanged. */
+export function replaceLegacyHabitIcon<T>(icon: T): T | string {
+  if (typeof icon === "string" && Object.hasOwn(LEGACY_HABIT_ICON_REPLACEMENTS, icon)) {
+    return LEGACY_HABIT_ICON_REPLACEMENTS[icon as keyof typeof LEGACY_HABIT_ICON_REPLACEMENTS];
+  }
+  return icon;
+}
+
 export const HABIT_ICON_NAMES = [...HABIT_PICKER_ICON_NAMES, ...LEGACY_HABIT_ICON_NAMES] as const;
 
 export type HabitIconName = (typeof HABIT_ICON_NAMES)[number];

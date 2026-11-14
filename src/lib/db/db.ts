@@ -71,6 +71,21 @@ export class NawyHabitDB extends Dexie {
             habit.deletedAt ??= null;
           }),
       );
+    // Retire the human-figure icons from the picker: move saved habits to figure-free ones.
+    this.version(6)
+      .stores({
+        habits: "id, order, archivedAt, deletedAt",
+        logs: "id, habitId, day, [habitId+day]",
+      })
+      .upgrade((tx) =>
+        tx
+          .table("habits")
+          .toCollection()
+          .modify((habit: { icon?: string }) => {
+            if (habit.icon === "directions_walk") habit.icon = "footprint";
+            if (habit.icon === "self_improvement") habit.icon = "eco";
+          }),
+      );
   }
 }
 
