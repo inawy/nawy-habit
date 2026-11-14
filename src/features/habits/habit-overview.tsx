@@ -13,6 +13,7 @@ import { toast } from "sonner";
 
 import { HabitActivityGrid } from "@/features/habits/habit-activity-grid";
 import { HabitRow } from "@/features/habits/habit-row";
+import { DragHandle, HabitSortableList, SortableRow } from "@/features/habits/habit-sortable";
 import type { DayKey } from "@/lib/date/day-key";
 import { addDays, parseDayKey } from "@/lib/date/day-key";
 import { toggleLog } from "@/lib/db/habits-repo";
@@ -133,9 +134,9 @@ function HabitContextMenu({
         aria-label={`خيارات ${habit.name}`}
         title="اضغط مطولًا لخيارات العادة"
       >
-        <li className={triggerClassName} data-habit-color={habit.color}>
+        <SortableRow habitId={habit.id} className={triggerClassName} data-habit-color={habit.color}>
           {children}
-        </li>
+        </SortableRow>
       </ContextMenuTrigger>
       <ContextMenuContent
         style={{ direction: "rtl" }}
@@ -206,6 +207,7 @@ function HabitChecklistItem({
 
   return (
     <>
+      <DragHandle habitName={habit.name} />
       <Link
         to="/habit/$habitId"
         params={{ habitId: habit.id }}
@@ -243,7 +245,8 @@ function HabitOverviewCard({
 
   return (
     <>
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-2">
+        <DragHandle habitName={habit.name} />
         <Link
           to="/habit/$habitId"
           params={{ habitId: habit.id }}
@@ -284,51 +287,59 @@ export function HabitOverview({
 }: OverviewProps) {
   if (mode === "cards") {
     return (
-      <ul className="grid grid-cols-1 gap-3.5">
-        {habits.map((habit) => {
-          const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
-          return (
-            <HabitContextMenu
-              key={habit.id}
-              habit={habit}
-              days={days}
-              today={today}
-              onEdit={onEditHabit}
-              onArchive={onArchiveHabit}
-              onDelete={onDeleteHabit}
-              onShare={onShareHabit}
-              triggerClassName="habit-overview-card rounded-[28px] border p-4"
-            >
-              <HabitOverviewCard habit={habit} days={days} today={today} />
-            </HabitContextMenu>
-          );
-        })}
-      </ul>
+      <HabitSortableList habits={habits}>
+        {(ordered) => (
+          <ul className="grid grid-cols-1 gap-3.5">
+            {ordered.map((habit) => {
+              const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
+              return (
+                <HabitContextMenu
+                  key={habit.id}
+                  habit={habit}
+                  days={days}
+                  today={today}
+                  onEdit={onEditHabit}
+                  onArchive={onArchiveHabit}
+                  onDelete={onDeleteHabit}
+                  onShare={onShareHabit}
+                  triggerClassName="habit-overview-card rounded-[28px] border p-4"
+                >
+                  <HabitOverviewCard habit={habit} days={days} today={today} />
+                </HabitContextMenu>
+              );
+            })}
+          </ul>
+        )}
+      </HabitSortableList>
     );
   }
 
   if (mode === "checklist") {
     return (
-      <ul className="habit-checklist overflow-hidden rounded-[1.35rem] border bg-card divide-y divide-border">
-        {habits.map((habit) => {
-          const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
-          return (
-            <HabitContextMenu
-              key={habit.id}
-              habit={habit}
-              days={days}
-              today={today}
-              onEdit={onEditHabit}
-              onArchive={onArchiveHabit}
-              onDelete={onDeleteHabit}
-              onShare={onShareHabit}
-              triggerClassName="habit-checklist-row flex items-center gap-3 px-3 py-3"
-            >
-              <HabitChecklistItem habit={habit} days={days} today={today} />
-            </HabitContextMenu>
-          );
-        })}
-      </ul>
+      <HabitSortableList habits={habits}>
+        {(ordered) => (
+          <ul className="habit-checklist overflow-hidden rounded-[1.35rem] border bg-card divide-y divide-border">
+            {ordered.map((habit) => {
+              const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
+              return (
+                <HabitContextMenu
+                  key={habit.id}
+                  habit={habit}
+                  days={days}
+                  today={today}
+                  onEdit={onEditHabit}
+                  onArchive={onArchiveHabit}
+                  onDelete={onDeleteHabit}
+                  onShare={onShareHabit}
+                  triggerClassName="habit-checklist-row flex items-center gap-2 px-3 py-3"
+                >
+                  <HabitChecklistItem habit={habit} days={days} today={today} />
+                </HabitContextMenu>
+              );
+            })}
+          </ul>
+        )}
+      </HabitSortableList>
     );
   }
 
@@ -366,26 +377,30 @@ export function HabitOverview({
           </span>
         ))}
       </div>
-      <ul className="divide-y divide-border/80">
-        {habits.map((habit) => {
-          const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
-          return (
-            <HabitContextMenu
-              key={habit.id}
-              habit={habit}
-              days={days}
-              today={today}
-              onEdit={onEditHabit}
-              onArchive={onArchiveHabit}
-              onDelete={onDeleteHabit}
-              onShare={onShareHabit}
-              triggerClassName="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
-            >
-              <HabitRow habit={habit} days={days} recentDays={recentDays} today={today} />
-            </HabitContextMenu>
-          );
-        })}
-      </ul>
+      <HabitSortableList habits={habits}>
+        {(ordered) => (
+          <ul className="divide-y divide-border/80">
+            {ordered.map((habit) => {
+              const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
+              return (
+                <HabitContextMenu
+                  key={habit.id}
+                  habit={habit}
+                  days={days}
+                  today={today}
+                  onEdit={onEditHabit}
+                  onArchive={onArchiveHabit}
+                  onDelete={onDeleteHabit}
+                  onShare={onShareHabit}
+                  triggerClassName="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
+                >
+                  <HabitRow habit={habit} days={days} recentDays={recentDays} today={today} />
+                </HabitContextMenu>
+              );
+            })}
+          </ul>
+        )}
+      </HabitSortableList>
     </section>
   );
 }
