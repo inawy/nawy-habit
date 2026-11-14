@@ -296,6 +296,76 @@ describe("database migrations", () => {
     await current.delete();
   });
 
+  it("replaces human-figure icons when importing current and older backups", () => {
+    const habit = (id: string, icon: string) => ({
+      id,
+      name: id,
+      emoji: "✨",
+      icon,
+      color: "blue",
+      order: 0,
+      createdAt: "2026-10-14T12:00:00.000Z",
+      archivedAt: null,
+      deletedAt: null,
+    });
+    const current = parseBackup(
+      JSON.stringify({
+        app: "nawy-habit",
+        version: 5,
+        exportedAt: "2026-11-14T12:00:00.000Z",
+        habits: [
+          habit("walk", "directions_walk"),
+          habit("calm", "self_improvement"),
+          habit("read", "menu_book"),
+        ],
+        logs: [],
+      }),
+    );
+    expect(current.habits.map((h) => h.icon)).toEqual(["footprint", "eco", "menu_book"]);
+
+    const older = parseBackup(
+      JSON.stringify({
+        app: "nawy-habit",
+        version: 4,
+        exportedAt: "2026-10-14T12:00:00.000Z",
+        habits: [habit("walk", "directions_walk")],
+        logs: [],
+      }),
+    );
+    expect(older.habits[0]?.icon).toBe("footprint");
+  });
+
+  it("replaces human-figure icons when migrating schema v5", async () => {
+    const name = `mig-v5-${crypto.randomUUID()}`;
+    const old = new Dexie(name);
+    for (const version of [1, 2, 3, 4, 5]) {
+      old.version(version).stores({
+        habits: version === 5 ? "id, order, archivedAt, deletedAt" : "id, order, archivedAt",
+        logs: "id, habitId, day, [habitId+day]",
+      });
+    }
+    const base = {
+      emoji: "✨",
+      color: "blue",
+      order: 0,
+      createdAt: "2026-11-14T12:00:00.000Z",
+      archivedAt: null,
+      deletedAt: null,
+    };
+    await old.table("habits").bulkAdd([
+      { ...base, id: "walk", name: "مشي", icon: "directions_walk" },
+      { ...base, id: "calm", name: "هدوء", icon: "self_improvement" },
+      { ...base, id: "read", name: "قراءة", icon: "menu_book" },
+    ]);
+    old.close();
+
+    const current = new NawyHabitDB(name);
+    expect((await current.habits.get("walk"))?.icon).toBe("footprint");
+    expect((await current.habits.get("calm"))?.icon).toBe("eco");
+    expect((await current.habits.get("read"))?.icon).toBe("menu_book");
+    await current.delete();
+  });
+
   it("adds the trash timestamp when migrating schema v4 without losing logs", async () => {
     const name = `mig-v4-${crypto.randomUUID()}`;
     const old = new Dexie(name);
