@@ -134,45 +134,33 @@
   --habit-color: var(--primary);
 }
 
-[data-habit-color="blue"] { --habit-color: #3D7BFF; }
-[data-habit-color="teal"] { --habit-color: #20A99B; }
-[data-habit-color="green"] { --habit-color: #239B56; }
-[data-habit-color="orange"] { --habit-color: #E36B3D; }
-[data-habit-color="rose"] { --habit-color: #D95082; }
-[data-habit-color="violet"] { --habit-color: #8061D8; }
-[data-habit-color="amber"] { --habit-color: #C98218; }
-[data-habit-color="slate"] { --habit-color: #64748B; }
+/* Habit colors use the Google soft-tint palette that the app icon uses (docs/app-icon.md).
+   color = main fill (cells, toggle), ink = glyph and text on soft tiles, soft = tile tint,
+   on = check mark on the fill. Stored ids never change; only these values do. */
+[data-habit-color="blue"] { --habit-color: #3D7BFF; --habit-ink: #185ABC; --habit-soft: #D2E3FC; --habit-on: #FFFFFF; }
+[data-habit-color="red"] { --habit-color: #D93025; --habit-ink: #B31412; --habit-soft: #FAD2CF; --habit-on: #FFFFFF; }
+[data-habit-color="amber"] { --habit-color: #F9AB00; --habit-ink: #8A5200; --habit-soft: #FEEFC3; --habit-on: #202124; }
+[data-habit-color="green"] { --habit-color: #1E8E3E; --habit-ink: #137333; --habit-soft: #CEEAD6; --habit-on: #FFFFFF; }
+[data-habit-color="orange"] { --habit-color: #E8710A; --habit-ink: #9A4F00; --habit-soft: #FEDFC8; --habit-on: #FFFFFF; }
+[data-habit-color="rose"] { --habit-color: #E52592; --habit-ink: #B80672; --habit-soft: #FDCFE8; --habit-on: #FFFFFF; }
+[data-habit-color="violet"] { --habit-color: #9334E6; --habit-ink: #7627BB; --habit-soft: #E9D2FD; --habit-on: #FFFFFF; }
+[data-habit-color="teal"] { --habit-color: #129EAF; --habit-ink: #007B83; --habit-soft: #CBF0F8; --habit-on: #FFFFFF; }
+[data-habit-color="slate"] { --habit-color: #5F6368; --habit-ink: #3C4043; --habit-soft: #F1F3F4; --habit-on: #FFFFFF; }
 
-.dark [data-habit-color="blue"], [data-theme="dark"] [data-habit-color="blue"] { --habit-color: #79A5FF; }
-.dark [data-habit-color="teal"], [data-theme="dark"] [data-habit-color="teal"] { --habit-color: #5EEAD4; }
-.dark [data-habit-color="green"], [data-theme="dark"] [data-habit-color="green"] { --habit-color: #86EFAC; }
-.dark [data-habit-color="orange"], [data-theme="dark"] [data-habit-color="orange"] { --habit-color: #FDBA74; }
-.dark [data-habit-color="rose"], [data-theme="dark"] [data-habit-color="rose"] { --habit-color: #FDA4AF; }
-.dark [data-habit-color="violet"], [data-theme="dark"] [data-habit-color="violet"] { --habit-color: #C4B5FD; }
-.dark [data-habit-color="amber"], [data-theme="dark"] [data-habit-color="amber"] { --habit-color: #FCD34D; }
-.dark [data-habit-color="slate"], [data-theme="dark"] [data-habit-color="slate"] { --habit-color: #CBD5E1; }
+.dark [data-habit-color="blue"], [data-theme="dark"] [data-habit-color="blue"] { --habit-color: #79A5FF; --habit-ink: #AECBFA; --habit-soft: color-mix(in srgb, #79A5FF 18%, #1E1E1E); --habit-on: #121212; }
+.dark [data-habit-color="red"], [data-theme="dark"] [data-habit-color="red"] { --habit-color: #F28B82; --habit-ink: #F6AEA9; --habit-soft: color-mix(in srgb, #F28B82 18%, #1E1E1E); --habit-on: #121212; }
+.dark [data-habit-color="amber"], [data-theme="dark"] [data-habit-color="amber"] { --habit-color: #FDD663; --habit-ink: #FDE293; --habit-soft: color-mix(in srgb, #FDD663 18%, #1E1E1E); --habit-on: #121212; }
+.dark [data-habit-color="green"], [data-theme="dark"] [data-habit-color="green"] { --habit-color: #81C995; --habit-ink: #A8DAB5; --habit-soft: color-mix(in srgb, #81C995 18%, #1E1E1E); --habit-on: #121212; }
+.dark [data-habit-color="orange"], [data-theme="dark"] [data-habit-color="orange"] { --habit-color: #FCAD70; --habit-ink: #FDC69C; --habit-soft: color-mix(in srgb, #FCAD70 18%, #1E1E1E); --habit-on: #121212; }
+.dark [data-habit-color="rose"], [data-theme="dark"] [data-habit-color="rose"] { --habit-color: #FF8BCB; --habit-ink: #FBA9D6; --habit-soft: color-mix(in srgb, #FF8BCB 18%, #1E1E1E); --habit-on: #121212; }
+.dark [data-habit-color="violet"], [data-theme="dark"] [data-habit-color="violet"] { --habit-color: #C58AF9; --habit-ink: #D7AEFB; --habit-soft: color-mix(in srgb, #C58AF9 18%, #1E1E1E); --habit-on: #121212; }
+.dark [data-habit-color="teal"], [data-theme="dark"] [data-habit-color="teal"] { --habit-color: #78D9EC; --habit-ink: #A1E4F2; --habit-soft: color-mix(in srgb, #78D9EC 18%, #1E1E1E); --habit-on: #121212; }
+.dark [data-habit-color="slate"], [data-theme="dark"] [data-habit-color="slate"] { --habit-color: #BDC1C6; --habit-ink: #DADCE0; --habit-soft: color-mix(in srgb, #BDC1C6 18%, #1E1E1E); --habit-on: #121212; }
 
 .habit-identity {
   color: var(--habit-ink, var(--primary));
   background-color: var(--habit-soft, var(--accent));
 }
-.habit-identity[data-habit-color="blue"] { --habit-ink: #2F6CEB; --habit-soft: #E8F0FF; }
-.habit-identity[data-habit-color="teal"] { --habit-ink: #0F766E; --habit-soft: #CCFBF1; }
-.habit-identity[data-habit-color="green"] { --habit-ink: #15803D; --habit-soft: #DCFCE7; }
-.habit-identity[data-habit-color="orange"] { --habit-ink: #C2410C; --habit-soft: #FFEDD5; }
-.habit-identity[data-habit-color="rose"] { --habit-ink: #BE185D; --habit-soft: #FCE7F3; }
-.habit-identity[data-habit-color="violet"] { --habit-ink: #6D28D9; --habit-soft: #EDE9FE; }
-.habit-identity[data-habit-color="amber"] { --habit-ink: #A16207; --habit-soft: #FEF3C7; }
-.habit-identity[data-habit-color="slate"] { --habit-ink: #475569; --habit-soft: #E2E8F0; }
-
-.dark .habit-identity[data-habit-color="blue"], [data-theme="dark"] .habit-identity[data-habit-color="blue"] { --habit-ink: #A7C4FF; --habit-soft: #20365C; }
-.dark .habit-identity[data-habit-color="teal"], [data-theme="dark"] .habit-identity[data-habit-color="teal"] { --habit-ink: #5EEAD4; --habit-soft: #123F3B; }
-.dark .habit-identity[data-habit-color="green"], [data-theme="dark"] .habit-identity[data-habit-color="green"] { --habit-ink: #86EFAC; --habit-soft: #17432A; }
-.dark .habit-identity[data-habit-color="orange"], [data-theme="dark"] .habit-identity[data-habit-color="orange"] { --habit-ink: #FDBA74; --habit-soft: #4A2C1B; }
-.dark .habit-identity[data-habit-color="rose"], [data-theme="dark"] .habit-identity[data-habit-color="rose"] { --habit-ink: #FDA4AF; --habit-soft: #4B2435; }
-.dark .habit-identity[data-habit-color="violet"], [data-theme="dark"] .habit-identity[data-habit-color="violet"] { --habit-ink: #C4B5FD; --habit-soft: #30254F; }
-.dark .habit-identity[data-habit-color="amber"], [data-theme="dark"] .habit-identity[data-habit-color="amber"] { --habit-ink: #FCD34D; --habit-soft: #493819; }
-.dark .habit-identity[data-habit-color="slate"], [data-theme="dark"] .habit-identity[data-habit-color="slate"] { --habit-ink: #CBD5E1; --habit-soft: #273444; }
 
 .habit-day-cell {
   background: #EEF1F5;
@@ -196,12 +184,12 @@
   background: var(--muted);
 }
 .habit-today-toggle[data-complete="true"] {
-  color: #FFFFFF;
+  color: var(--habit-on, #FFFFFF);
   background: var(--habit-color);
   border-color: transparent;
 }
 .dark .habit-today-toggle[data-complete="true"], [data-theme="dark"] .habit-today-toggle[data-complete="true"] {
-  color: #121212;
+  color: var(--habit-on, #121212);
 }
 
 .habit-checklist-row,
@@ -235,12 +223,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 .habit-card-toggle[data-complete="true"] {
-  color: #FFFFFF;
+  color: var(--habit-on, #FFFFFF);
   background: var(--habit-color);
   border-color: transparent;
 }
 .dark .habit-card-toggle[data-complete="true"], [data-theme="dark"] .habit-card-toggle[data-complete="true"] {
-  color: #121212;
+  color: var(--habit-on, #121212);
 }
 
 /* Fade the oldest weeks at the inline-end edge (left in RTL, right in LTR). */
@@ -304,7 +292,7 @@
   line-height: 1;
 }
 .habit-stat-chip[data-habit-color] {
-  color: var(--habit-color);
+  color: var(--habit-ink, var(--habit-color));
   border-color: color-mix(in srgb, var(--habit-color) 24%, var(--border));
   background: color-mix(in srgb, var(--habit-color) 9%, var(--card));
 }

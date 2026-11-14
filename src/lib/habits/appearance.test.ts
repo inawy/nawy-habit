@@ -3,6 +3,8 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
+  HABIT_COLOR_NAMES,
+  HABIT_COLOR_OPTIONS,
   HABIT_ICON_NAMES,
   HABIT_ICON_OPTIONS,
   HABIT_PICKER_ICON_NAMES,
@@ -65,6 +67,23 @@ describe("habit icon allowlist", () => {
       "volunteer_activism",
     ]) {
       expect(HABIT_ICON_NAMES).toContain(legacy);
+    }
+  });
+});
+
+describe("habit color palette", () => {
+  it("offers every stored color id once, each with a distinct swatch", () => {
+    expect(HABIT_COLOR_OPTIONS.map((option) => option.value).sort()).toEqual(
+      [...HABIT_COLOR_NAMES].sort(),
+    );
+    expect(new Set(HABIT_COLOR_OPTIONS.map((option) => option.swatch)).size).toBe(
+      HABIT_COLOR_OPTIONS.length,
+    );
+  });
+
+  it("keeps every color id that earlier versions could have saved", () => {
+    for (const legacy of ["blue", "teal", "green", "orange", "rose", "violet", "amber", "slate"]) {
+      expect(HABIT_COLOR_NAMES).toContain(legacy);
     }
   });
 });

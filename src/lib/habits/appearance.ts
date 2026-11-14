@@ -113,8 +113,14 @@ export const HABIT_ICON_OPTIONS: readonly { value: HabitIconName; label: string 
   { value: "volunteer_activism", label: "عطاء" },
 ];
 
+/**
+ * Habit color ids are persisted; never rename them. Their appearance (Google soft-tint palette,
+ * shared with the app icon) lives in styles.css, so a palette change needs no data migration.
+ * "teal" is shown as sky blue, "amber" as yellow and "slate" as grey.
+ */
 export const HABIT_COLOR_NAMES = [
   "blue",
+  "red",
   "teal",
   "green",
   "orange",
@@ -126,19 +132,21 @@ export const HABIT_COLOR_NAMES = [
 
 export type HabitColorName = (typeof HABIT_COLOR_NAMES)[number];
 
+/** `swatch` is the light-theme fill color, shown in the color picker. */
 export const HABIT_COLOR_OPTIONS: readonly {
   value: HabitColorName;
   label: string;
   swatch: string;
 }[] = [
   { value: "blue", label: "أزرق", swatch: "#3D7BFF" },
-  { value: "teal", label: "فيروزي", swatch: "#0F9488" },
-  { value: "green", label: "أخضر", swatch: "#239B56" },
-  { value: "orange", label: "برتقالي", swatch: "#E36B3D" },
-  { value: "rose", label: "وردي", swatch: "#D95082" },
-  { value: "violet", label: "بنفسجي", swatch: "#8061D8" },
-  { value: "amber", label: "ذهبي", swatch: "#C98218" },
-  { value: "slate", label: "رمادي", swatch: "#64748B" },
+  { value: "red", label: "أحمر", swatch: "#D93025" },
+  { value: "teal", label: "سماوي", swatch: "#129EAF" },
+  { value: "green", label: "أخضر", swatch: "#1E8E3E" },
+  { value: "orange", label: "برتقالي", swatch: "#E8710A" },
+  { value: "rose", label: "وردي", swatch: "#E52592" },
+  { value: "violet", label: "بنفسجي", swatch: "#9334E6" },
+  { value: "amber", label: "أصفر", swatch: "#F9AB00" },
+  { value: "slate", label: "رمادي", swatch: "#5F6368" },
 ];
 
 export const DEFAULT_HABIT_ICON: HabitIconName = "auto_awesome";
