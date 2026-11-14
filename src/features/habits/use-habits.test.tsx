@@ -2,8 +2,8 @@ import "fake-indexeddb/auto";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { toggleLog, createHabit } from "@/lib/db/habits-repo";
-import { todayKey } from "@/lib/date/day-key";
+import { createHabit, listRecentLogsForHabits, logId, toggleLog } from "@/lib/db/habits-repo";
+import { addDays, todayKey } from "@/lib/date/day-key";
 
 import { NawyHabitDB, setDbForTests } from "@/lib/db/db";
 import { useHabitsView } from "./use-habits";
@@ -48,4 +48,44 @@ describe("useHabitsView", () => {
       expect(result.current?.daysByHabit.get(first.id)?.has(today) ?? false).toBe(false);
     });
   });
+  it("loads a rolling window while retaining lifetime completion totals", async () => {
+    const habit = await createHabit({ name: "قراءة" });
+    const today = todayKey();
+    const logs = Array.from({ length: 200 }, (_, index) => {
+      const day = addDays(today, -(index * 2));
+      return {
+        id: logId(habit.id, day),
+        habitId: habit.id,
+        day,
+        createdAt: new Date().toISOString(),
+      };
+    });
+    await db.logs.bulkAdd(logs);
+
+    const result = await listRecentLogsForHabits([habit.id], today);
+
+    expect(result.logs).toHaveLength(87);
+    expect(result.totalsByHabit.get(habit.id)).toBe(200);
+  });
+
+  it("keeps unusually long consecutive streak history intact", async () => {
+    const habit = await createHabit({ name: "مشي" });
+    const today = todayKey();
+    const logs = Array.from({ length: 180 }, (_, index) => {
+      const day = addDays(today, -index);
+      return {
+        id: logId(habit.id, day),
+        habitId: habit.id,
+        day,
+        createdAt: new Date().toISOString(),
+      };
+    });
+    await db.logs.bulkAdd(logs);
+
+    const result = await listRecentLogsForHabits([habit.id], today);
+
+    expect(result.logs).toHaveLength(180);
+    expect(result.totalsByHabit.get(habit.id)).toBe(180);
+  });
+
 });
