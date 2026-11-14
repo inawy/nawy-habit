@@ -67,7 +67,9 @@ function HabitDetailPage() {
     return (
       <main className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center px-4 text-center">
         <h1 className="mt-3 text-lg font-semibold">ما لقينا هذه العادة</h1>
-        <p className="mt-1 text-sm text-muted-foreground">ربما حُذفت العادة، أو أن الرابط غير صحيح.</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          ربما حُذفت العادة، أو أن الرابط غير صحيح.
+        </p>
         <Button asChild className="mt-5">
           <Link to="/" replace>
             ارجع لليوم

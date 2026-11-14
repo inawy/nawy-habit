@@ -35,8 +35,15 @@ const instructions: ScreenReaderInstructions = {
 };
 
 function SortableHabitRow({ habit, position }: { habit: Habit; position: number }) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
-    useSortable({ id: habit.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: habit.id });
 
   return (
     <li
@@ -122,7 +129,10 @@ export function HabitReorderList({ habits }: { habits: Habit[] }) {
       accessibility={{ announcements, screenReaderInstructions: instructions }}
       onDragEnd={(event) => void onDragEnd(event)}
     >
-      <SortableContext items={items.map((habit) => habit.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        items={items.map((habit) => habit.id)}
+        strategy={verticalListSortingStrategy}
+      >
         <ul className="grid gap-2" aria-label="ترتيب العادات">
           {items.map((habit, index) => (
             <SortableHabitRow key={habit.id} habit={habit} position={index + 1} />

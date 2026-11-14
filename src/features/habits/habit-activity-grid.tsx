@@ -121,10 +121,7 @@ export function HabitActivityGrid({
       : "آخر سنة";
 
   return (
-    <div
-      className="habit-heatmap overflow-x-auto pb-1"
-      data-habit-color={color}
-    >
+    <div className="habit-heatmap overflow-x-auto pb-1" data-habit-color={color}>
       <div className="sticky start-0 mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <span>{compact ? "آخر سنة" : historyLabel}</span>
         <span>{num(completed)} يوم إنجاز</span>
@@ -192,9 +189,7 @@ export function HabitActivityGrid({
         </ol>
       </div>
       <div className="sticky start-0 mt-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground">
-        <span className="tabular-nums">
-          {dateFmt.format(parseDayKey(oldestWeekDate))} ← اليوم
-        </span>
+        <span className="tabular-nums">{dateFmt.format(parseDayKey(oldestWeekDate))} ← اليوم</span>
         <ul className="flex items-center gap-3" aria-label="دليل الألوان">
           <li className="flex items-center gap-1.5">
             <span className="habit-heatmap-cell is-complete size-2.5 rounded-[3px] border" />
