@@ -78,7 +78,13 @@ function NavigationItem({
 
 export function AppSidebar() {
   const [open, setOpen] = useState(false);
-  const swipeStart = useRef<{ x: number; y: number } | null>(null);
+  const swipe = useRef<{
+    x: number;
+    y: number;
+    lastX: number;
+    lastTime: number;
+    dragging: boolean;
+  } | null>(null);
   const swiped = useRef(false);
   const close = () => setOpen(false);
 
@@ -89,23 +95,86 @@ export function AppSidebar() {
       target instanceof HTMLElement &&
       target.closest("a, button, [role='button'], input, textarea, select")
     ) {
-      swipeStart.current = null;
+      swipe.current = null;
       return;
     }
-    swipeStart.current = { x: event.clientX, y: event.clientY };
+
+    swipe.current = {
+      x: event.clientX,
+      y: event.clientY,
+      lastX: event.clientX,
+      lastTime: event.timeStamp,
+      dragging: false,
+    };
   };
 
-  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!swipeStart.current) return;
-    const deltaX = event.clientX - swipeStart.current.x;
-    const deltaY = event.clientY - swipeStart.current.y;
-    swipeStart.current = null;
-
-    // The panel opens from the right, so a deliberate rightward swipe dismisses it.
-    if (deltaX > 84 && deltaX > Math.abs(deltaY) * 1.25) {
-      swiped.current = true;
-      close();
+  const resetSwipeStyle = (element: HTMLDivElement, animate = true) => {
+    element.style.transition = animate
+      ? "transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1)"
+      : "none";
+    element.style.transform = "translate3d(0, 0, 0)";
+    if (animate) {
+      window.setTimeout(() => {
+        element.style.transition = "";
+        element.style.transform = "";
+      }, 240);
+    } else {
+      element.style.transition = "";
+      element.style.transform = "";
     }
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const current = swipe.current;
+    if (!current) return;
+
+    const deltaX = event.clientX - current.x;
+    const deltaY = event.clientY - current.y;
+
+    if (!current.dragging) {
+      // Let normal vertical scrolling win; only take over a clear rightward gesture.
+      if (Math.abs(deltaY) > 10 && Math.abs(deltaY) > Math.abs(deltaX)) {
+        swipe.current = null;
+        return;
+      }
+      if (deltaX < 8 || deltaX < Math.abs(deltaY) * 1.15) return;
+
+      current.dragging = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
+
+    event.preventDefault();
+    const offset = Math.max(0, deltaX);
+    event.currentTarget.style.transition = "none";
+    event.currentTarget.style.transform = `translate3d(${offset}px, 0, 0)`;
+    current.lastX = event.clientX;
+    current.lastTime = event.timeStamp;
+  };
+
+  const finishSwipe = (event: React.PointerEvent<HTMLDivElement>) => {
+    const current = swipe.current;
+    swipe.current = null;
+    if (!current?.dragging) return;
+
+    const element = event.currentTarget;
+    const deltaX = Math.max(0, event.clientX - current.x);
+    const elapsed = Math.max(1, event.timeStamp - current.lastTime);
+    const velocity = Math.max(0, (event.clientX - current.lastX) / elapsed);
+    const threshold = Math.max(72, element.getBoundingClientRect().width * 0.28);
+
+    if (deltaX >= threshold || (deltaX > 34 && velocity > 0.55)) {
+      swiped.current = true;
+      element.style.transition = "transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1)";
+      element.style.transform = "translate3d(100%, 0, 0)";
+      window.setTimeout(() => {
+        element.style.transition = "";
+        element.style.transform = "";
+        close();
+      }, 155);
+      return;
+    }
+
+    resetSwipeStyle(element);
   };
 
   const handleClickCapture = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -134,11 +203,13 @@ export function AppSidebar() {
         side="right"
         dir="rtl"
         closeButtonClassName="left-4 right-auto"
-        className="w-[min(20rem,88vw)] gap-0 border-s bg-background p-0 shadow-2xl sm:w-80"
+        className="w-[min(20rem,88vw)] touch-pan-y gap-0 border-s bg-background p-0 shadow-2xl sm:w-80"
         onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={() => {
-          swipeStart.current = null;
+        onPointerMove={handlePointerMove}
+        onPointerUp={finishSwipe}
+        onPointerCancel={(event) => {
+          swipe.current = null;
+          resetSwipeStyle(event.currentTarget);
         }}
         onClickCapture={handleClickCapture}
       >
