@@ -93,7 +93,7 @@ export function AppSidebar() {
     const target = event.target;
     if (
       target instanceof HTMLElement &&
-      target.closest("a, button, [role='button'], input, textarea, select")
+      target.closest("button, input, textarea, select, [contenteditable='true'], [data-no-swipe]")
     ) {
       swipe.current = null;
       return;
@@ -162,13 +162,11 @@ export function AppSidebar() {
 
     if (deltaX >= threshold || (deltaX > 34 && velocity > 0.55)) {
       swiped.current = true;
-      element.style.transition = "transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1)";
-      element.style.transform = "translate3d(100%, 0, 0)";
-      window.setTimeout(() => {
-        element.style.transition = "";
-        element.style.transform = "";
-        close();
-      }, 155);
+      // Clear the drag transform before closing so Radix runs only its own
+      // slide-out animation instead of stacking a second transform animation.
+      element.style.transition = "";
+      element.style.transform = "";
+      close();
       return;
     }
 
