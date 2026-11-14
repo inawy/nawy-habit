@@ -78,6 +78,7 @@ function NavigationItem({
 
 export function AppSidebar() {
   const [open, setOpen] = useState(false);
+  const [swipeClosing, setSwipeClosing] = useState(false);
   const swipe = useRef<{
     x: number;
     y: number;
@@ -162,11 +163,12 @@ export function AppSidebar() {
 
     if (deltaX >= threshold || (deltaX > 34 && velocity > 0.55)) {
       swiped.current = true;
-      // Clear the drag transform before closing so Radix runs only its own
-      // slide-out animation instead of stacking a second transform animation.
-      element.style.transition = "";
-      element.style.transform = "";
-      close();
+      // Finish the same finger-following motion, then close without Radix's
+      // second slide-out animation (which would make the panel jump backward).
+      setSwipeClosing(true);
+      element.style.transition = "transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1)";
+      element.style.transform = "translate3d(100%, 0, 0)";
+      window.setTimeout(close, 150);
       return;
     }
 
@@ -181,7 +183,13 @@ export function AppSidebar() {
   };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (nextOpen) setSwipeClosing(false);
+      }}
+    >
       <SheetTrigger asChild>
         <button
           type="button"
@@ -199,7 +207,9 @@ export function AppSidebar() {
         side="right"
         dir="rtl"
         closeButtonClassName="left-4 right-auto"
-        className="w-[min(20rem,88vw)] touch-pan-y gap-0 border-s bg-background p-0 shadow-2xl sm:w-80"
+        className={`w-[min(20rem,88vw)] touch-pan-y gap-0 border-s bg-background p-0 shadow-2xl sm:w-80 ${
+          swipeClosing ? "data-[state=closed]:!animate-none" : ""
+        }`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={finishSwipe}
