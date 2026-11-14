@@ -97,6 +97,7 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
     y: number;
     lastX: number;
     lastTime: number;
+    velocity: number;
     dragging: boolean;
   } | null>(null);
   const swiped = useRef(false);
@@ -139,6 +140,7 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
       y: event.clientY,
       lastX: event.clientX,
       lastTime: event.timeStamp,
+      velocity: 0,
       dragging: false,
     };
   };
@@ -180,6 +182,10 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
     const offset = Math.max(0, deltaX);
     event.currentTarget.style.transition = "none";
     event.currentTarget.style.transform = `translate3d(${offset}px, 0, 0)`;
+    // Smoothed finger speed (px/ms), so a quick flick closes the menu without a long drag.
+    const dt = Math.max(1, event.timeStamp - current.lastTime);
+    const instant = (event.clientX - current.lastX) / dt;
+    current.velocity = current.velocity * 0.4 + instant * 0.6;
     current.lastX = event.clientX;
     current.lastTime = event.timeStamp;
   };
@@ -191,18 +197,16 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
 
     const element = event.currentTarget;
     const deltaX = Math.max(0, event.clientX - current.x);
-    const elapsed = Math.max(1, event.timeStamp - current.lastTime);
-    const velocity = Math.max(0, (event.clientX - current.lastX) / elapsed);
-    const threshold = Math.max(72, element.getBoundingClientRect().width * 0.28);
+    const threshold = Math.max(44, element.getBoundingClientRect().width * 0.14);
 
-    if (deltaX >= threshold || (deltaX > 34 && velocity > 0.55)) {
+    if (deltaX >= threshold || (deltaX > 16 && current.velocity > 0.3)) {
       swiped.current = true;
       // Finish the same finger-following motion, then close without Radix's
       // second slide-out animation (which would make the panel jump backward).
       setSwipeClosing(true);
-      element.style.transition = "transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1)";
+      element.style.transition = "transform 130ms cubic-bezier(0.2, 0.8, 0.2, 1)";
       element.style.transform = "translate3d(100%, 0, 0)";
-      window.setTimeout(close, 150);
+      window.setTimeout(close, 130);
       return;
     }
 
