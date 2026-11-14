@@ -15,6 +15,7 @@ import {
   restoreFromTrash,
   permanentlyDeleteExpiredHabits,
   permanentlyDeleteHabit,
+  reorderHabits,
 } from "./habits-repo";
 
 let db: NawyHabitDB;
@@ -87,5 +88,28 @@ describe("habits repository", () => {
     expect(await toggleLog(h.id, "2026-10-14")).toBe(false);
     expect(await listLogs()).toHaveLength(0);
     await expect(toggleLog(h.id, "bad")).rejects.toThrow();
+  });
+
+  it("reorders active habits without touching archived ones", async () => {
+    const a = await createHabit({ name: "أ" });
+    const b = await createHabit({ name: "ب" });
+    const archived = await createHabit({ name: "مؤرشفة" });
+    const c = await createHabit({ name: "ج" });
+    await archiveHabit(archived.id);
+
+    await reorderHabits([c.id, a.id, b.id]);
+
+    expect((await listActiveHabits()).map((h) => h.name)).toEqual(["ج", "أ", "ب"]);
+    expect((await listArchivedHabits()).map((h) => h.id)).toEqual([archived.id]);
+    expect((await db.habits.get(archived.id))?.order).toBe(archived.order);
+  });
+
+  it("rejects duplicate or unknown ids without changing the order", async () => {
+    const a = await createHabit({ name: "أ" });
+    const b = await createHabit({ name: "ب" });
+
+    await expect(reorderHabits([a.id, a.id])).rejects.toThrow();
+    await expect(reorderHabits([b.id, "missing"])).rejects.toThrow();
+    expect((await listActiveHabits()).map((h) => h.name)).toEqual(["أ", "ب"]);
   });
 });

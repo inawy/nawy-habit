@@ -13,6 +13,7 @@ import fitnessCenter from "@/assets/icons/fitness_center.svg?url";
 import gridView from "@/assets/icons/grid_view.svg?url";
 import installMobile from "@/assets/icons/install_mobile.svg?url";
 import home from "@/assets/icons/home.svg?url";
+import dragIndicator from "@/assets/icons/drag_indicator.svg?url";
 import deleteIcon from "@/assets/icons/delete.svg?url";
 import restore from "@/assets/icons/restore.svg?url";
 import deleteForever from "@/assets/icons/delete_forever.svg?url";
@@ -49,6 +50,7 @@ const icons = {
   grid_view: gridView,
   home,
   delete: deleteIcon,
+  drag_indicator: dragIndicator,
   restore,
   delete_forever: deleteForever,
   menu,

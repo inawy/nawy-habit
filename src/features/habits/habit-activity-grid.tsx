@@ -4,6 +4,7 @@ import type { HabitColorName } from "@/lib/habits/appearance";
 import { cn } from "@/lib/utils";
 
 const MIN_WEEK_COUNT = 52;
+const CELL_PITCH = 14;
 const dateFmt = arabicFmt({ day: "numeric", month: "long", year: "numeric" });
 const monthFmt = arabicFmt({ month: "short" });
 const yearFmt = arabicFmt({ year: "numeric" });
@@ -33,12 +34,12 @@ export function HabitActivityGrid({
 
     return (
       <div className="habit-heatmap" data-habit-color={color}>
-        <div className="mb-1 flex items-center justify-between gap-3 text-[10px] text-muted-foreground">
+        <div className="mb-1.5 flex items-center justify-between gap-3 text-[11px] text-muted-foreground">
           <span className="font-medium">آخر {num(28)} يومًا</span>
-          <span>{num(compactCompleted)} إنجاز</span>
+          <span className="tabular-nums">{num(compactCompleted)} إنجاز</span>
         </div>
         <ol
-          className="habit-heatmap-grid grid w-full grid-cols-[repeat(14,minmax(0,1fr))] grid-rows-2 gap-1"
+          className="habit-heatmap-grid grid w-full grid-cols-[repeat(14,minmax(0,1fr))] grid-rows-2 gap-[5px]"
           aria-label={`إنجازات العادة خلال آخر ${num(28)} يومًا`}
         >
           {compactDays.map((day) => {
@@ -55,7 +56,7 @@ export function HabitActivityGrid({
                 title={label}
                 aria-label={label}
                 className={cn(
-                  "habit-heatmap-cell mx-auto aspect-square w-full max-w-[9px] min-w-0 rounded-[3px] border transition-colors",
+                  "habit-heatmap-cell aspect-square w-full min-w-0 max-w-[22px] justify-self-center rounded-[5px] border transition-colors",
                   complete ? "is-complete" : "is-empty",
                   day === today && "is-today",
                 )}
@@ -112,8 +113,8 @@ export function HabitActivityGrid({
       : [];
   });
   const oldestWeekDate = weekStarts[weekStarts.length - 1] ?? currentWeekStart;
-  const isScrollable = !compact && weekCount > MIN_WEEK_COUNT;
-  const gridMinWidth = isScrollable ? String(weekCount * 10) + "px" : "100%";
+  // 11px cells + 3px gaps: always legible on phones; the strip scrolls sideways when it must.
+  const gridMinWidth = String(weekCount * CELL_PITCH) + "px";
   const historyLabel =
     weekCount > MIN_WEEK_COUNT
       ? "السجل منذ " + yearFmt.format(parseDayKey(oldestRecordedDay))
@@ -121,20 +122,20 @@ export function HabitActivityGrid({
 
   return (
     <div
-      className={cn("habit-heatmap", isScrollable && "overflow-x-auto")}
+      className="habit-heatmap overflow-x-auto pb-1"
       data-habit-color={color}
     >
-      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
+      <div className="sticky start-0 mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <span>{compact ? "آخر سنة" : historyLabel}</span>
         <span>{num(completed)} يوم إنجاز</span>
       </div>
       <div className="habit-heatmap-viewport" style={{ minWidth: gridMinWidth }}>
         {weekCount > MIN_WEEK_COUNT && (
-          <div className="relative mb-1 h-3 overflow-hidden" aria-hidden="true">
+          <div className="relative mb-1 h-3.5 overflow-hidden" aria-hidden="true">
             {yearMarkers.map((marker) => (
               <span
                 key={marker.week}
-                className="absolute top-0 whitespace-nowrap text-[9px] font-semibold leading-none text-muted-foreground"
+                className="absolute top-0 whitespace-nowrap text-[10px] font-semibold leading-none text-foreground/70"
                 style={{ insetInlineStart: String((marker.week / weekCount) * 100) + "%" }}
               >
                 {marker.label}
@@ -142,11 +143,11 @@ export function HabitActivityGrid({
             ))}
           </div>
         )}
-        <div className="relative mb-1 h-3 overflow-hidden" aria-hidden="true">
+        <div className="relative mb-1.5 h-3.5 overflow-hidden" aria-hidden="true">
           {monthMarkers.map((marker) => (
             <span
               key={marker.week}
-              className="absolute top-0 whitespace-nowrap text-[9px] leading-none text-muted-foreground"
+              className="absolute top-0 whitespace-nowrap text-[10px] leading-none text-muted-foreground"
               style={{ insetInlineStart: String((marker.week / weekCount) * 100) + "%" }}
             >
               {marker.label}
@@ -154,7 +155,7 @@ export function HabitActivityGrid({
           ))}
         </div>
         <ol
-          className="habit-heatmap-grid grid grid-flow-col grid-rows-7 gap-[2px]"
+          className="habit-heatmap-grid grid grid-flow-col grid-rows-7 gap-[3px]"
           style={{
             gridTemplateColumns: "repeat(" + weekCount + ", minmax(0, 1fr))",
           }}
@@ -180,7 +181,7 @@ export function HabitActivityGrid({
                   aria-label={isFuture ? undefined : label}
                   aria-hidden={isFuture}
                   className={cn(
-                    "habit-heatmap-cell aspect-square min-w-0 rounded-[2px] border",
+                    "habit-heatmap-cell aspect-square min-w-0 rounded-[3px] border",
                     isFuture ? "is-future" : complete ? "is-complete" : "is-empty",
                     day === today && "is-today",
                   )}
@@ -190,12 +191,25 @@ export function HabitActivityGrid({
           )}
         </ol>
       </div>
-      {!compact && (
-        <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
-          <span>{dateFmt.format(parseDayKey(oldestWeekDate))}</span>
-          <span>اليوم</span>
-        </div>
-      )}
+      <div className="sticky start-0 mt-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground">
+        <span className="tabular-nums">
+          {dateFmt.format(parseDayKey(oldestWeekDate))} ← اليوم
+        </span>
+        <ul className="flex items-center gap-3" aria-label="دليل الألوان">
+          <li className="flex items-center gap-1.5">
+            <span className="habit-heatmap-cell is-complete size-2.5 rounded-[3px] border" />
+            تم
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span className="habit-heatmap-cell is-empty size-2.5 rounded-[3px] border" />
+            بدون تسجيل
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span className="habit-heatmap-cell is-empty is-today size-2.5 rounded-[3px] border" />
+            اليوم
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }

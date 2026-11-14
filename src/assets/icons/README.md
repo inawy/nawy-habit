@@ -16,4 +16,6 @@ Current habit-picker symbols: auto_awesome, menu_book, water_drop, directions_wa
 fitness_center, self_improvement, bedtime, restaurant (cutlery only), favorite, school,
 account_balance_wallet (wallet), and volunteer_activism (hands holding a heart).
 
-Additional interface actions: archive, edit, and ios_share.
+Additional interface actions: archive, edit, ios_share, and drag_indicator (six-dot grip used for
+reordering; the path was written from the upstream shape without network access, so re-sync it
+from the upstream file when convenient).
