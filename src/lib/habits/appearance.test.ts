@@ -1,4 +1,5 @@
 import { readdirSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -8,7 +9,8 @@ import {
   LEGACY_HABIT_ICON_NAMES,
 } from "./appearance";
 
-const habitIconDir = new URL("../../assets/icons/habit/", import.meta.url);
+// Vitest runs from the project root (see vitest.config.ts).
+const habitIconDir = join(process.cwd(), "src", "assets", "icons", "habit");
 
 describe("habit icon allowlist", () => {
   it("has a vendored SVG for every allowed icon and no unlisted files", () => {
