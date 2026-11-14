@@ -7,35 +7,33 @@ The grid is horizontally symmetric, so the icon reads the same in RTL and LTR.
 
 ## Source of truth
 
-`scripts/brand/build-icons.py` generates every icon file in `public/`:
+The icon pack in `brand/icons/` (SVG masters, iOS and Android sets, notification badges) is the
+source of truth. The old generator script `scripts/brand/build-icons.py` was retired because it
+would overwrite the pack's renders. Do not edit the PNG/ICO files by hand; replace them from an
+updated pack.
 
-```sh
-python3 scripts/brand/build-icons.py --check
-```
-
-Needs Python 3.10+, Pillow, numpy and `rsvg-convert`. Do not edit the PNG/SVG/ICO files by hand;
-change the script and re-run it.
-
-| File | Use |
-| --- | --- |
-| `icon.svg` | Manifest `sizes: any` icon |
-| `favicon.svg` | Browser tab (wider gaps, bigger mark for 16–32 px) |
-| `favicon.ico`, `favicon.png` | Fallback tab icons (16/32/48 and 64 px) |
-| `icon-192.png`, `icon-512.png` | PWA icons, rounded tile with transparent corners |
-| `icon-maskable-192.png`, `icon-maskable-512.png` | PWA maskable icons, full-bleed |
-| `apple-touch-icon.png` | iOS home screen, full-bleed (iOS applies its own mask) |
+| File                                                           | Use                                                                        |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `public/icon.svg`                                              | Manifest `sizes: any` icon                                                 |
+| `public/favicon.svg`                                           | Browser tab (wider gaps, bigger mark for 16–32 px)                         |
+| `public/favicon.ico`, `public/favicon.png`                     | Fallback tab icons (16/32/48 and 64 px)                                    |
+| `public/icon-192.png`, `public/icon-512.png`                   | PWA icons, rounded tile with transparent corners                           |
+| `public/icon-maskable-192.png`, `public/icon-maskable-512.png` | PWA maskable icons, full-bleed (the 192 is downscaled from the pack's 512) |
+| `public/apple-touch-icon.png`                                  | iOS home screen, full-bleed (iOS applies its own mask)                     |
+| `public/badge-96.png`                                          | Monochrome notification badge, used by `showHabitReminder`                 |
+| `brand/icons/ios`, `brand/icons/android`                       | Native store/wrapper sets, not used by the PWA build                       |
 
 ## Geometry (tile = 512 units)
 
-| Part | Rule | Value |
-| --- | --- | --- |
-| Mark width | W = T / φ | 316.4 |
-| Gap | cell : gap = φ³ | cell 91.1, gap 21.5 |
-| Cell radius | c / φ³ | 21.5 |
-| Tile radius | T / φ³ | 120.9 |
-| Corners | continuous (smoothed) curve, 60 % smoothing | |
-| Vertical position | optical centring from OKLab weights | lifted 8 units |
-| Sun | circle, radius 0.55 × cell | |
+| Part              | Rule                                        | Value               |
+| ----------------- | ------------------------------------------- | ------------------- |
+| Mark width        | W = T / φ                                   | 316.4               |
+| Gap               | cell : gap = φ³                             | cell 91.1, gap 21.5 |
+| Cell radius       | c / φ³                                      | 21.5                |
+| Tile radius       | T / φ³                                      | 120.9               |
+| Corners           | continuous (smoothed) curve, 60 % smoothing |                     |
+| Vertical position | optical centring from OKLab weights         | lifted 8 units      |
+| Sun               | circle, radius 0.55 × cell                  |                     |
 
 ## What changed from the first version
 
@@ -52,10 +50,10 @@ change the script and re-run it.
 
 ## Colours
 
-| Name | Hex | Contrast on tile |
-| --- | --- | --- |
-| Sun (today) | `#EAF1FF` | 15.75:1 |
-| Base (done) | `#3D7BFF` | 4.65:1 |
-| Sides (in progress) | `#2B5BD0` | 2.98:1 |
-| Empty | `#263558` | 1.47:1 |
-| Tile | `#0F172A` | — |
+| Name                | Hex       | Contrast on tile |
+| ------------------- | --------- | ---------------- |
+| Sun (today)         | `#EAF1FF` | 15.75:1          |
+| Base (done)         | `#3D7BFF` | 4.65:1           |
+| Sides (in progress) | `#2B5BD0` | 2.98:1           |
+| Empty               | `#263558` | 1.47:1           |
+| Tile                | `#0F172A` | —                |
