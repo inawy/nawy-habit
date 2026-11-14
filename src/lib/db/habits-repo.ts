@@ -153,7 +153,10 @@ export async function listLogs(): Promise<HabitLog[]> {
  */
 export async function listLogsForHabits(habitIds: string[]): Promise<HabitLog[]> {
   if (habitIds.length === 0) return [];
-  return getDb().logs.where("habitId").anyOf([...new Set(habitIds)]).toArray();
+  return getDb()
+    .logs.where("habitId")
+    .anyOf([...new Set(habitIds)])
+    .toArray();
 }
 
 export async function getHabit(id: string): Promise<Habit | undefined> {
