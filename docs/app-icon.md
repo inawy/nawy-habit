@@ -45,3 +45,11 @@ Mark width T/φ = 316.4 (cell 105.5), tile radius T/φ³ = 120.9, margins top:bo
 corners and no gaps. At 48 px and below a larger mark (0.80 T) without ghost cells is used.
 Maskable and round icons use a smaller centred mark to stay inside the safe zone; monochrome and
 badge variants are solid white cells.
+
+## Habit colors
+
+Habit colors use the same Google soft-tint palette (Material 100 for tiles, 300 in dark mode, a
+darker shade as the light-mode fill). The tokens (`--habit-color`, `--habit-ink`, `--habit-soft`,
+`--habit-on`) live in `src/styles.css`. Stored ids (`teal`, `amber`, `slate`, ...) never change;
+`teal` shows as sky blue, `amber` as yellow and `slate` as grey. Yellow and orange fills are
+lighter than WCAG 3:1 on white, so they use a dark check mark (`--habit-on`) and a darker ink.
