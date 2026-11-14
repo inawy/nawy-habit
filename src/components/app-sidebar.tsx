@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Icon } from "@/components/icon";
+import { consumeSidebarReturn, markSidebarReturn } from "@/lib/navigation/sidebar-return";
 import {
   Sheet,
   SheetContent,
@@ -51,7 +52,11 @@ function NavigationItem({
   return (
     <Link
       to={item.to}
-      onClick={onNavigate}
+      onClick={() => {
+        // Leaving for another section: coming back should reopen this menu.
+        if (item.to !== "/") markSidebarReturn();
+        onNavigate();
+      }}
       activeOptions={{ exact: item.to === "/" }}
       activeProps={{
         className:
@@ -88,6 +93,13 @@ export function AppSidebar() {
   } | null>(null);
   const swiped = useRef(false);
   const close = () => setOpen(false);
+
+  // Back from a section opened through this menu: reopen the menu with its slide-in animation.
+  useEffect(() => {
+    if (!consumeSidebarReturn()) return;
+    const id = window.setTimeout(() => setOpen(true), 120);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!event.isPrimary || event.button !== 0) return;
