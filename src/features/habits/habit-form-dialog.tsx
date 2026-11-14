@@ -98,7 +98,7 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
           </div>
 
           <fieldset className="space-y-2">
-            <legend className="text-sm font-medium">اختار رمزًا للعادة</legend>
+            <legend className="text-sm font-medium">اختر رمزًا للعادة</legend>
             <div className="grid grid-cols-6 gap-2">
               {HABIT_ICON_OPTIONS.map((option) => (
                 <button

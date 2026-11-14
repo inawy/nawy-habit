@@ -28,8 +28,8 @@ function NotFoundComponent() {
         >
           404
         </div>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة مش موجودة</h2>
-        <p className="mt-2 text-sm text-muted-foreground">يمكن الرابط اتغيّر أو اتكتب غلط.</p>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة غير موجودة</h2>
+        <p className="mt-2 text-sm text-muted-foreground">ربما تغيّر الرابط أو كُتب بشكل خاطئ.</p>
         <div className="mt-6">
           <Link
             to="/"

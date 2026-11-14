@@ -41,7 +41,7 @@ const dateRangeFmt = arabicFmt({ day: "numeric", month: "short" });
 async function toggleToday(habit: Habit, today: DayKey) {
   try {
     const completed = await toggleLog(habit.id, today);
-    toast.success(completed ? "اتسجل إنجاز النهارده" : "اتشال تسجيل النهارده", {
+    toast.success(completed ? "سُجّل إنجاز اليوم" : "أُلغي تسجيل اليوم", {
       duration: 1400,
     });
   } catch (error) {
@@ -119,7 +119,7 @@ function HabitContextMenu({
   async function toggleYesterday() {
     try {
       const completed = await toggleLog(habit.id, yesterday);
-      toast.success(completed ? "اتسجل إنجاز أمس" : "اتشال تسجيل أمس", { duration: 1400 });
+      toast.success(completed ? "سُجّل إنجاز أمس" : "أُلغي تسجيل أمس", { duration: 1400 });
     } catch (error) {
       console.error(error);
       toast.error("تعذّر التسجيل");

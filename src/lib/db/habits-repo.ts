@@ -100,6 +100,32 @@ export async function permanentlyDeleteHabit(id: string): Promise<void> {
   });
 }
 
+/**
+ * Persists a new order for active habits. `orderedIds` is the full list in its new sequence.
+ * The existing `order` values are reused (sorted) and handed out in the new sequence, so
+ * archived habits keep their positions and nothing else is renumbered.
+ */
+export async function reorderHabits(orderedIds: string[]): Promise<void> {
+  if (new Set(orderedIds).size !== orderedIds.length) {
+    throw new Error("Duplicate habit id in reorder request");
+  }
+  const db = getDb();
+  await db.transaction("rw", db.habits, async () => {
+    const habits = await db.habits.bulkGet(orderedIds);
+    const slots: number[] = [];
+    for (const habit of habits) {
+      if (!habit) throw new Error("Unknown habit in reorder request");
+      slots.push(habit.order);
+    }
+    slots.sort((a, b) => a - b);
+    for (const [index, id] of orderedIds.entries()) {
+      const order = slots[index];
+      if (order === undefined) continue;
+      await db.habits.update(id, { order });
+    }
+  });
+}
+
 /** Toggles the check-in for a day. Returns true when the day is now done. */
 export async function toggleLog(habitId: string, day: DayKey): Promise<boolean> {
   dayKeySchema.parse(day);

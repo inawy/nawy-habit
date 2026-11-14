@@ -11,6 +11,7 @@ import {
   type OverviewMode,
 } from "@/features/habits/habit-overview";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
+import { HabitReorderList } from "@/features/habits/habit-reorder-list";
 import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
@@ -51,6 +52,7 @@ function TodayPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [overviewMode, setOverviewMode] = useState<OverviewMode>("cards");
+  const [reordering, setReordering] = useState(false);
 
   useEffect(() => {
     // Clear the old saved layout preference so the restored card grid is shown.
@@ -123,11 +125,11 @@ function TodayPage() {
 
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(`${shareText}\n${appUrl}`);
-        toast.success("اتنسخت تفاصيل العادة للمشاركة");
+        toast.success("نُسخت تفاصيل العادة للمشاركة");
         return;
       }
 
-      toast.error("المشاركة غير متاحة على الجهاز ده");
+      toast.error("المشاركة غير متاحة على هذا الجهاز");
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
       console.error(error);
@@ -141,6 +143,8 @@ function TodayPage() {
       : 0;
   const totalCount = view?.habits.length ?? 0;
   const recentDays = today ? lastDays(today, 5) : [];
+  // Reordering needs at least two habits; leave the mode if one is archived or deleted meanwhile.
+  const reorderActive = reordering && totalCount > 1;
 
   return (
     <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
@@ -153,8 +157,20 @@ function TodayPage() {
             className="flex items-center justify-start gap-2"
           >
             <AppSidebar />
-            {view && totalCount > 0 && (
+            {view && totalCount > 0 && !reorderActive && (
               <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
+            )}
+            {view && totalCount > 1 && (
+              <button
+                type="button"
+                onClick={() => setReordering((value) => !value)}
+                aria-pressed={reorderActive}
+                aria-label={reorderActive ? "إنهاء ترتيب العادات" : "ترتيب العادات"}
+                title={reorderActive ? "إنهاء الترتيب" : "ترتيب العادات بالسحب"}
+                className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+              >
+                <Icon name={reorderActive ? "check" : "drag_indicator"} className="size-5" />
+              </button>
             )}
             <InstallAppButton />
           </div>
@@ -189,7 +205,7 @@ function TodayPage() {
           </span>
           <h2 className="mt-4 text-lg font-bold">ابدأ بعادة واحدة</h2>
           <p className="mx-auto mt-1 max-w-xs text-sm leading-6 text-muted-foreground">
-            اختار حاجة صغيرة نفسك تواظب عليها، وسجّل إنجازك يومًا بيوم.
+            اختر عادة صغيرة تريد المواظبة عليها، وسجّل إنجازك يومًا بيوم.
           </p>
           <Button className="mt-6 rounded-full px-5" onClick={openNew}>
             <Icon name="add" className="size-5" />
@@ -199,24 +215,30 @@ function TodayPage() {
       ) : (
         <>
           <div className="mb-2 flex items-center justify-between px-1">
-            <h2 className="text-sm font-semibold">عاداتك</h2>
+            <h2 className="text-sm font-semibold">
+              {reorderActive ? "اسحب لإعادة الترتيب" : "عاداتك"}
+            </h2>
             <span className="text-[11px] text-muted-foreground">{num(totalCount)} عادة</span>
           </div>
-          <HabitOverview
-            mode={overviewMode}
-            habits={view.habits}
-            daysByHabit={view.daysByHabit}
-            recentDays={recentDays}
-            today={today}
-            onEditHabit={setEditingHabit}
-            onArchiveHabit={(habit) => void archiveFromMenu(habit)}
-            onDeleteHabit={(habit) => void trashFromMenu(habit)}
-            onShareHabit={(habit) => void shareFromMenu(habit)}
-          />
+          {reorderActive ? (
+            <HabitReorderList habits={view.habits} />
+          ) : (
+            <HabitOverview
+              mode={overviewMode}
+              habits={view.habits}
+              daysByHabit={view.daysByHabit}
+              recentDays={recentDays}
+              today={today}
+              onEditHabit={setEditingHabit}
+              onArchiveHabit={(habit) => void archiveFromMenu(habit)}
+              onDeleteHabit={(habit) => void trashFromMenu(habit)}
+              onShareHabit={(habit) => void shareFromMenu(habit)}
+            />
+          )}
         </>
       )}
 
-      {view && totalCount > 0 && (
+      {view && totalCount > 0 && !reorderActive && (
         <Button
           type="button"
           onClick={openNew}
