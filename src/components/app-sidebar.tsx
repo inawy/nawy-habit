@@ -109,9 +109,7 @@ export function AppSidebar() {
   };
 
   const resetSwipeStyle = (element: HTMLDivElement, animate = true) => {
-    element.style.transition = animate
-      ? "transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1)"
-      : "none";
+    element.style.transition = animate ? "transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1)" : "none";
     element.style.transform = "translate3d(0, 0, 0)";
     if (animate) {
       window.setTimeout(() => {
