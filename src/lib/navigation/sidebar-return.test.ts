@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { consumeSidebarReturn, hasPendingSidebarReturn, markSidebarReturn } from "./sidebar-return";
+import {
+  consumeSidebarReturn,
+  hasPendingSidebarReturn,
+  markSidebarReturn,
+  peekSidebarReturnTarget,
+} from "./sidebar-return";
 
 afterEach(() => {
   window.sessionStorage.clear();
@@ -18,6 +23,13 @@ describe("sidebar return", () => {
     expect(hasPendingSidebarReturn(2_000)).toBe(true);
     expect(consumeSidebarReturn(2_000)).toBe(true);
     expect(consumeSidebarReturn(2_000)).toBe(false);
+  });
+
+  it("remembers the chosen section until consumed", () => {
+    markSidebarReturn(1_000, "/archive");
+    expect(peekSidebarReturnTarget()).toBe("/archive");
+    consumeSidebarReturn(2_000);
+    expect(peekSidebarReturnTarget()).toBeNull();
   });
 
   it("expires after an hour", () => {
