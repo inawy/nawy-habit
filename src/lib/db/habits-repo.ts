@@ -147,6 +147,17 @@ export async function listLogs(): Promise<HabitLog[]> {
 }
 
 /**
+ * Reads logs only for the supplied habit ids.
+ */
+export async function listLogsForHabits(habitIds: string[]): Promise<HabitLog[]> {
+  if (habitIds.length === 0) return [];
+  return getDb()
+    .logs.where("habitId")
+    .anyOf([...new Set(habitIds)])
+    .toArray();
+}
+
+/**
  * Loads only the rolling history needed by the Today cards, while preserving
  * lifetime totals. If the entire window is consecutive, fetch the full record
  * for that habit so unusually long current streaks remain accurate.
