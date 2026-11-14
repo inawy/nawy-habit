@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { PageBackButton } from "@/components/page-back-button";
 import { Icon } from "@/components/icon";
+import { HabitIcon } from "@/components/habit-icon";
 import { Button } from "@/components/ui/button";
 import { listArchivedHabits, moveHabitToTrash, restoreHabit } from "@/lib/db/habits-repo";
 
@@ -61,7 +62,7 @@ function ArchivePage() {
               className="flex items-center gap-3 rounded-2xl border bg-card p-3"
             >
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-muted">
-                <Icon name={habit.icon} className="size-5" />
+                <HabitIcon name={habit.icon} className="size-5" />
               </span>
               <span className="min-w-0 flex-1 truncate text-sm font-semibold">{habit.name}</span>
               <Button

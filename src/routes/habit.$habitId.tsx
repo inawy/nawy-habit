@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
+import { HabitIcon } from "@/components/habit-icon";
 import { AppSidebar } from "@/components/app-sidebar";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -153,7 +154,7 @@ function HabitDetailPage() {
           className="habit-identity grid size-14 shrink-0 place-items-center rounded-2xl"
           data-habit-color={habit.color}
         >
-          <Icon name={habit.icon} className="size-7" />
+          <HabitIcon name={habit.icon} className="size-7" />
         </span>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-[1.6rem] font-bold leading-tight">{habit.name}</h1>

@@ -33,7 +33,14 @@ Do not add artwork depicting or promoting:
 
 Retired symbols: `savings` (pig-shaped bank) and `redeem` (gift box). Existing saved habits and v3 backups using the gift symbol are automatically upgraded to the wallet and hand-with-heart identifiers.
 
-Current approved picker set: `auto_awesome`, `menu_book`, `water_drop`,
-`directions_walk`, `fitness_center`, `self_improvement`, `bedtime`, `restaurant`
-(cutlery only), `favorite`, `school`, `account_balance_wallet` (wallet), and
-`volunteer_activism` (hands holding a heart).
+Habit identity symbols are the **filled** Material Symbols variant, vendored in
+`src/assets/icons/habit/` and rendered through `src/components/habit-icon.tsx`. Interface controls keep
+the outlined set in `src/assets/icons/`. A test checks that the allowlist and the vendored files match.
+
+Current approved picker set (40): `auto_awesome`, `mosque`, `menu_book`, `water_drop`, `wb_twilight`,
+`wb_sunny`, `alarm`, `bedtime`, `directions_walk`, `directions_run`, `directions_bike`, `pool`,
+`sports_soccer`, `fitness_center`, `self_improvement`, `spa`, `favorite`, `monitor_heart`, `nutrition`,
+`restaurant` (cutlery only), `medication`, `clean_hands`, `dentistry`, `shower`, `school`, `edit_note`,
+`translate`, `code`, `work`, `timer`, `lightbulb`, `task_alt`, `emoji_events`, `palette`, `eco`,
+`cleaning_services`, `family_home`, `call`, `account_balance_wallet` (wallet), and
+`volunteer_activism` (hands holding a heart). All artwork was visually reviewed.

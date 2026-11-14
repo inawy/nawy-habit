@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Icon } from "@/components/icon";
+import { HabitIcon } from "@/components/habit-icon";
 import { toast } from "sonner";
 
 import type { DayKey } from "@/lib/date/day-key";
@@ -43,7 +43,7 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
           className="habit-identity grid size-9 shrink-0 place-items-center rounded-xl"
           data-habit-color={habit.color}
         >
-          <Icon name={habit.icon} className="size-[19px]" />
+          <HabitIcon name={habit.icon} className="size-[19px]" />
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-[13px] font-semibold leading-snug">
