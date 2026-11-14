@@ -2,13 +2,14 @@
  * Curated, reviewed allowlist for habit identity icons (filled Material Symbols, see
  * components/habit-icon.tsx). Existing identifiers must stay valid: saved habits and backups use them.
  *
- * Keep this set to neutral everyday activities and objects. Do not add icons
- * depicting pork/pigs, alcohol, gambling, sexual content, nudity, occult
- * imagery, or anything otherwise inappropriate for Nawy's faith-sensitive
- * audience. Review the actual SVG artwork, not only its symbol name, before
- * adding a new entry. The Zod enum in the habit schema enforces this allowlist.
+ * Keep this set to neutral everyday activities and objects that suit a faith-sensitive audience
+ * following Islamic principles. Do not add icons depicting pork/pigs, alcohol, gambling, sexual
+ * content, nudity, occult imagery, symbols of other religions or practices (for example lotus or
+ * meditation poses), or people and animals (including pictogram figures). Prefer objects, nature
+ * and abstract marks. Review the actual SVG artwork, not only its symbol name, before adding a
+ * new entry. The Zod enum in the habit schema enforces this allowlist.
  */
-export const HABIT_ICON_NAMES = [
+export const HABIT_PICKER_ICON_NAMES = [
   "auto_awesome",
   "mosque",
   "menu_book",
@@ -17,14 +18,11 @@ export const HABIT_ICON_NAMES = [
   "wb_sunny",
   "alarm",
   "bedtime",
-  "directions_walk",
-  "directions_run",
-  "directions_bike",
-  "pool",
+  "footprint",
+  "pedal_bike",
+  "waves",
   "sports_soccer",
   "fitness_center",
-  "self_improvement",
-  "spa",
   "favorite",
   "monitor_heart",
   "nutrition",
@@ -51,6 +49,14 @@ export const HABIT_ICON_NAMES = [
   "volunteer_activism",
 ] as const;
 
+/**
+ * Retired from the picker (they depict a human figure) but still valid and rendered, so habits and
+ * backups saved with them keep working.
+ */
+export const LEGACY_HABIT_ICON_NAMES = ["directions_walk", "self_improvement"] as const;
+
+export const HABIT_ICON_NAMES = [...HABIT_PICKER_ICON_NAMES, ...LEGACY_HABIT_ICON_NAMES] as const;
+
 export type HabitIconName = (typeof HABIT_ICON_NAMES)[number];
 
 export const HABIT_ICON_OPTIONS: readonly { value: HabitIconName; label: string }[] = [
@@ -62,14 +68,11 @@ export const HABIT_ICON_OPTIONS: readonly { value: HabitIconName; label: string 
   { value: "wb_sunny", label: "صباح" },
   { value: "alarm", label: "استيقاظ" },
   { value: "bedtime", label: "نوم" },
-  { value: "directions_walk", label: "مشي" },
-  { value: "directions_run", label: "جري" },
-  { value: "directions_bike", label: "دراجة" },
-  { value: "pool", label: "سباحة" },
+  { value: "footprint", label: "خطوات" },
+  { value: "pedal_bike", label: "دراجة" },
+  { value: "waves", label: "سباحة" },
   { value: "sports_soccer", label: "كرة" },
   { value: "fitness_center", label: "رياضة" },
-  { value: "self_improvement", label: "هدوء" },
-  { value: "spa", label: "استرخاء" },
   { value: "favorite", label: "صحة" },
   { value: "monitor_heart", label: "قلب" },
   { value: "nutrition", label: "تغذية" },

@@ -14,6 +14,9 @@ only those icon identifiers; an arbitrary Material Symbol cannot be selected or 
 
 ## Do not add
 
+- People or animals, including pictogram figures (walking, running, swimming, meditation poses). Prefer objects, nature and abstract marks.
+- Symbols of other religions or practices (for example lotus, meditation or yoga imagery).
+
 Do not add artwork depicting or promoting:
 
 - Pigs or pork.
@@ -37,10 +40,13 @@ Habit identity symbols are the **filled** Material Symbols variant, vendored in
 `src/assets/icons/habit/` and rendered through `src/components/habit-icon.tsx`. Interface controls keep
 the outlined set in `src/assets/icons/`. A test checks that the allowlist and the vendored files match.
 
-Current approved picker set (40): `auto_awesome`, `mosque`, `menu_book`, `water_drop`, `wb_twilight`,
-`wb_sunny`, `alarm`, `bedtime`, `directions_walk`, `directions_run`, `directions_bike`, `pool`,
-`sports_soccer`, `fitness_center`, `self_improvement`, `spa`, `favorite`, `monitor_heart`, `nutrition`,
-`restaurant` (cutlery only), `medication`, `clean_hands`, `dentistry`, `shower`, `school`, `edit_note`,
-`translate`, `code`, `work`, `timer`, `lightbulb`, `task_alt`, `emoji_events`, `palette`, `eco`,
-`cleaning_services`, `family_home`, `call`, `account_balance_wallet` (wallet), and
-`volunteer_activism` (hands holding a heart). All artwork was visually reviewed.
+Current approved picker set (37): `auto_awesome`, `mosque`, `menu_book`, `water_drop`, `wb_twilight`,
+`wb_sunny`, `alarm`, `bedtime`, `footprint`, `pedal_bike` (no rider), `waves`, `sports_soccer`,
+`fitness_center`, `favorite`, `monitor_heart`, `nutrition`, `restaurant` (cutlery only), `medication`,
+`clean_hands`, `dentistry`, `shower`, `school`, `edit_note`, `translate`, `code`, `work`, `timer`,
+`lightbulb`, `task_alt`, `emoji_events`, `palette`, `eco`, `cleaning_services`, `family_home`, `call`,
+`account_balance_wallet` (wallet), and `volunteer_activism` (hands holding a heart). All artwork was
+visually reviewed.
+
+Retired from the picker but still rendered for existing habits and backups: `directions_walk` and
+`self_improvement` (both show a human figure).
