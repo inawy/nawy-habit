@@ -46,7 +46,7 @@ export function HabitActivityGrid({
     return (
       <div className="habit-heatmap" data-habit-color={color}>
         <ol
-          className="habit-heatmap-grid habit-heatmap-fade grid grid-flow-col grid-rows-7 gap-[3px]"
+          className="habit-heatmap-grid habit-heatmap-fade grid grid-flow-col grid-rows-7 gap-[3px] p-[3px]"
           style={{ gridTemplateColumns: `repeat(${COMPACT_WEEK_COUNT}, minmax(0, 1fr))` }}
           aria-label={`إنجازات العادة خلال آخر ${num(COMPACT_WEEK_COUNT)} أسبوعًا — ${num(compactCompleted)} يوم إنجاز`}
         >
