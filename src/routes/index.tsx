@@ -144,28 +144,30 @@ function TodayPage() {
 
   return (
     <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
-      <header className="mb-5">
-        <div className="flex items-center justify-between gap-3">
-          <div
-            dir="rtl"
-            role="group"
-            aria-label="أدوات التطبيق"
-            className="flex items-center justify-start gap-2"
-          >
-            <AppSidebar />
-            {view && totalCount > 0 && (
-              <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
-            )}
-            <InstallAppButton />
-          </div>
-          <p className="text-xs font-medium text-muted-foreground">
-            {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
-          </p>
+      <header className="mb-4 flex items-center justify-between gap-3">
+        <div
+          dir="rtl"
+          role="group"
+          aria-label="أدوات التطبيق"
+          className="flex shrink-0 items-center justify-start gap-2"
+        >
+          <AppSidebar />
+          {view && totalCount > 0 && (
+            <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
+          )}
+          <InstallAppButton />
         </div>
-        <div className="mt-3 flex items-end justify-between gap-4">
-          <div className="min-w-0">
-            <h1 className="text-[1.85rem] font-bold leading-tight tracking-tight">اليوم</h1>
-          </div>
+        <div className="flex min-w-0 items-baseline gap-2 text-end">
+          <h1 className="shrink-0 text-lg font-bold leading-none tracking-tight">اليوم</h1>
+          <span aria-hidden="true" className="text-muted-foreground/60">
+            ·
+          </span>
+          <time
+            dateTime={today ?? undefined}
+            className="truncate text-sm font-medium leading-none text-muted-foreground"
+          >
+            {today ? dateFmt.format(parseDayKey(today)) : "\u00a0"}
+          </time>
         </div>
       </header>
 
