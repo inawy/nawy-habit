@@ -54,6 +54,8 @@ describe("HabitActivityGrid compact overview", () => {
 
     expect(a.container.querySelectorAll(".is-complete")).toHaveLength(1);
     expect(b.container.querySelectorAll(".is-complete")).toHaveLength(0);
-    expect(a.container.querySelectorAll("li")).toHaveLength(b.container.querySelectorAll("li").length);
+    expect(a.container.querySelectorAll("li")).toHaveLength(
+      b.container.querySelectorAll("li").length,
+    );
   });
 });
