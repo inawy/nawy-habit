@@ -20,6 +20,7 @@ import restore from "@/assets/icons/restore.svg?url";
 import deleteForever from "@/assets/icons/delete_forever.svg?url";
 import menu from "@/assets/icons/menu.svg?url";
 import iosShare from "@/assets/icons/ios_share.svg?url";
+import lightMode from "@/assets/icons/light_mode.svg?url";
 import localFireDepartment from "@/assets/icons/local_fire_department.svg?url";
 import menuBook from "@/assets/icons/menu_book.svg?url";
 import moreHoriz from "@/assets/icons/more_horiz.svg?url";
@@ -52,6 +53,7 @@ const icons = {
   grid_view: gridView,
   home,
   delete: deleteIcon,
+  light_mode: lightMode,
   drag_indicator: dragIndicator,
   restore,
   delete_forever: deleteForever,
