@@ -34,3 +34,15 @@ export function consumeSidebarReturn(now: number = Date.now()): boolean {
   }
   return pending;
 }
+
+const OPEN_EVENT = "nawy-habit:open-sidebar";
+
+/** Asks the side menu to open (used by swipes handled outside the menu itself). */
+export function requestSidebarOpen(): void {
+  if (typeof window !== "undefined") window.dispatchEvent(new Event(OPEN_EVENT));
+}
+
+export function onSidebarOpenRequest(handler: () => void): () => void {
+  window.addEventListener(OPEN_EVENT, handler);
+  return () => window.removeEventListener(OPEN_EVENT, handler);
+}

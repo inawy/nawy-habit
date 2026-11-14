@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button";
 import {
   HabitOverview,
   HabitViewCycleButton,
-  nextOverviewMode,
+  shiftOverviewMode,
   type OverviewMode,
 } from "@/features/habits/habit-overview";
+import { requestSidebarOpen } from "@/lib/navigation/sidebar-return";
 import { useSideSwipe } from "@/hooks/use-side-swipe";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { InstallAppButton } from "@/features/pwa/install-app-button";
@@ -68,17 +69,21 @@ function TodayPage() {
     setOverviewMode(mode);
   };
 
-  // Swipe from the left side of the screen to switch the habits view (cards, list, compact).
-  useSideSwipe(
-    {
-      left: () => {
-        const next = nextOverviewMode(overviewMode);
-        chooseOverviewMode(next.value);
-        toast(`العرض: ${next.label}`, { id: "overview-mode", duration: 1200 });
-      },
+  // Swipe ladder: from the left side goes to the next view (cards > list > compact) and stops at the
+  // last one; from the right side goes back one view, and at the main view opens the side menu.
+  useSideSwipe({
+    left: () => {
+      if (!view || view.habits.length === 0) return;
+      const next = shiftOverviewMode(overviewMode, 1);
+      if (next) chooseOverviewMode(next);
     },
-    !!view && view.habits.length > 0,
-  );
+    right: () => {
+      const hasHabits = !!view && view.habits.length > 0;
+      const prev = hasHabits ? shiftOverviewMode(overviewMode, -1) : null;
+      if (prev) chooseOverviewMode(prev);
+      else requestSidebarOpen();
+    },
+  });
 
   const openNew = () => setDialogOpen(true);
 
@@ -166,7 +171,7 @@ function TodayPage() {
           aria-label="أدوات التطبيق"
           className="flex shrink-0 items-center justify-start gap-2"
         >
-          <AppSidebar />
+          <AppSidebar swipeToOpen={false} />
           <ThemeToggleButton />
           {view && totalCount > 0 && (
             <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
