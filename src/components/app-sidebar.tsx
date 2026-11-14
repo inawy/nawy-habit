@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Icon } from "@/components/icon";
@@ -84,6 +84,9 @@ function NavigationItem({
 export function AppSidebar() {
   const [open, setOpen] = useState(false);
   const [swipeClosing, setSwipeClosing] = useState(false);
+  // True when the menu is restored after coming back from a section: it must already be there,
+  // not slide in front of the user.
+  const [restored, setRestored] = useState(false);
   const swipe = useRef<{
     x: number;
     y: number;
@@ -94,11 +97,12 @@ export function AppSidebar() {
   const swiped = useRef(false);
   const close = () => setOpen(false);
 
-  // Back from a section opened through this menu: reopen the menu with its slide-in animation.
-  useEffect(() => {
+  // Back from a section opened through this menu: show the menu already open, before the first
+  // paint and without the slide-in/fade-in animation. Closing it animates as usual.
+  useLayoutEffect(() => {
     if (!consumeSidebarReturn()) return;
-    const id = window.setTimeout(() => setOpen(true), 120);
-    return () => window.clearTimeout(id);
+    setRestored(true);
+    setOpen(true);
   }, []);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -199,7 +203,10 @@ export function AppSidebar() {
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen(nextOpen);
-        if (nextOpen) setSwipeClosing(false);
+        if (nextOpen) {
+          setSwipeClosing(false);
+          setRestored(false);
+        }
       }}
     >
       <SheetTrigger asChild>
@@ -219,9 +226,10 @@ export function AppSidebar() {
         side="right"
         dir="rtl"
         closeButtonClassName="left-4 right-auto"
+        overlayClassName={restored ? "data-[state=open]:!animate-none" : undefined}
         className={`w-[min(20rem,88vw)] touch-pan-y gap-0 border-s bg-background p-0 shadow-2xl sm:w-80 ${
           swipeClosing ? "data-[state=closed]:!animate-none" : ""
-        }`}
+        } ${restored ? "data-[state=open]:!animate-none" : ""}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={finishSwipe}
