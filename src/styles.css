@@ -134,7 +134,7 @@
   --habit-color: var(--primary);
 }
 
-/* Habit colors use the Google soft-tint palette that the app icon uses (docs/app-icon.md).
+/* Habit colors use the Google soft-tint palette (see docs/app-icon.md).
    color = main fill (cells, toggle), ink = glyph and text on soft tiles, soft = tile tint,
    on = check mark on the fill. Stored ids never change; only these values do. */
 [data-habit-color="blue"] { --habit-color: #3D7BFF; --habit-ink: #185ABC; --habit-soft: #D2E3FC; --habit-on: #FFFFFF; }
