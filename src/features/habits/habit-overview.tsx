@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { Icon, type IconName } from "@/components/icon";
 import {
   ContextMenu,
@@ -193,7 +193,7 @@ function HabitContextMenu({
   );
 }
 
-function HabitChecklistItem({
+const HabitChecklistItem = memo(function HabitChecklistItem({
   habit,
   days,
   today,
@@ -229,9 +229,9 @@ function HabitChecklistItem({
       <TodayToggle habit={habit} today={today} complete={complete} />
     </>
   );
-}
+});
 
-function HabitOverviewCard({
+const HabitOverviewCard = memo(function HabitOverviewCard({
   habit,
   days,
   today,
@@ -272,7 +272,7 @@ function HabitOverviewCard({
       </div>
     </>
   );
-}
+});
 
 export function HabitOverview({
   mode,
