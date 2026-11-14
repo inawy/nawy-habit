@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ThemeToggleButton } from "@/components/theme-toggle-button";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -152,6 +153,7 @@ function TodayPage() {
           className="flex shrink-0 items-center justify-start gap-2"
         >
           <AppSidebar />
+          <ThemeToggleButton />
           {view && totalCount > 0 && (
             <HabitViewCycleButton value={overviewMode} onChange={chooseOverviewMode} />
           )}

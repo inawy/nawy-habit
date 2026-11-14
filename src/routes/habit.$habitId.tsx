@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
 import { HabitIcon } from "@/components/habit-icon";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ThemeToggleButton } from "@/components/theme-toggle-button";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
@@ -143,6 +144,7 @@ function HabitDetailPage() {
         </Link>
         <div className="flex items-center gap-2">
           <AppSidebar />
+          <ThemeToggleButton />
           <button
             type="button"
             onClick={() => setEditing(true)}

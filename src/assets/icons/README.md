@@ -18,7 +18,8 @@ account_balance_wallet (wallet), and volunteer_activism (hands holding a heart).
 
 Additional interface actions: archive, edit, ios_share, and drag_indicator (six-dot grip used for
 reordering; the path was written from the upstream shape without network access, so re-sync it
-from the upstream file when convenient).
+from the upstream file when convenient). `light_mode` (sun) was likewise redrawn from the
+upstream shape without network access.
 
 Habit identity symbols live in `habit/` and are the **filled** variant
 (`symbols/web/<name>/materialsymbolsoutlined/<name>_fill1_24px.svg`, same Apache-2.0 license).
