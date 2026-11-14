@@ -1,9 +1,13 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Icon } from "@/components/icon";
 import { useSideSwipe } from "@/hooks/use-side-swipe";
-import { consumeSidebarReturn, markSidebarReturn } from "@/lib/navigation/sidebar-return";
+import {
+  consumeSidebarReturn,
+  markSidebarReturn,
+  onSidebarOpenRequest,
+} from "@/lib/navigation/sidebar-return";
 import {
   Sheet,
   SheetContent,
@@ -82,7 +86,7 @@ function NavigationItem({
   );
 }
 
-export function AppSidebar() {
+export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
   const [open, setOpen] = useState(false);
   const [swipeClosing, setSwipeClosing] = useState(false);
   // True when the menu is restored after coming back from a section: it must already be there,
@@ -99,7 +103,17 @@ export function AppSidebar() {
   const close = () => setOpen(false);
 
   // Swipe from the right side of the screen (the menu slides in from the right) to open it.
-  useSideSwipe({ right: () => setOpen(true) }, !open);
+  useSideSwipe({ right: () => setOpen(true) }, swipeToOpen && !open);
+
+  useEffect(
+    () =>
+      onSidebarOpenRequest(() => {
+        setSwipeClosing(false);
+        setRestored(false);
+        setOpen(true);
+      }),
+    [],
+  );
 
   // Back from a section opened through this menu: show the menu already open, before the first
   // paint and without the slide-in/fade-in animation. Closing it animates as usual.

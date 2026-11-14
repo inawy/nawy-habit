@@ -422,7 +422,7 @@ const viewOptions: { value: OverviewMode; label: string; icon: IconName }[] = [
   { value: "compact", label: "مختصر", icon: "view_compact" },
 ];
 
-/** The mode that follows `mode` in the cycle used by the view button and the swipe gesture. */
+/** The mode that follows `mode` in the cycle used by the toolbar button (it wraps around). */
 export function nextOverviewMode(mode: OverviewMode): { value: OverviewMode; label: string } {
   const index = viewOptions.findIndex((option) => option.value === mode);
   const next = viewOptions[(index + 1) % viewOptions.length] ?? {
@@ -430,6 +430,15 @@ export function nextOverviewMode(mode: OverviewMode): { value: OverviewMode; lab
     label: "بطاقات",
   };
   return { value: next.value, label: next.label };
+}
+
+/**
+ * Moves one step along the mode ladder (cards is the main mode, then list, then compact) without
+ * wrapping: returns null when already at the end in that direction.
+ */
+export function shiftOverviewMode(mode: OverviewMode, direction: 1 | -1): OverviewMode | null {
+  const index = viewOptions.findIndex((option) => option.value === mode);
+  return viewOptions[index + direction]?.value ?? null;
 }
 
 export function HabitViewCycleButton({

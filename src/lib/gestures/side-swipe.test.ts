@@ -23,8 +23,13 @@ describe("detectSideSwipe", () => {
     expect(detectSideSwipe(at(20, 300, 0), at(-80, 300, 200), W)).toBeNull();
   });
 
+  it("accepts a short quick flick and a wide-zone start", () => {
+    expect(detectSideSwipe(at(380, 300, 0), at(340, 300, 60), W)).toBe("right");
+    expect(detectSideSwipe(at(190, 300, 0), at(260, 300, 200), W)).toBe("left");
+  });
+
   it("ignores short movements, scrolls and slow drags", () => {
-    expect(detectSideSwipe(at(380, 300, 0), at(340, 300, 100), W)).toBeNull();
+    expect(detectSideSwipe(at(380, 300, 0), at(355, 300, 300), W)).toBeNull();
     expect(detectSideSwipe(at(380, 300, 0), at(280, 520, 300), W)).toBeNull();
     expect(detectSideSwipe(at(380, 300, 0), at(200, 300, 1200), W)).toBeNull();
   });
