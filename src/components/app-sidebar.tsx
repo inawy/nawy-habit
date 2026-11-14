@@ -221,9 +221,14 @@ export function AppSidebar() {
       >
         <SheetHeader className="border-b px-4 pb-5 pt-7 text-right">
           <div className="flex items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
-              <span className="size-2.5 rounded-full bg-current" />
-            </span>
+            <img
+              src={`${import.meta.env.BASE_URL}icon.svg`}
+              alt=""
+              width={40}
+              height={40}
+              decoding="async"
+              className="size-10 shrink-0"
+            />
             <span className="min-w-0">
               <SheetTitle className="text-lg font-bold tracking-tight">عادة</SheetTitle>
               <SheetDescription className="mt-0.5 text-xs">مساحتك لعاداتك اليومية</SheetDescription>
