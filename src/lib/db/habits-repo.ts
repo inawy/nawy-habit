@@ -1,4 +1,4 @@
-import type { DayKey } from "@/lib/date/day-key";
+import { addDays, type DayKey } from "@/lib/date/day-key";
 
 import { getDb } from "./db";
 import {
@@ -100,6 +100,32 @@ export async function permanentlyDeleteHabit(id: string): Promise<void> {
   });
 }
 
+/**
+ * Persists a new order for active habits. `orderedIds` is the full list in its new sequence.
+ * The existing `order` values are reused (sorted) and handed out in the new sequence, so
+ * archived habits keep their positions and nothing else is renumbered.
+ */
+export async function reorderHabits(orderedIds: string[]): Promise<void> {
+  if (new Set(orderedIds).size !== orderedIds.length) {
+    throw new Error("Duplicate habit id in reorder request");
+  }
+  const db = getDb();
+  await db.transaction("rw", db.habits, async () => {
+    const habits = await db.habits.bulkGet(orderedIds);
+    const slots: number[] = [];
+    for (const habit of habits) {
+      if (!habit) throw new Error("Unknown habit in reorder request");
+      slots.push(habit.order);
+    }
+    slots.sort((a, b) => a - b);
+    for (const [index, id] of orderedIds.entries()) {
+      const order = slots[index];
+      if (order === undefined) continue;
+      await db.habits.update(id, { order });
+    }
+  });
+}
+
 /** Toggles the check-in for a day. Returns true when the day is now done. */
 export async function toggleLog(habitId: string, day: DayKey): Promise<boolean> {
   dayKeySchema.parse(day);
@@ -118,6 +144,64 @@ export async function toggleLog(habitId: string, day: DayKey): Promise<boolean> 
 
 export async function listLogs(): Promise<HabitLog[]> {
   return getDb().logs.toArray();
+}
+
+/**
+ * Reads logs only for the supplied habit ids.
+ */
+export async function listLogsForHabits(habitIds: string[]): Promise<HabitLog[]> {
+  if (habitIds.length === 0) return [];
+  return getDb()
+    .logs.where("habitId")
+    .anyOf([...new Set(habitIds)])
+    .toArray();
+}
+
+/**
+ * Loads only the rolling history needed by the Today cards, while preserving
+ * lifetime totals. If the entire window is consecutive, fetch the full record
+ * for that habit so unusually long current streaks remain accurate.
+ */
+export async function listRecentLogsForHabits(
+  habitIds: string[],
+  today: DayKey,
+): Promise<{ logs: HabitLog[]; totalsByHabit: Map<string, number> }> {
+  const ids = [...new Set(habitIds)];
+  if (ids.length === 0) return { logs: [], totalsByHabit: new Map() };
+
+  const db = getDb();
+  const windowStart = addDays(today, -173);
+  const activeIds = new Set(ids);
+  const [windowLogs, counts] = await Promise.all([
+    db.logs.where("day").between(windowStart, today, true, true).toArray(),
+    Promise.all(
+      ids.map(
+        async (habitId) =>
+          [habitId, await db.logs.where("habitId").equals(habitId).count()] as const,
+      ),
+    ),
+  ]);
+
+  const logs = windowLogs.filter((log) => activeIds.has(log.habitId));
+  const totalsByHabit = new Map(counts);
+  const fullHistoryIds = ids.filter(
+    (habitId) => logs.filter((log) => log.habitId === habitId).length === 174,
+  );
+
+  if (fullHistoryIds.length > 0) {
+    const fullHistory = await Promise.all(
+      fullHistoryIds.map((habitId) => db.logs.where("habitId").equals(habitId).toArray()),
+    );
+    const fullByHabit = new Map(
+      fullHistoryIds.map((habitId, index) => [habitId, fullHistory[index] ?? []]),
+    );
+    return {
+      logs: [...logs.filter((log) => !fullByHabit.has(log.habitId)), ...fullHistory.flat()],
+      totalsByHabit,
+    };
+  }
+
+  return { logs, totalsByHabit };
 }
 
 export async function getHabit(id: string): Promise<Habit | undefined> {

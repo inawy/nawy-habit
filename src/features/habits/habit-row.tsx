@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import { memo } from "react";
 import { HabitIcon } from "@/components/habit-icon";
+import { DragHandle } from "@/features/habits/habit-sortable";
 import { toast } from "sonner";
 
 import type { DayKey } from "@/lib/date/day-key";
@@ -22,7 +24,7 @@ const fullDateFmt = arabicFmt({
   month: "long",
 });
 
-export function HabitRow({ habit, days, recentDays, today }: Props) {
+export const HabitRow = memo(function HabitRow({ habit, days, recentDays, today }: Props) {
   async function onToggle(day: DayKey) {
     try {
       await toggleLog(habit.id, day);
@@ -34,23 +36,26 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
 
   return (
     <>
-      <Link
-        to="/habit/$habitId"
-        params={{ habitId: habit.id }}
-        className="flex min-w-0 items-center gap-2.5 rounded-lg py-1"
-      >
-        <span
-          className="habit-identity grid size-9 shrink-0 place-items-center rounded-xl"
-          data-habit-color={habit.color}
+      <div className="flex min-w-0 items-center gap-1">
+        <DragHandle habitName={habit.name} className="size-8" />
+        <Link
+          to="/habit/$habitId"
+          params={{ habitId: habit.id }}
+          className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg py-1"
         >
-          <HabitIcon name={habit.icon} className="size-[19px]" />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-[13px] font-semibold leading-snug">
-            {habit.name}
+          <span
+            className="habit-identity grid size-9 shrink-0 place-items-center rounded-xl"
+            data-habit-color={habit.color}
+          >
+            <HabitIcon name={habit.icon} className="size-[19px]" />
           </span>
-        </span>
-      </Link>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[13px] font-semibold leading-snug">
+              {habit.name}
+            </span>
+          </span>
+        </Link>
+      </div>
 
       {recentDays.map((day) => {
         const complete = days.has(day);
@@ -76,4 +81,4 @@ export function HabitRow({ habit, days, recentDays, today }: Props) {
       })}
     </>
   );
-}
+});

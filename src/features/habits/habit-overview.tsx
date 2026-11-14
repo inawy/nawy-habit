@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { Icon, type IconName } from "@/components/icon";
 import { HabitIcon } from "@/components/habit-icon";
 import {
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 import { HabitActivityGrid } from "@/features/habits/habit-activity-grid";
 import { HabitRow } from "@/features/habits/habit-row";
+import { DragHandle, HabitSortableList, SortableRow } from "@/features/habits/habit-sortable";
 import type { DayKey } from "@/lib/date/day-key";
 import { addDays, parseDayKey } from "@/lib/date/day-key";
 import { toggleLog } from "@/lib/db/habits-repo";
@@ -27,6 +28,7 @@ interface OverviewProps {
   mode: OverviewMode;
   habits: Habit[];
   daysByHabit: Map<string, Set<DayKey>>;
+  totalsByHabit: Map<string, number>;
   recentDays: DayKey[];
   today: DayKey;
   onEditHabit: (habit: Habit) => void;
@@ -38,11 +40,12 @@ interface OverviewProps {
 const weekdayFmt = arabicFmt({ weekday: "short" });
 const dayNumberFmt = arabicFmt({ day: "numeric" });
 const dateRangeFmt = arabicFmt({ day: "numeric", month: "short" });
+const EMPTY_DAYS = new Set<DayKey>();
 
 async function toggleToday(habit: Habit, today: DayKey) {
   try {
     const completed = await toggleLog(habit.id, today);
-    toast.success(completed ? "اتسجل إنجاز النهارده" : "اتشال تسجيل النهارده", {
+    toast.success(completed ? "سُجّل إنجاز اليوم" : "أُلغي تسجيل اليوم", {
       duration: 1400,
     });
   } catch (error) {
@@ -120,7 +123,7 @@ function HabitContextMenu({
   async function toggleYesterday() {
     try {
       const completed = await toggleLog(habit.id, yesterday);
-      toast.success(completed ? "اتسجل إنجاز أمس" : "اتشال تسجيل أمس", { duration: 1400 });
+      toast.success(completed ? "سُجّل إنجاز أمس" : "أُلغي تسجيل أمس", { duration: 1400 });
     } catch (error) {
       console.error(error);
       toast.error("تعذّر التسجيل");
@@ -134,9 +137,9 @@ function HabitContextMenu({
         aria-label={`خيارات ${habit.name}`}
         title="اضغط مطولًا لخيارات العادة"
       >
-        <li className={triggerClassName} data-habit-color={habit.color}>
+        <SortableRow habitId={habit.id} className={triggerClassName} data-habit-color={habit.color}>
           {children}
-        </li>
+        </SortableRow>
       </ContextMenuTrigger>
       <ContextMenuContent
         style={{ direction: "rtl" }}
@@ -193,7 +196,7 @@ function HabitContextMenu({
   );
 }
 
-function HabitChecklistItem({
+const HabitChecklistItem = memo(function HabitChecklistItem({
   habit,
   days,
   today,
@@ -207,6 +210,7 @@ function HabitChecklistItem({
 
   return (
     <>
+      <DragHandle habitName={habit.name} />
       <Link
         to="/habit/$habitId"
         params={{ habitId: habit.id }}
@@ -228,15 +232,17 @@ function HabitChecklistItem({
       <TodayToggle habit={habit} today={today} complete={complete} />
     </>
   );
-}
+});
 
-function HabitOverviewCard({
+const HabitOverviewCard = memo(function HabitOverviewCard({
   habit,
   days,
+  totalCount,
   today,
 }: {
   habit: Habit;
   days: Set<DayKey>;
+  totalCount: number;
   today: DayKey;
 }) {
   const streak = computeStreaks(days, today).current;
@@ -244,7 +250,8 @@ function HabitOverviewCard({
 
   return (
     <>
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-2">
+        <DragHandle habitName={habit.name} />
         <Link
           to="/habit/$habitId"
           params={{ habitId: habit.id }}
@@ -259,7 +266,7 @@ function HabitOverviewCard({
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[17px] font-bold leading-snug">{habit.name}</span>
             <span className="mt-0.5 block truncate text-[13px] leading-snug text-muted-foreground">
-              {streak > 0 ? `${num(streak)} يوم متتالي` : `${num(days.size)} إنجاز سابق`}
+              {streak > 0 ? `${num(streak)} يوم متتالي` : `${num(totalCount)} إنجاز سابق`}
             </span>
           </span>
         </Link>
@@ -270,12 +277,13 @@ function HabitOverviewCard({
       </div>
     </>
   );
-}
+});
 
 export function HabitOverview({
   mode,
   habits,
   daysByHabit,
+  totalsByHabit,
   recentDays,
   today,
   onEditHabit,
@@ -285,51 +293,64 @@ export function HabitOverview({
 }: OverviewProps) {
   if (mode === "cards") {
     return (
-      <ul className="grid grid-cols-1 gap-3.5">
-        {habits.map((habit) => {
-          const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
-          return (
-            <HabitContextMenu
-              key={habit.id}
-              habit={habit}
-              days={days}
-              today={today}
-              onEdit={onEditHabit}
-              onArchive={onArchiveHabit}
-              onDelete={onDeleteHabit}
-              onShare={onShareHabit}
-              triggerClassName="habit-overview-card rounded-3xl border p-4"
-            >
-              <HabitOverviewCard habit={habit} days={days} today={today} />
-            </HabitContextMenu>
-          );
-        })}
-      </ul>
+      <HabitSortableList habits={habits}>
+        {(ordered) => (
+          <ul className="grid grid-cols-1 gap-3.5">
+            {ordered.map((habit) => {
+              const days = daysByHabit.get(habit.id) ?? EMPTY_DAYS;
+              return (
+                <HabitContextMenu
+                  key={habit.id}
+                  habit={habit}
+                  days={days}
+                  today={today}
+                  onEdit={onEditHabit}
+                  onArchive={onArchiveHabit}
+                  onDelete={onDeleteHabit}
+                  onShare={onShareHabit}
+                  triggerClassName="habit-overview-card rounded-3xl border p-4"
+                >
+                  <HabitOverviewCard
+                    habit={habit}
+                    days={days}
+                    totalCount={totalsByHabit.get(habit.id) ?? days.size}
+                    today={today}
+                  />
+                </HabitContextMenu>
+              );
+            })}
+          </ul>
+        )}
+      </HabitSortableList>
     );
   }
 
   if (mode === "checklist") {
     return (
-      <ul className="habit-checklist overflow-hidden rounded-[1.35rem] border bg-card divide-y divide-border">
-        {habits.map((habit) => {
-          const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
-          return (
-            <HabitContextMenu
-              key={habit.id}
-              habit={habit}
-              days={days}
-              today={today}
-              onEdit={onEditHabit}
-              onArchive={onArchiveHabit}
-              onDelete={onDeleteHabit}
-              onShare={onShareHabit}
-              triggerClassName="habit-checklist-row flex items-center gap-3 px-3 py-3"
-            >
-              <HabitChecklistItem habit={habit} days={days} today={today} />
-            </HabitContextMenu>
-          );
-        })}
-      </ul>
+      <HabitSortableList habits={habits}>
+        {(ordered) => (
+          <ul className="habit-checklist overflow-hidden rounded-[1.35rem] border bg-card divide-y divide-border">
+            {ordered.map((habit) => {
+              const days = daysByHabit.get(habit.id) ?? EMPTY_DAYS;
+              return (
+                <HabitContextMenu
+                  key={habit.id}
+                  habit={habit}
+                  days={days}
+                  today={today}
+                  onEdit={onEditHabit}
+                  onArchive={onArchiveHabit}
+                  onDelete={onDeleteHabit}
+                  onShare={onShareHabit}
+                  triggerClassName="habit-checklist-row flex items-center gap-2 px-3 py-3"
+                >
+                  <HabitChecklistItem habit={habit} days={days} today={today} />
+                </HabitContextMenu>
+              );
+            })}
+          </ul>
+        )}
+      </HabitSortableList>
     );
   }
 
@@ -367,26 +388,30 @@ export function HabitOverview({
           </span>
         ))}
       </div>
-      <ul className="divide-y divide-border/80">
-        {habits.map((habit) => {
-          const days = daysByHabit.get(habit.id) ?? new Set<DayKey>();
-          return (
-            <HabitContextMenu
-              key={habit.id}
-              habit={habit}
-              days={days}
-              today={today}
-              onEdit={onEditHabit}
-              onArchive={onArchiveHabit}
-              onDelete={onDeleteHabit}
-              onShare={onShareHabit}
-              triggerClassName="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
-            >
-              <HabitRow habit={habit} days={days} recentDays={recentDays} today={today} />
-            </HabitContextMenu>
-          );
-        })}
-      </ul>
+      <HabitSortableList habits={habits}>
+        {(ordered) => (
+          <ul className="divide-y divide-border/80">
+            {ordered.map((habit) => {
+              const days = daysByHabit.get(habit.id) ?? EMPTY_DAYS;
+              return (
+                <HabitContextMenu
+                  key={habit.id}
+                  habit={habit}
+                  days={days}
+                  today={today}
+                  onEdit={onEditHabit}
+                  onArchive={onArchiveHabit}
+                  onDelete={onDeleteHabit}
+                  onShare={onShareHabit}
+                  triggerClassName="habit-compact-row grid grid-cols-[minmax(0,1fr)_repeat(5,2rem)] items-center gap-x-2 px-3 py-2.5"
+                >
+                  <HabitRow habit={habit} days={days} recentDays={recentDays} today={today} />
+                </HabitContextMenu>
+              );
+            })}
+          </ul>
+        )}
+      </HabitSortableList>
     </section>
   );
 }

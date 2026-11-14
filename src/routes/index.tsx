@@ -123,11 +123,11 @@ function TodayPage() {
 
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(`${shareText}\n${appUrl}`);
-        toast.success("اتنسخت تفاصيل العادة للمشاركة");
+        toast.success("نُسخت تفاصيل العادة للمشاركة");
         return;
       }
 
-      toast.error("المشاركة غير متاحة على الجهاز ده");
+      toast.error("المشاركة غير متاحة على هذا الجهاز");
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
       console.error(error);
@@ -189,7 +189,7 @@ function TodayPage() {
           </span>
           <h2 className="mt-4 text-lg font-bold">ابدأ بعادة واحدة</h2>
           <p className="mx-auto mt-1 max-w-xs text-sm leading-6 text-muted-foreground">
-            اختار حاجة صغيرة نفسك تواظب عليها، وسجّل إنجازك يومًا بيوم.
+            اختر عادة صغيرة تريد المواظبة عليها، وسجّل إنجازك يومًا بيوم.
           </p>
           <Button className="mt-6 rounded-full px-5" onClick={openNew}>
             <Icon name="add" className="size-5" />
@@ -206,6 +206,7 @@ function TodayPage() {
             mode={overviewMode}
             habits={view.habits}
             daysByHabit={view.daysByHabit}
+            totalsByHabit={view.totalsByHabit}
             recentDays={recentDays}
             today={today}
             onEditHabit={setEditingHabit}

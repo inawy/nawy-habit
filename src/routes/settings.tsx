@@ -36,7 +36,7 @@ export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "عادة — الإعدادات" },
-      { name: "description", content: "اختار مظهر التطبيق واحتفظ بنسخة احتياطية من عاداتك." },
+      { name: "description", content: "اختر مظهر التطبيق واحتفظ بنسخة احتياطية من عاداتك." },
       { property: "og:title", content: "عادة — الإعدادات" },
       { property: "og:description", content: "نسخ احتياطي واسترجاع لعاداتك بملف واحد." },
       { property: "og:type", content: "website" },
@@ -142,7 +142,7 @@ function SettingsPage() {
         <div>
           <h2 className="font-semibold">المظهر</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            اختار الوضع اللي يريح عينك، أو اتبع إعدادات جهازك.
+            اختر الوضع المريح لعينك، أو اتبع إعدادات جهازك.
           </p>
         </div>
         <div className="grid grid-cols-3 gap-2" role="group" aria-label="اختيار مظهر التطبيق">
