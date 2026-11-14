@@ -86,7 +86,7 @@ function TodayToggle({
       aria-label={label}
       aria-pressed={complete}
       data-complete={complete}
-      className="habit-today-toggle grid size-8 shrink-0 place-items-center rounded-full border transition-colors active:scale-95"
+      className="habit-today-toggle grid size-10 shrink-0 place-items-center rounded-full border transition-colors active:scale-95"
     >
       <Icon name={complete ? "check" : "add"} className="size-[18px]" />
     </button>

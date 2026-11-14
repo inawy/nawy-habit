@@ -11,6 +11,8 @@ import {
   type OverviewMode,
 } from "@/features/habits/habit-overview";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
+import { readOverviewMode, saveOverviewMode } from "@/features/habits/overview-mode-storage";
+import { TodayProgress } from "@/features/habits/today-progress";
 import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
 import { ReminderBanner } from "@/features/reminders/reminder-banner";
@@ -53,16 +55,14 @@ function TodayPage() {
   const [overviewMode, setOverviewMode] = useState<OverviewMode>("cards");
 
   useEffect(() => {
-    // Clear the old saved layout preference so the restored card grid is shown.
-    try {
-      window.localStorage.removeItem("nawy-habit-overview-mode-v2");
-    } catch {
-      // The default card grid remains active for this session.
-    }
+    // Read after mount so server and first client render agree; the card grid is the default.
+    const saved = readOverviewMode();
+    if (saved) setOverviewMode(saved);
   }, []);
 
   const chooseOverviewMode = (mode: OverviewMode) => {
     setOverviewMode(mode);
+    saveOverviewMode(mode);
   };
 
   const openNew = () => setDialogOpen(true);
@@ -167,6 +167,7 @@ function TodayPage() {
             <h1 className="text-[1.85rem] font-bold leading-tight tracking-tight">اليوم</h1>
           </div>
         </div>
+        {view && today && <TodayProgress done={doneCount} total={totalCount} />}
       </header>
 
       {view && today && totalCount > 0 && (
