@@ -84,7 +84,6 @@ function HabitDetailPage() {
   const { habit, days } = view;
   const streaks = computeStreaks(days, today);
   const habitStartDay = toDayKey(new Date(habit.createdAt));
-  const percent = progress.rate === null ? null : Math.round(progress.rate * 100);
   const monthLabel = arabicFmt({ month: "long", year: "numeric" }).format(
     parseDayKey(month + "-01"),
   );
@@ -95,6 +94,7 @@ function HabitDetailPage() {
   // Allow going back past the start so forgotten days can still be filled in.
   const minMonth = calendarMinMonth(historyStartDay);
   const progress = monthProgress(days, month, today, historyStartDay);
+  const percent = progress.rate === null ? null : Math.round(progress.rate * 100);
 
   async function onToggleDay(day: DayKey) {
     try {
