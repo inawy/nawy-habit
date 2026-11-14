@@ -8,6 +8,7 @@ import type { Habit } from "@/lib/db/schema";
 export interface HabitsView {
   habits: Habit[];
   daysByHabit: Map<string, Set<DayKey>>;
+  totalsByHabit: Map<string, number>;
 }
 
 function sameHabit(a: Habit, b: Habit): boolean {
