@@ -49,8 +49,10 @@ describe("HabitCalendar navigation", () => {
 
   it("does not allow ticking days that have not happened yet", () => {
     setup();
-    const future = screen.getAllByRole("button").filter((b) => b.getAttribute("aria-pressed") === "false");
-    const disabled = future.filter((b) => (b as HTMLButtonElement).disabled);
+    const dayButtons = screen
+      .getAllByRole("button")
+      .filter((button) => button.getAttribute("aria-pressed") === "false");
+    const disabled = dayButtons.filter((button) => (button as HTMLButtonElement).disabled);
     expect(disabled.length).toBe(16); // 15 → 30 November
   });
 });
