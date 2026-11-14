@@ -158,7 +158,7 @@ function TodayPage() {
           <InstallAppButton />
         </div>
         <div className="flex min-w-0 items-baseline gap-2 text-end">
-          <h1 className="shrink-0 text-sm font-semibold leading-none text-foreground">اليوم</h1>
+          <h1 className="shrink-0 text-sm font-medium leading-none text-muted-foreground">اليوم</h1>
           <span aria-hidden="true" className="text-muted-foreground/60">
             ·
           </span>
