@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { memo, type ReactNode } from "react";
 import { Icon, type IconName } from "@/components/icon";
+import { HabitIcon } from "@/components/habit-icon";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -219,7 +220,7 @@ const HabitChecklistItem = memo(function HabitChecklistItem({
           className="habit-identity grid size-8 shrink-0 place-items-center rounded-lg"
           data-habit-color={habit.color}
         >
-          <Icon name={habit.icon} className="size-5" />
+          <HabitIcon name={habit.icon} className="size-5" />
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-semibold">{habit.name}</span>
@@ -260,7 +261,7 @@ const HabitOverviewCard = memo(function HabitOverviewCard({
             className="habit-identity grid size-12 shrink-0 place-items-center rounded-2xl"
             data-habit-color={habit.color}
           >
-            <Icon name={habit.icon} className="size-6" />
+            <HabitIcon name={habit.icon} className="size-6" />
           </span>
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[17px] font-bold leading-snug">{habit.name}</span>
@@ -307,7 +308,7 @@ export function HabitOverview({
                   onArchive={onArchiveHabit}
                   onDelete={onDeleteHabit}
                   onShare={onShareHabit}
-                  triggerClassName="habit-overview-card rounded-[28px] border p-4"
+                  triggerClassName="habit-overview-card rounded-3xl border p-4"
                 >
                   <HabitOverviewCard
                     habit={habit}

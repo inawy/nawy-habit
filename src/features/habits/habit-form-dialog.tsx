@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
-import { Icon } from "@/components/icon";
+import { HabitIcon } from "@/components/habit-icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -99,7 +99,7 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
 
           <fieldset className="space-y-2">
             <legend className="text-sm font-medium">اختر رمزًا للعادة</legend>
-            <div className="grid grid-cols-6 gap-2">
+            <div className="grid max-h-[13.5rem] grid-cols-6 gap-2 overflow-y-auto overscroll-contain p-0.5">
               {HABIT_ICON_OPTIONS.map((option) => (
                 <button
                   key={option.value}
@@ -111,11 +111,12 @@ export function HabitFormDialog({ open, onOpenChange, habit }: Props) {
                   className={cn(
                     "grid size-12 place-items-center rounded-2xl border transition-all duration-150",
                     icon === option.value
-                      ? "border-primary bg-accent text-accent-foreground"
+                      ? "habit-identity border-[var(--habit-ink)]"
                       : "border-border bg-background text-muted-foreground hover:bg-muted",
                   )}
+                  data-habit-color={color}
                 >
-                  <Icon name={option.value} className="size-5" />
+                  <HabitIcon name={option.value} className="size-6" />
                 </button>
               ))}
             </div>

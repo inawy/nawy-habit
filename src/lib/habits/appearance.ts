@@ -1,40 +1,100 @@
 /**
- * Curated, reviewed allowlist for habit identity icons.
+ * Curated, reviewed allowlist for habit identity icons (filled Material Symbols, see
+ * components/habit-icon.tsx). Existing identifiers must stay valid: saved habits and backups use them.
  *
- * Keep this set to neutral everyday activities and objects. Do not add icons
- * depicting pork/pigs, alcohol, gambling, sexual content, nudity, occult
- * imagery, or anything otherwise inappropriate for Nawy's faith-sensitive
- * audience. Review the actual SVG artwork, not only its symbol name, before
- * adding a new entry. The Zod enum in the habit schema enforces this allowlist.
+ * Keep this set to neutral everyday activities and objects that suit a faith-sensitive audience
+ * following Islamic principles. Do not add icons depicting pork/pigs, alcohol, gambling, sexual
+ * content, nudity, occult imagery, symbols of other religions or practices (for example lotus or
+ * meditation poses), or people and animals (including pictogram figures). Prefer objects, nature
+ * and abstract marks. Review the actual SVG artwork, not only its symbol name, before adding a
+ * new entry. The Zod enum in the habit schema enforces this allowlist.
  */
-export const HABIT_ICON_NAMES = [
+export const HABIT_PICKER_ICON_NAMES = [
   "auto_awesome",
+  "mosque",
   "menu_book",
   "water_drop",
-  "directions_walk",
-  "fitness_center",
-  "self_improvement",
+  "wb_twilight",
+  "wb_sunny",
+  "alarm",
   "bedtime",
-  "restaurant",
+  "footprint",
+  "pedal_bike",
+  "waves",
+  "sports_soccer",
+  "fitness_center",
   "favorite",
+  "monitor_heart",
+  "nutrition",
+  "restaurant",
+  "medication",
+  "clean_hands",
+  "dentistry",
+  "shower",
   "school",
+  "edit_note",
+  "translate",
+  "code",
+  "work",
+  "timer",
+  "lightbulb",
+  "task_alt",
+  "emoji_events",
+  "palette",
+  "eco",
+  "cleaning_services",
+  "family_home",
+  "call",
   "account_balance_wallet",
   "volunteer_activism",
 ] as const;
+
+/**
+ * Retired from the picker (they depict a human figure) but still valid and rendered, so habits and
+ * backups saved with them keep working.
+ */
+export const LEGACY_HABIT_ICON_NAMES = ["directions_walk", "self_improvement"] as const;
+
+export const HABIT_ICON_NAMES = [...HABIT_PICKER_ICON_NAMES, ...LEGACY_HABIT_ICON_NAMES] as const;
 
 export type HabitIconName = (typeof HABIT_ICON_NAMES)[number];
 
 export const HABIT_ICON_OPTIONS: readonly { value: HabitIconName; label: string }[] = [
   { value: "auto_awesome", label: "بداية" },
+  { value: "mosque", label: "صلاة" },
   { value: "menu_book", label: "قراءة" },
   { value: "water_drop", label: "مياه" },
-  { value: "directions_walk", label: "مشي" },
-  { value: "fitness_center", label: "رياضة" },
-  { value: "self_improvement", label: "هدوء" },
+  { value: "wb_twilight", label: "أذكار" },
+  { value: "wb_sunny", label: "صباح" },
+  { value: "alarm", label: "استيقاظ" },
   { value: "bedtime", label: "نوم" },
-  { value: "restaurant", label: "غذاء" },
+  { value: "footprint", label: "خطوات" },
+  { value: "pedal_bike", label: "دراجة" },
+  { value: "waves", label: "سباحة" },
+  { value: "sports_soccer", label: "كرة" },
+  { value: "fitness_center", label: "رياضة" },
   { value: "favorite", label: "صحة" },
+  { value: "monitor_heart", label: "قلب" },
+  { value: "nutrition", label: "تغذية" },
+  { value: "restaurant", label: "غذاء" },
+  { value: "medication", label: "دواء" },
+  { value: "clean_hands", label: "نظافة" },
+  { value: "dentistry", label: "أسنان" },
+  { value: "shower", label: "استحمام" },
   { value: "school", label: "تعلّم" },
+  { value: "edit_note", label: "كتابة" },
+  { value: "translate", label: "لغة" },
+  { value: "code", label: "برمجة" },
+  { value: "work", label: "عمل" },
+  { value: "timer", label: "تركيز" },
+  { value: "lightbulb", label: "أفكار" },
+  { value: "task_alt", label: "مهام" },
+  { value: "emoji_events", label: "إنجاز" },
+  { value: "palette", label: "فن" },
+  { value: "eco", label: "طبيعة" },
+  { value: "cleaning_services", label: "ترتيب" },
+  { value: "family_home", label: "عائلة" },
+  { value: "call", label: "تواصل" },
   { value: "account_balance_wallet", label: "ادخار" },
   { value: "volunteer_activism", label: "عطاء" },
 ];

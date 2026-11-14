@@ -213,29 +213,16 @@
   background: color-mix(in srgb, var(--muted) 55%, transparent);
 }
 
-/* Premium overview card: habit-tinted gradient, soft depth, tinted heatmap. */
+/* Minimal overview card: flat surface, hairline border, no shadow or gradient. */
 .habit-overview-card {
-  border-color: color-mix(in srgb, var(--habit-color) 16%, var(--border));
+  border-color: var(--border);
   background-color: var(--card);
-  background-image: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--habit-color) 11%, var(--card)) 0%,
-    color-mix(in srgb, var(--habit-color) 4%, var(--card)) 52%,
-    var(--card) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.65),
-    0 10px 28px -16px color-mix(in srgb, var(--habit-color) 45%, transparent);
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  box-shadow: none;
+  transition: border-color 160ms ease;
   -webkit-tap-highlight-color: transparent;
 }
-.dark .habit-overview-card, [data-theme="dark"] .habit-overview-card {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.06),
-    0 10px 28px -16px rgb(0 0 0 / 0.6);
-}
 .habit-overview-card:hover {
-  border-color: color-mix(in srgb, var(--habit-color) 32%, var(--border));
+  border-color: color-mix(in srgb, var(--habit-color) 35%, var(--border));
 }
 .habit-overview-history {
   border-color: transparent;
@@ -251,7 +238,6 @@
   color: #FFFFFF;
   background: var(--habit-color);
   border-color: transparent;
-  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--habit-color) 75%, transparent);
 }
 .dark .habit-card-toggle[data-complete="true"], [data-theme="dark"] .habit-card-toggle[data-complete="true"] {
   color: #121212;
@@ -259,15 +245,15 @@
 
 /* Fade the oldest weeks at the inline-end edge (left in RTL, right in LTR). */
 .habit-heatmap-fade {
-  -webkit-mask-image: linear-gradient(to right, #000 74%, transparent 100%);
-  mask-image: linear-gradient(to right, #000 74%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, #000 82%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 82%, transparent 100%);
 }
 [dir="rtl"] .habit-heatmap-fade {
-  -webkit-mask-image: linear-gradient(to left, #000 74%, transparent 100%);
-  mask-image: linear-gradient(to left, #000 74%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, #000 82%, transparent 100%);
+  mask-image: linear-gradient(to left, #000 82%, transparent 100%);
 }
 .habit-overview-card .habit-heatmap-cell.is-empty {
-  background: color-mix(in srgb, var(--habit-color) 13%, var(--card));
+  background: color-mix(in srgb, var(--habit-color) 11%, var(--card));
 }
 .habit-overview-card .habit-heatmap-cell.is-complete {
   background: var(--habit-color);
