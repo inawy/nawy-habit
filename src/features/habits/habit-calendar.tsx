@@ -26,6 +26,8 @@ const fullDateFmt = arabicFmt({
 interface Props {
   month: MonthKey;
   minMonth: MonthKey;
+  /** Month of the habit's first recorded day; earlier months are for backfilling only. */
+  startMonth: MonthKey;
   days: Set<DayKey>;
   today: DayKey;
   onMonthChange: (month: MonthKey) => void;
@@ -33,7 +35,15 @@ interface Props {
 }
 
 /** Swipeable monthly calendar with direct month/year navigation. */
-export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onToggle }: Props) {
+export function HabitCalendar({
+  month,
+  minMonth,
+  startMonth,
+  days,
+  today,
+  onMonthChange,
+  onToggle,
+}: Props) {
   const touchStartX = useRef<number | null>(null);
   const cells = monthGrid(month);
   const header = weekDays(firstDayOfMonth(month)).map((d) => weekdayFmt.format(parseDayKey(d)));
@@ -107,7 +117,8 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
           onClick={() => onMonthChange(addMonths(month, -1))}
           disabled={!canGoPrevious}
           aria-label="الشهر السابق"
-          className="grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
+          title={canGoPrevious ? undefined : "هذا أقدم شهر متاح"}
+          className="grid size-11 shrink-0 place-items-center rounded-xl text-muted-foreground hover:bg-muted disabled:opacity-35"
         >
           <Icon name="chevron_right" className="size-5" />
         </button>
@@ -144,7 +155,8 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
           onClick={() => onMonthChange(addMonths(month, 1))}
           disabled={!canGoNext}
           aria-label="الشهر التالي"
-          className="grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted disabled:opacity-35"
+          title={canGoNext ? undefined : "لا يمكن تسجيل أيام لم تأتِ بعد"}
+          className="grid size-11 shrink-0 place-items-center rounded-xl text-muted-foreground hover:bg-muted disabled:opacity-35"
         >
           <Icon name="chevron_left" className="size-5" />
         </button>
@@ -202,8 +214,10 @@ export function HabitCalendar({ month, minMonth, days, today, onMonthChange, onT
         )}
       </ol>
 
-      <p className="mt-3 text-center text-[10px] text-muted-foreground">
-        اسحب يمينًا أو شمالًا للتنقل بين الشهور
+      <p className="mt-3 text-center text-[11px] text-muted-foreground">
+        {month < startMonth
+          ? "هذا الشهر قبل بدء العادة — يمكنك تسجيل أيام سابقة لإكمال سجلّك."
+          : "اسحب يمينًا أو شمالًا للتنقل بين الشهور"}
       </p>
     </section>
   );

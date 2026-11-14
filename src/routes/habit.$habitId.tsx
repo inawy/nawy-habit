@@ -2,17 +2,18 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Icon } from "@/components/icon";
 import { HabitIcon } from "@/components/habit-icon";
 import { AppSidebar } from "@/components/app-sidebar";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { HabitCalendar } from "@/features/habits/habit-calendar";
 import { HabitActivityGrid } from "@/features/habits/habit-activity-grid";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { useHabitDetailView } from "@/features/habits/use-habit-detail";
 import { useToday } from "@/features/habits/use-habits";
 import { parseDayKey, toDayKey, type DayKey } from "@/lib/date/day-key";
-import { toMonthKey, type MonthKey } from "@/lib/date/month";
+import { calendarMinMonth, toMonthKey, type MonthKey } from "@/lib/date/month";
 import {
   archiveHabit,
   moveHabitToTrash,
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/habit/$habitId")({
       { property: "og:title", content: "عادة — تفاصيل العادة" },
       {
         property: "og:description",
-        content: "شوف سجل إنجازك ونسبة التزامك، وعدّل أي يوم سابق.",
+        content: "اطّلع على سجل إنجازك ونسبة التزامك، وعدّل أي يوم سابق.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -67,7 +68,7 @@ function HabitDetailPage() {
   if (view === null) {
     return (
       <main className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center px-4 text-center">
-        <h1 className="mt-3 text-lg font-semibold">ما لقينا هذه العادة</h1>
+        <h1 className="mt-3 text-lg font-semibold">لم نعثر على هذه العادة</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           ربما حُذفت العادة، أو أن الرابط غير صحيح.
         </p>
@@ -83,15 +84,17 @@ function HabitDetailPage() {
   const { habit, days } = view;
   const streaks = computeStreaks(days, today);
   const habitStartDay = toDayKey(new Date(habit.createdAt));
-  const progress = monthProgress(days, month, today, habitStartDay);
-  const percent = progress.rate === null ? null : Math.round(progress.rate * 100);
   const monthLabel = arabicFmt({ month: "long", year: "numeric" }).format(
     parseDayKey(month + "-01"),
   );
   const currentMonth = toMonthKey(today);
   const oldestLogDay = Array.from(days).sort()[0] ?? habitStartDay;
   const historyStartDay = habitStartDay < oldestLogDay ? habitStartDay : oldestLogDay;
-  const minMonth = toMonthKey(historyStartDay);
+  const startMonth = toMonthKey(historyStartDay);
+  // Allow going back past the start so forgotten days can still be filled in.
+  const minMonth = calendarMinMonth(historyStartDay);
+  const progress = monthProgress(days, month, today, historyStartDay);
+  const percent = progress.rate === null ? null : Math.round(progress.rate * 100);
 
   async function onToggleDay(day: DayKey) {
     try {
@@ -127,7 +130,7 @@ function HabitDetailPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-xl px-4 pb-28 pt-5">
+    <main className="mx-auto min-h-screen max-w-xl px-4 pb-[calc(env(safe-area-inset-bottom)+2.5rem)] pt-5">
       <div className="flex items-center justify-between">
         <Link
           to="/"
@@ -144,9 +147,10 @@ function HabitDetailPage() {
             type="button"
             onClick={() => setEditing(true)}
             aria-label="تعديل العادة"
+            title="تعديل العادة"
             className="habit-toolbar-action grid size-10 place-items-center rounded-full border bg-card text-muted-foreground transition-colors hover:bg-muted"
           >
-            <Icon name="more_horiz" className="size-5" />
+            <Icon name="edit" className="size-5" />
           </button>
         </div>
       </div>
@@ -160,7 +164,7 @@ function HabitDetailPage() {
         </span>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-[1.6rem] font-bold leading-tight">{habit.name}</h1>
-          <p className="mt-1 text-xs text-muted-foreground">سجلّك الخاص مع العادة دي</p>
+          <p className="mt-1 text-xs text-muted-foreground">سجلّك الخاص مع هذه العادة</p>
         </div>
       </header>
 
@@ -209,6 +213,7 @@ function HabitDetailPage() {
         <HabitCalendar
           month={month}
           minMonth={minMonth}
+          startMonth={startMonth}
           days={days}
           today={today}
           onMonthChange={setPickedMonth}
@@ -252,22 +257,94 @@ function HabitDetailPage() {
         </div>
       </section>
 
-      <div className="mt-6 flex flex-wrap justify-end gap-2">
-        <Button variant="ghost" onClick={() => void onArchive()}>
-          <Icon name="archive" className="size-4" />
-          أرشفة العادة
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-destructive hover:text-destructive"
-          onClick={() => void onTrash()}
-        >
-          <Icon name="delete" className="size-4" />
-          نقل إلى سلة المحذوفات
-        </Button>
-      </div>
+      <section className="mt-6" aria-label="إدارة العادة">
+        <h2 className="mb-2 px-1 text-xs font-medium text-muted-foreground">إدارة العادة</h2>
+        <ul className="divide-y overflow-hidden rounded-[1.4rem] border bg-card">
+          <li>
+            <ManageRow
+              icon="edit"
+              title="تعديل العادة"
+              description="الاسم والأيقونة واللون"
+              onClick={() => setEditing(true)}
+            />
+          </li>
+          <li>
+            {habit.archivedAt ? (
+              <ManageRow
+                icon="restore"
+                title="استعادة العادة"
+                description="إرجاعها إلى قائمة عاداتك"
+                onClick={() => void restoreHabit(habit.id)}
+              />
+            ) : (
+              <ManageRow
+                icon="archive"
+                title="أرشفة العادة"
+                description="تُخفى من اليوم ويبقى سجلّها محفوظًا"
+                onClick={() => void onArchive()}
+              />
+            )}
+          </li>
+          <li>
+            <ManageRow
+              icon="delete"
+              title="نقل إلى سلة المحذوفات"
+              description="يمكنك استعادتها لاحقًا من السلة"
+              tone="danger"
+              onClick={() => void onTrash()}
+            />
+          </li>
+        </ul>
+      </section>
 
       <HabitFormDialog open={editing} onOpenChange={setEditing} habit={habit} />
     </main>
+  );
+}
+
+function ManageRow({
+  icon,
+  title,
+  description,
+  tone = "default",
+  onClick,
+}: {
+  icon: "edit" | "restore" | "archive" | "delete";
+  title: string;
+  description: string;
+  tone?: "default" | "danger";
+  onClick: () => void;
+}): ReactNode {
+  const danger = tone === "danger";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex min-h-16 w-full items-center gap-3 px-4 py-3 text-start transition-colors active:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+        danger ? "text-destructive hover:bg-destructive/5" : "text-foreground hover:bg-muted/60",
+      )}
+    >
+      <span
+        className={cn(
+          "grid size-10 shrink-0 place-items-center rounded-xl",
+          danger ? "bg-destructive/10" : "bg-muted text-muted-foreground",
+        )}
+      >
+        <Icon name={icon} className="size-5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold leading-5">{title}</span>
+        <span
+          className={cn(
+            "mt-0.5 block text-xs leading-4",
+            danger ? "text-destructive/70" : "text-muted-foreground",
+          )}
+        >
+          {description}
+        </span>
+      </span>
+      <Icon name="chevron_left" className="size-5 shrink-0 text-muted-foreground/60" />
+    </button>
   );
 }

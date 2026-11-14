@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   addMonths,
+  calendarMinMonth,
   daysInMonth,
   firstDayOfMonth,
   isMonthKey,
@@ -67,5 +68,10 @@ describe("month", () => {
 
   it("keeps the first day of the month inside the month", () => {
     expect(firstDayOfMonth("2026-10")).toBe("2026-10-01");
+  });
+
+  it("lets the calendar go a year back from the first recorded day", () => {
+    expect(calendarMinMonth("2026-11-14")).toBe("2025-11");
+    expect(calendarMinMonth("2026-01-31")).toBe("2025-01");
   });
 });

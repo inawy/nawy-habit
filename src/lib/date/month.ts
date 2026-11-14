@@ -31,6 +31,14 @@ export function addMonths(month: MonthKey, delta: number): MonthKey {
   return toMonthKey(toDayKey(date));
 }
 
+/** How far before the first recorded day the calendar lets the user go, to backfill history. */
+export const CALENDAR_BACKFILL_MONTHS = 12;
+
+/** Earliest month the calendar can show: a year before the habit's first recorded day. */
+export function calendarMinMonth(firstDay: DayKey): MonthKey {
+  return addMonths(toMonthKey(firstDay), -CALENDAR_BACKFILL_MONTHS);
+}
+
 /** Every day of the month, oldest first. */
 export function monthDays(month: MonthKey): DayKey[] {
   const first = firstDayOfMonth(month);
