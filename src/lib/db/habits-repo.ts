@@ -1,4 +1,4 @@
-import type { DayKey } from "@/lib/date/day-key";
+import { addDays, type DayKey } from "@/lib/date/day-key";
 
 import { getDb } from "./db";
 import {
@@ -147,9 +147,7 @@ export async function listLogs(): Promise<HabitLog[]> {
 }
 
 /**
- * Reads logs only for the supplied habit ids using the indexed habitId field.
- * The Today screen uses this so archived and trashed history is not loaded or
- * observed on every active-habit update.
+ * Reads logs only for the supplied habit ids.
  */
 export async function listLogsForHabits(habitIds: string[]): Promise<HabitLog[]> {
   if (habitIds.length === 0) return [];
@@ -157,6 +155,53 @@ export async function listLogsForHabits(habitIds: string[]): Promise<HabitLog[]>
     .logs.where("habitId")
     .anyOf([...new Set(habitIds)])
     .toArray();
+}
+
+/**
+ * Loads only the rolling history needed by the Today cards, while preserving
+ * lifetime totals. If the entire window is consecutive, fetch the full record
+ * for that habit so unusually long current streaks remain accurate.
+ */
+export async function listRecentLogsForHabits(
+  habitIds: string[],
+  today: DayKey,
+): Promise<{ logs: HabitLog[]; totalsByHabit: Map<string, number> }> {
+  const ids = [...new Set(habitIds)];
+  if (ids.length === 0) return { logs: [], totalsByHabit: new Map() };
+
+  const db = getDb();
+  const windowStart = addDays(today, -173);
+  const activeIds = new Set(ids);
+  const [windowLogs, counts] = await Promise.all([
+    db.logs.where("day").between(windowStart, today, true, true).toArray(),
+    Promise.all(
+      ids.map(
+        async (habitId) =>
+          [habitId, await db.logs.where("habitId").equals(habitId).count()] as const,
+      ),
+    ),
+  ]);
+
+  const logs = windowLogs.filter((log) => activeIds.has(log.habitId));
+  const totalsByHabit = new Map(counts);
+  const fullHistoryIds = ids.filter(
+    (habitId) => logs.filter((log) => log.habitId === habitId).length === 174,
+  );
+
+  if (fullHistoryIds.length > 0) {
+    const fullHistory = await Promise.all(
+      fullHistoryIds.map((habitId) => db.logs.where("habitId").equals(habitId).toArray()),
+    );
+    const fullByHabit = new Map(
+      fullHistoryIds.map((habitId, index) => [habitId, fullHistory[index] ?? []]),
+    );
+    return {
+      logs: [...logs.filter((log) => !fullByHabit.has(log.habitId)), ...fullHistory.flat()],
+      totalsByHabit,
+    };
+  }
+
+  return { logs, totalsByHabit };
 }
 
 export async function getHabit(id: string): Promise<Habit | undefined> {

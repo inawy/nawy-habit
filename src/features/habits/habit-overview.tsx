@@ -27,6 +27,7 @@ interface OverviewProps {
   mode: OverviewMode;
   habits: Habit[];
   daysByHabit: Map<string, Set<DayKey>>;
+  totalsByHabit: Map<string, number>;
   recentDays: DayKey[];
   today: DayKey;
   onEditHabit: (habit: Habit) => void;
@@ -235,10 +236,12 @@ const HabitChecklistItem = memo(function HabitChecklistItem({
 const HabitOverviewCard = memo(function HabitOverviewCard({
   habit,
   days,
+  totalCount,
   today,
 }: {
   habit: Habit;
   days: Set<DayKey>;
+  totalCount: number;
   today: DayKey;
 }) {
   const streak = computeStreaks(days, today).current;
@@ -262,7 +265,7 @@ const HabitOverviewCard = memo(function HabitOverviewCard({
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[17px] font-bold leading-snug">{habit.name}</span>
             <span className="mt-0.5 block truncate text-[13px] leading-snug text-muted-foreground">
-              {streak > 0 ? `${num(streak)} يوم متتالي` : `${num(days.size)} إنجاز سابق`}
+              {streak > 0 ? `${num(streak)} يوم متتالي` : `${num(totalCount)} إنجاز سابق`}
             </span>
           </span>
         </Link>
@@ -279,6 +282,7 @@ export function HabitOverview({
   mode,
   habits,
   daysByHabit,
+  totalsByHabit,
   recentDays,
   today,
   onEditHabit,
@@ -305,7 +309,12 @@ export function HabitOverview({
                   onShare={onShareHabit}
                   triggerClassName="habit-overview-card rounded-[28px] border p-4"
                 >
-                  <HabitOverviewCard habit={habit} days={days} today={today} />
+                  <HabitOverviewCard
+                    habit={habit}
+                    days={days}
+                    totalCount={totalsByHabit.get(habit.id) ?? days.size}
+                    today={today}
+                  />
                 </HabitContextMenu>
               );
             })}

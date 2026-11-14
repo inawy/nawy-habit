@@ -206,6 +206,7 @@ function TodayPage() {
             mode={overviewMode}
             habits={view.habits}
             daysByHabit={view.daysByHabit}
+            totalsByHabit={view.totalsByHabit}
             recentDays={recentDays}
             today={today}
             onEditHabit={setEditingHabit}

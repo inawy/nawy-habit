@@ -2,12 +2,13 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { todayKey, type DayKey } from "@/lib/date/day-key";
-import { listActiveHabits, listLogsForHabits } from "@/lib/db/habits-repo";
+import { listActiveHabits, listRecentLogsForHabits } from "@/lib/db/habits-repo";
 import type { Habit } from "@/lib/db/schema";
 
 export interface HabitsView {
   habits: Habit[];
   daysByHabit: Map<string, Set<DayKey>>;
+  totalsByHabit: Map<string, number>;
 }
 
 function sameHabit(a: Habit, b: Habit): boolean {
@@ -36,14 +37,17 @@ function sameDays(a: Set<DayKey>, b: Set<DayKey>): boolean {
 export function useHabitsView(): HabitsView | undefined {
   const result = useLiveQuery(async () => {
     const habits = await listActiveHabits();
-    const logs = await listLogsForHabits(habits.map((habit) => habit.id));
+    const { logs, totalsByHabit } = await listRecentLogsForHabits(
+      habits.map((habit) => habit.id),
+      todayKey(),
+    );
     const daysByHabit = new Map<string, Set<DayKey>>();
     for (const log of logs) {
       const set = daysByHabit.get(log.habitId) ?? new Set<DayKey>();
       set.add(log.day);
       daysByHabit.set(log.habitId, set);
     }
-    return { habits, daysByHabit };
+    return { habits, daysByHabit, totalsByHabit };
   });
 
   const previousView = useRef<HabitsView | undefined>(undefined);
@@ -69,7 +73,14 @@ export function useHabitsView(): HabitsView | undefined {
       const oldDays = previous?.daysByHabit.get(habitId);
       daysByHabit.set(habitId, oldDays && sameDays(oldDays, days) ? oldDays : days);
     }
-    const stableView = { habits, daysByHabit };
+    const previousTotals = previous?.totalsByHabit;
+    const totalsByHabit =
+      previousTotals &&
+      previousTotals.size === result.totalsByHabit.size &&
+      [...result.totalsByHabit].every(([id, total]) => previousTotals.get(id) === total)
+        ? previousTotals
+        : result.totalsByHabit;
+    const stableView = { habits, daysByHabit, totalsByHabit };
     previousView.current = stableView;
     return stableView;
   }, [result]);
