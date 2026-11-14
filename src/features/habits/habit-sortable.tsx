@@ -199,6 +199,7 @@ export function DragHandle({ habitName, className }: { habitName: string; classN
         event.preventDefault();
         event.stopPropagation();
       }}
+      data-no-swipe
       aria-label={`إعادة ترتيب «${habitName}»`}
       title="اسحب لإعادة الترتيب"
       className={cn(
