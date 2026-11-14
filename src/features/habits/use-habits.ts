@@ -2,7 +2,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 
 import { todayKey, type DayKey } from "@/lib/date/day-key";
-import { listActiveHabits, listLogs } from "@/lib/db/habits-repo";
+import { listActiveHabits, listLogsForHabits } from "@/lib/db/habits-repo";
 import type { Habit } from "@/lib/db/schema";
 
 export interface HabitsView {
@@ -13,7 +13,8 @@ export interface HabitsView {
 /** Live view of active habits and their completed days. `undefined` while loading. */
 export function useHabitsView(): HabitsView | undefined {
   return useLiveQuery(async () => {
-    const [habits, logs] = await Promise.all([listActiveHabits(), listLogs()]);
+    const habits = await listActiveHabits();
+    const logs = await listLogsForHabits(habits.map((habit) => habit.id));
     const daysByHabit = new Map<string, Set<DayKey>>();
     for (const log of logs) {
       const set = daysByHabit.get(log.habitId) ?? new Set<DayKey>();
