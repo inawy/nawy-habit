@@ -422,6 +422,16 @@ const viewOptions: { value: OverviewMode; label: string; icon: IconName }[] = [
   { value: "compact", label: "مختصر", icon: "view_compact" },
 ];
 
+/** The mode that follows `mode` in the cycle used by the view button and the swipe gesture. */
+export function nextOverviewMode(mode: OverviewMode): { value: OverviewMode; label: string } {
+  const index = viewOptions.findIndex((option) => option.value === mode);
+  const next = viewOptions[(index + 1) % viewOptions.length] ?? {
+    value: "cards" as const,
+    label: "بطاقات",
+  };
+  return { value: next.value, label: next.label };
+}
+
 export function HabitViewCycleButton({
   value,
   onChange,

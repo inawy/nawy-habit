@@ -9,8 +9,10 @@ import { Button } from "@/components/ui/button";
 import {
   HabitOverview,
   HabitViewCycleButton,
+  nextOverviewMode,
   type OverviewMode,
 } from "@/features/habits/habit-overview";
+import { useSideSwipe } from "@/hooks/use-side-swipe";
 import { HabitFormDialog } from "@/features/habits/habit-form-dialog";
 import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { useHabitsView, useToday } from "@/features/habits/use-habits";
@@ -65,6 +67,18 @@ function TodayPage() {
   const chooseOverviewMode = (mode: OverviewMode) => {
     setOverviewMode(mode);
   };
+
+  // Swipe from the left side of the screen to switch the habits view (cards, list, compact).
+  useSideSwipe(
+    {
+      left: () => {
+        const next = nextOverviewMode(overviewMode);
+        chooseOverviewMode(next.value);
+        toast(`العرض: ${next.label}`, { id: "overview-mode", duration: 1200 });
+      },
+    },
+    !!view && view.habits.length > 0,
+  );
 
   const openNew = () => setDialogOpen(true);
 
@@ -144,7 +158,7 @@ function TodayPage() {
   const recentDays = today ? lastDays(today, 5) : [];
 
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
+    <main className="mx-auto min-h-[100dvh] max-w-2xl touch-pan-y touch-pinch-zoom px-4 pb-[calc(env(safe-area-inset-bottom)+6.5rem)] pt-5 sm:px-5">
       <header className="mb-4 flex items-center justify-between gap-3">
         <div
           dir="rtl"

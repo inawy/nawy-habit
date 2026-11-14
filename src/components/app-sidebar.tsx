@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Icon } from "@/components/icon";
+import { useSideSwipe } from "@/hooks/use-side-swipe";
 import { consumeSidebarReturn, markSidebarReturn } from "@/lib/navigation/sidebar-return";
 import {
   Sheet,
@@ -96,6 +97,9 @@ export function AppSidebar() {
   } | null>(null);
   const swiped = useRef(false);
   const close = () => setOpen(false);
+
+  // Swipe from the right side of the screen (the menu slides in from the right) to open it.
+  useSideSwipe({ right: () => setOpen(true) }, !open);
 
   // Back from a section opened through this menu: show the menu already open, before the first
   // paint and without the slide-in/fade-in animation. Closing it animates as usual.
