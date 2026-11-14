@@ -1,10 +1,10 @@
-Nawy Habit icon pack - pixel noon on a 3x3 tracking grid
-6 lit cells: dot alone in the top row + noon bowl (2 sides + 3 base); 3 faint empty cells.
-Colour (brand blue, stepped): dot #EAF1FF | sides #2B5BD0 | base #3D7BFF | tile #0F172A
-Golden ratio (tile T=512): mark W=T/phi=316.4 | cell:gap = phi^4 (96.1:14.0) | cell radius=c/phi^3=22.7 | tile radius=T/phi^3=120.9 | margins top:bottom = 1:phi
-Optical sizing: sizes <=48px use a larger mark (0.80T) and drop the faint empty cells.
-ios/: square opaque PNGs (system applies the mask) + tinted 1024.
-android/: adaptive-foreground-432 (background colour #0F172A), adaptive-monochrome-432 (themed icons), legacy + round mipmaps, playstore-512.
-web/: favicon.ico/svg/png, apple-touch-icon, PWA icons (any + maskable), manifest-icons.json.
-notification/: white badges (transparent).
-svg/: master vector files.
+Nawy Habit (عادة) - Google soft tints, noon on a 3x3 grid, no gaps
+Squares touching (no gap), sharp corners. Noon = dot (hero) + 5 lit squares; 3 ghost squares (left/right/below the dot) at 14% blue.
+Colours: dot #3D7BFF (Nawy blue) | Google tints (Material 100): red #FAD2CF (left, base-right) | yellow #FEEFC3 (right) | blue #D2E3FC (base-left) | green #CEEAD6 (base-middle) | tile #111318
+Source of tints: Google palette values (Chromium cros_palette / Android docs): blue-100 #d2e3fc, red-100 #fad2cf, yellow-100 #feefc3, green-100 #ceead6
+Golden ratio (T=512): mark width = T/phi = 316.4 (cell 105.5) | tile radius = T/phi^3 = 120.9 | margins top:bottom = 1:phi
+Optical sizing: <=48px uses a larger mark (0.80T) without ghost squares.
+Maskable / round icons use a smaller centred mark to stay inside the safe zone.
+Monochrome / badge: solid white cells, no ghost squares.
+ios/: square opaque PNGs + tinted 1024 | android/: adaptive fg 432 (bg #111318), monochrome 432, legacy + round, playstore-512
+web/: favicon.ico/svg/png, apple-touch, PWA icons (any + maskable), manifest-icons.json | notification/: white badges | svg/: masters

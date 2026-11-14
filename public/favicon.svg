@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-<rect width="512" height="512" rx="120.87" fill="#0F172A"/>
-<rect x="193.78" y="39.11" width="124.43" height="124.43" rx="29.37" fill="#EAF1FF"/>
-<rect x="51.20" y="181.70" width="124.43" height="124.43" rx="29.37" fill="#2B5BD0"/>
-<rect x="336.37" y="181.70" width="124.43" height="124.43" rx="29.37" fill="#2B5BD0"/>
-<rect x="51.20" y="324.28" width="124.43" height="124.43" rx="29.37" fill="#3D7BFF"/>
-<rect x="193.78" y="324.28" width="124.43" height="124.43" rx="29.37" fill="#3D7BFF"/>
-<rect x="336.37" y="324.28" width="124.43" height="124.43" rx="29.37" fill="#3D7BFF"/>
+<rect width="512" height="512" rx="120.87" fill="#111318"/>
+<rect x="187.73" y="39.11" width="136.93" height="136.93" fill="#3D7BFF"/>
+<rect x="51.20" y="175.65" width="136.93" height="136.93" fill="#FAD2CF"/>
+<rect x="324.27" y="175.65" width="136.93" height="136.93" fill="#FEEFC3"/>
+<rect x="51.20" y="312.18" width="136.93" height="136.93" fill="#D2E3FC"/>
+<rect x="187.73" y="312.18" width="136.93" height="136.93" fill="#CEEAD6"/>
+<rect x="324.27" y="312.18" width="136.93" height="136.93" fill="#FAD2CF"/>
 </svg>
