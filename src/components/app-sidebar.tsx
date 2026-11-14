@@ -7,6 +7,7 @@ import {
   consumeSidebarReturn,
   markSidebarReturn,
   onSidebarOpenRequest,
+  peekSidebarReturnTarget,
 } from "@/lib/navigation/sidebar-return";
 import {
   Sheet,
@@ -47,27 +48,31 @@ const secondaryItems = [
   },
 ] as const;
 
+const ACTIVE_CLASS =
+  "active bg-accent/80 text-primary [&_.nav-icon]:bg-primary/10 [&_.nav-icon]:text-primary";
+
 function NavigationItem({
   item,
   onNavigate,
+  highlight,
 }: {
   item: (typeof primaryItems)[number] | (typeof secondaryItems)[number];
-  onNavigate: () => void;
+  onNavigate: (to: string) => void;
+  /** When set, this section (not the current route) is the highlighted one. */
+  highlight: string | null;
 }) {
+  const forced = highlight !== null;
   return (
     <Link
       to={item.to}
       onClick={() => {
         // Leaving for another section: coming back should reopen this menu.
-        if (item.to !== "/") markSidebarReturn();
-        onNavigate();
+        if (item.to !== "/") markSidebarReturn(Date.now(), item.to);
+        onNavigate(item.to);
       }}
       activeOptions={{ exact: item.to === "/" }}
-      activeProps={{
-        className:
-          "active bg-accent/80 text-primary [&_.nav-icon]:bg-primary/10 [&_.nav-icon]:text-primary",
-      }}
-      className="group flex min-h-[3.5rem] items-center gap-3 rounded-xl px-3 py-2 text-foreground transition-colors duration-150 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      activeProps={forced ? {} : { className: ACTIVE_CLASS }}
+      className={`${forced && highlight === item.to ? `${ACTIVE_CLASS} ` : ""}group flex min-h-[3.5rem] items-center gap-3 rounded-xl px-3 py-2 text-foreground transition-colors duration-150 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`}
     >
       <span className="nav-icon grid size-9 shrink-0 place-items-center rounded-xl bg-muted/80 text-muted-foreground transition-colors">
         <Icon name={item.icon} className="size-5" />
@@ -101,7 +106,20 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
     dragging: boolean;
   } | null>(null);
   const swiped = useRef(false);
+  // The section picked in the menu stays highlighted right away, and after coming back from it.
+  const [highlight, setHighlight] = useState<string | null>(null);
+  const keepHighlight = useRef(false);
   const close = () => setOpen(false);
+  const pick = (to: string) => {
+    setHighlight(to);
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    if (keepHighlight.current) keepHighlight.current = false;
+    else setHighlight(null);
+  }, [open]);
 
   // Swipe from the right side of the screen (the menu slides in from the right) to open it.
   useSideSwipe({ right: () => setOpen(true) }, swipeToOpen && !open);
@@ -119,7 +137,12 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
   // Back from a section opened through this menu: show the menu already open, before the first
   // paint and without the slide-in/fade-in animation. Closing it animates as usual.
   useLayoutEffect(() => {
+    const target = peekSidebarReturnTarget();
     if (!consumeSidebarReturn()) return;
+    if (target) {
+      keepHighlight.current = true;
+      setHighlight(target);
+    }
     setRestored(true);
     setOpen(true);
   }, []);
@@ -283,7 +306,7 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
             مساحتي
           </p>
           {primaryItems.map((item) => (
-            <NavigationItem key={item.to} item={item} onNavigate={close} />
+            <NavigationItem key={item.to} item={item} onNavigate={pick} highlight={highlight} />
           ))}
 
           <div className="my-4 border-t" />
@@ -292,7 +315,7 @@ export function AppSidebar({ swipeToOpen = true }: { swipeToOpen?: boolean }) {
             التطبيق
           </p>
           {secondaryItems.map((item) => (
-            <NavigationItem key={item.to} item={item} onNavigate={close} />
+            <NavigationItem key={item.to} item={item} onNavigate={pick} highlight={highlight} />
           ))}
         </nav>
 
