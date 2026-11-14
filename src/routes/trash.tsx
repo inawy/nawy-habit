@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { PageBackButton } from "@/components/page-back-button";
+import { HabitIcon } from "@/components/habit-icon";
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 import {
@@ -90,7 +91,7 @@ function TrashPage() {
                 className="flex items-center gap-3 rounded-2xl border bg-card p-3"
               >
                 <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-muted">
-                  <Icon name={habit.icon} className="size-5" />
+                  <HabitIcon name={habit.icon} className="size-5" />
                 </span>
                 <div className="min-w-0 flex-1">
                   <h2 className="truncate text-sm font-semibold">{habit.name}</h2>
