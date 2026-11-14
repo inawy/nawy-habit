@@ -87,5 +87,4 @@ describe("useHabitsView", () => {
     expect(result.logs).toHaveLength(180);
     expect(result.totalsByHabit.get(habit.id)).toBe(180);
   });
-
 });
