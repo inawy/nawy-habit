@@ -27,6 +27,7 @@ interface OverviewProps {
   mode: OverviewMode;
   habits: Habit[];
   daysByHabit: Map<string, Set<DayKey>>;
+  totalsByHabit: Map<string, number>;
   recentDays: DayKey[];
   today: DayKey;
   onEditHabit: (habit: Habit) => void;
@@ -197,12 +198,10 @@ function HabitContextMenu({
 const HabitChecklistItem = memo(function HabitChecklistItem({
   habit,
   days,
-  totalCount,
   today,
 }: {
   habit: Habit;
   days: Set<DayKey>;
-  totalCount: number;
   today: DayKey;
 }) {
   const streak = computeStreaks(days, today).current;
@@ -237,10 +236,12 @@ const HabitChecklistItem = memo(function HabitChecklistItem({
 const HabitOverviewCard = memo(function HabitOverviewCard({
   habit,
   days,
+  totalCount,
   today,
 }: {
   habit: Habit;
   days: Set<DayKey>;
+  totalCount: number;
   today: DayKey;
 }) {
   const streak = computeStreaks(days, today).current;
