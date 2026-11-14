@@ -38,9 +38,7 @@ describe("useHabitsView", () => {
       expect(result.current?.daysByHabit.get(first.id)?.has(today)).toBe(true);
     });
 
-    expect(result.current?.habits.find((habit) => habit.id === second.id)).toBe(
-      secondHabitBefore,
-    );
+    expect(result.current?.habits.find((habit) => habit.id === second.id)).toBe(secondHabitBefore);
     expect(result.current?.daysByHabit.get(second.id)).toBe(secondDaysBefore);
 
     await act(async () => {
