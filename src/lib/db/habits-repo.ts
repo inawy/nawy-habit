@@ -164,7 +164,10 @@ export async function listRecentLogsForHabits(
   const [windowLogs, counts] = await Promise.all([
     db.logs.where("day").between(windowStart, today, true, true).toArray(),
     Promise.all(
-      ids.map(async (habitId) => [habitId, await db.logs.where("habitId").equals(habitId).count()] as const),
+      ids.map(
+        async (habitId) =>
+          [habitId, await db.logs.where("habitId").equals(habitId).count()] as const,
+      ),
     ),
   ]);
 
@@ -182,10 +185,7 @@ export async function listRecentLogsForHabits(
       fullHistoryIds.map((habitId, index) => [habitId, fullHistory[index] ?? []]),
     );
     return {
-      logs: [
-        ...logs.filter((log) => !fullByHabit.has(log.habitId)),
-        ...fullHistory.flat(),
-      ],
+      logs: [...logs.filter((log) => !fullByHabit.has(log.habitId)), ...fullHistory.flat()],
       totalsByHabit,
     };
   }
