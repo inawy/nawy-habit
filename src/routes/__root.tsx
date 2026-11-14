@@ -100,10 +100,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "manifest", href: `${import.meta.env.BASE_URL}manifest.webmanifest` },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap",
-      },
     ],
   }),
   shellComponent: RootShell,
@@ -111,6 +107,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
+/** Runs `task` once the browser is idle (or after a short delay where that API is missing). */
+function runWhenIdle(task: () => void): () => void {
+  if (typeof window.requestIdleCallback === "function") {
+    const id = window.requestIdleCallback(task, { timeout: 4000 });
+    return () => window.cancelIdleCallback(id);
+  }
+  const id = window.setTimeout(task, 1500);
+  return () => window.clearTimeout(id);
+}
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -120,7 +126,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{var p=localStorage.getItem('nawy-habit-theme');var dark=p==='dark'||(p!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var t=dark?'dark':'light';var r=document.documentElement;r.dataset.theme=t;r.classList.toggle('dark',dark);r.style.colorScheme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',dark?'#121212':'#F7F8FA');}catch(e){}})();",
+              "(function(){try{var p=localStorage.getItem('nawy-habit-theme');var dark=p==='dark'||(p!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var t=dark?'dark':'light';var r=document.documentElement;r.dataset.theme=t;r.classList.toggle('dark',dark);r.style.colorScheme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',dark?'#121212':'#F7F8FA');}catch(e){}try{var f=document.createElement('link');f.rel='stylesheet';f.href='https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap';document.head.appendChild(f);}catch(e){}})();",
           }}
         />
       </head>
@@ -135,11 +141,16 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => {
-    void permanentlyDeleteExpiredHabits().catch((error) => {
-      console.error("Trash cleanup failed.", error);
-    });
-    void registerServiceWorker().catch((error) => {
-      console.error("Service worker startup failed.", error);
+    // Housekeeping must not compete with the first paint: the trash cleanup opens a read-write
+    // transaction on the same tables the Today screen reads, and a service-worker install
+    // downloads every precached file. Both wait until the browser is idle.
+    return runWhenIdle(() => {
+      void permanentlyDeleteExpiredHabits().catch((error) => {
+        console.error("Trash cleanup failed.", error);
+      });
+      void registerServiceWorker().catch((error) => {
+        console.error("Service worker startup failed.", error);
+      });
     });
   }, []);
 

@@ -1,3 +1,5 @@
+import { memo, useMemo } from "react";
+
 import { addDays, parseDayKey, type DayKey } from "@/lib/date/day-key";
 import { arabicFmt, num } from "@/lib/format/numbers";
 import type { HabitColorName } from "@/lib/habits/appearance";
@@ -18,6 +20,92 @@ interface Props {
   startDate?: DayKey;
 }
 
+interface CompactCell {
+  day: DayKey;
+  isFuture: boolean;
+  isToday: boolean;
+  /** Long Arabic date, formatted once per day and shared by every card. */
+  dateLabel: string;
+}
+
+/**
+ * The 24x7 day layout depends only on "today", not on the habit, so it is built once and shared by
+ * all cards. Formatting 168 dates with Intl for every card on every render was the main cost of
+ * painting the Today screen on slower phones.
+ */
+let layoutCache: { today: DayKey; cells: CompactCell[] } | undefined;
+
+function compactLayout(today: DayKey): CompactCell[] {
+  if (layoutCache?.today === today) return layoutCache.cells;
+  const currentWeekStart = addDays(today, -((parseDayKey(today).getDay() + 6) % 7));
+  // Newest week first: the current week sits at the inline-start edge (right in RTL).
+  const cells = Array.from({ length: COMPACT_WEEK_COUNT }, (_, week) =>
+    addDays(currentWeekStart, -week * 7),
+  ).flatMap((weekStart) =>
+    Array.from({ length: 7 }, (_, dayIndex): CompactCell => {
+      const day = addDays(weekStart, dayIndex);
+      return {
+        day,
+        isFuture: day > today,
+        isToday: day === today,
+        dateLabel: day > today ? "" : dateFmt.format(parseDayKey(day)),
+      };
+    }),
+  );
+  layoutCache = { today, cells };
+  return cells;
+}
+
+const CompactActivityGrid = memo(function CompactActivityGrid({
+  days,
+  today,
+  color,
+}: {
+  days: Set<DayKey>;
+  today: DayKey;
+  color: HabitColorName;
+}) {
+  const cells = useMemo(() => compactLayout(today), [today]);
+  const completed = useMemo(() => {
+    let count = 0;
+    for (const cell of cells) if (!cell.isFuture && days.has(cell.day)) count += 1;
+    return count;
+  }, [cells, days]);
+
+  // Overview cards show a light rolling window: 24 week columns x 7 day rows. The oldest weeks
+  // fade out at the opposite edge; the detail screen still shows the full history.
+  return (
+    <div className="habit-heatmap" data-habit-color={color}>
+      <ol
+        className="habit-heatmap-grid habit-heatmap-fade grid grid-flow-col grid-rows-7 gap-[3px] p-[3px]"
+        style={{ gridTemplateColumns: `repeat(${COMPACT_WEEK_COUNT}, minmax(0, 1fr))` }}
+        aria-label={`إنجازات العادة خلال آخر ${num(COMPACT_WEEK_COUNT)} أسبوعًا — ${num(completed)} يوم إنجاز`}
+      >
+        {cells.map((cell) => {
+          const complete = !cell.isFuture && days.has(cell.day);
+          const label = cell.isFuture
+            ? undefined
+            : `${cell.dateLabel} — ${complete ? "تم الإنجاز" : "بدون تسجيل"}${cell.isToday ? " — اليوم" : ""}`;
+
+          return (
+            <li
+              key={cell.day}
+              title={label}
+              aria-label={label}
+              aria-hidden={cell.isFuture}
+              className={cn(
+                "habit-heatmap-cell aspect-square min-w-0 rounded-[28%]",
+                cell.isFuture ? "is-future" : complete ? "is-complete" : "is-empty",
+                cell.isToday && "is-today",
+              )}
+            />
+          );
+        })}
+      </ol>
+    </div>
+  );
+});
+
 /** Overview cards show a rolling 24-week window; the detail view keeps the full recorded lifetime. */
 export function HabitActivityGrid({
   days,
@@ -26,60 +114,7 @@ export function HabitActivityGrid({
   compact = false,
   startDate,
 }: Props) {
-  if (compact) {
-    // Overview cards show a light rolling window: 24 week columns x 7 day rows.
-    // The newest week starts at the inline-start edge (right in RTL) and the oldest
-    // weeks fade out at the opposite edge. The detail screen still shows full history.
-    const todayDate = parseDayKey(today);
-    const currentWeekStart = addDays(today, -((todayDate.getDay() + 6) % 7));
-    const compactWeekStarts = Array.from({ length: COMPACT_WEEK_COUNT }, (_, index) =>
-      addDays(currentWeekStart, -index * 7),
-    );
-    const compactCompleted = compactWeekStarts.reduce((count, weekStart) => {
-      for (let offset = 0; offset < 7; offset += 1) {
-        const date = addDays(weekStart, offset);
-        if (date <= today && days.has(date)) count += 1;
-      }
-      return count;
-    }, 0);
-
-    return (
-      <div className="habit-heatmap" data-habit-color={color}>
-        <ol
-          className="habit-heatmap-grid habit-heatmap-fade grid grid-flow-col grid-rows-7 gap-[3px] p-[3px]"
-          style={{ gridTemplateColumns: `repeat(${COMPACT_WEEK_COUNT}, minmax(0, 1fr))` }}
-          aria-label={`إنجازات العادة خلال آخر ${num(COMPACT_WEEK_COUNT)} أسبوعًا — ${num(compactCompleted)} يوم إنجاز`}
-        >
-          {compactWeekStarts.flatMap((weekStart) =>
-            Array.from({ length: 7 }, (_, dayIndex) => {
-              const day = addDays(weekStart, dayIndex);
-              const isFuture = day > today;
-              const complete = days.has(day);
-              const label =
-                dateFmt.format(parseDayKey(day)) +
-                " — " +
-                (complete ? "تم الإنجاز" : "بدون تسجيل") +
-                (day === today ? " — اليوم" : "");
-
-              return (
-                <li
-                  key={day}
-                  title={isFuture ? undefined : label}
-                  aria-label={isFuture ? undefined : label}
-                  aria-hidden={isFuture}
-                  className={cn(
-                    "habit-heatmap-cell aspect-square min-w-0 rounded-[28%]",
-                    isFuture ? "is-future" : complete ? "is-complete" : "is-empty",
-                    day === today && "is-today",
-                  )}
-                />
-              );
-            }),
-          )}
-        </ol>
-      </div>
-    );
-  }
+  if (compact) return <CompactActivityGrid days={days} today={today} color={color} />;
 
   const todayDate = parseDayKey(today);
   const mondayOffset = (todayDate.getDay() + 6) % 7;
