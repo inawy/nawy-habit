@@ -32,10 +32,10 @@ equal (the Pages smoke test checks it) so the splash screen and system bar match
 | Part               | Hex                   |
 | ------------------ | --------------------- |
 | Today (hero, teal) | `#29CAC0`             |
-| Coral              | `#FDB0AD`             |
+| Coral              | `#F5A5A2`             |
 | Sunny yellow       | `#FCDB81`             |
-| Mint               | `#9EE0AF`             |
-| Calm blue          | `#87B1E6`             |
+| Mint               | `#A5EBB8`             |
+| Calm blue (Focus)  | `#709BD2`             |
 | Lavender           | `#D4BAF4`             |
 | Ghost cells        | white at 10 % opacity |
 | Tile               | `#111318`             |
