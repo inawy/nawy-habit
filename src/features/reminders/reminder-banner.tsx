@@ -10,6 +10,8 @@ import { useReminders } from "./use-reminders";
 interface Props {
   today: string;
   unfinished: number;
+  /** All active habits. At 0 the banner stays hidden but still clears the phone's alarms. */
+  total: number;
 }
 
 /**
@@ -17,8 +19,8 @@ interface Props {
  * Android app the phone rings the same slots even when it is closed. It also surfaces the phone's
  * own error, so a failed schedule is never silent.
  */
-export function ReminderBanner({ today, unfinished }: Props) {
-  const { permission, request, syncError } = useReminders(today, unfinished);
+export function ReminderBanner({ today, unfinished, total }: Props) {
+  const { permission, request, syncError } = useReminders(today, unfinished, total);
   const [dismissed, setDismissed] = useState(true);
   const [native, setNative] = useState(false);
 
@@ -39,7 +41,7 @@ export function ReminderBanner({ today, unfinished }: Props) {
     );
   }
 
-  if (permission !== "default" || dismissed) return null;
+  if (permission !== "default" || dismissed || total === 0) return null;
 
   return (
     <section

@@ -17,10 +17,16 @@ export interface PlannedReminder {
  *
  * Each of the fixed daily slots becomes one repeating alarm. A slot that has already passed today,
  * or every slot when nothing is left to do today, starts tomorrow instead, so finishing all
- * habits silences the rest of the day. The alarm cannot know about tomorrow's habits in advance,
+ * habits silences the rest of the day. With no habits at all, nothing is scheduled. The alarm cannot know about tomorrow's habits in advance,
  * so its text is generic; opening the app recomputes the plan.
  */
-export function planNativeReminders(now: Date, unfinished: number): PlannedReminder[] {
+export function planNativeReminders(
+  now: Date,
+  unfinished: number,
+  total: number,
+): PlannedReminder[] {
+  // Nothing to remind about (every habit archived or deleted): leave no alarm on the phone.
+  if (total <= 0) return [];
   return REMINDER_SLOTS.map((slot, index) => {
     const at = new Date(
       now.getFullYear(),

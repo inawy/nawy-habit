@@ -83,7 +83,11 @@ if (!env?.cap) fail("the app is not running inside Capacitor");
 
 // 1) Add one habit through the real form, so there is something to remind about.
 const added = await ev(`${HELPERS}
-  const fab = await waitFor(() => q('button[aria-label="إضافة عادة"]'));
+  // A fresh install has no habits, so the button is the empty state's; the round one appears later.
+  const findAdd = () =>
+    q('button[aria-label="إضافة عادة"]') ??
+    [...document.querySelectorAll('button')].find((b) => b.textContent.includes('أضف أول عادة'));
+  const fab = await waitFor(findAdd);
   if (!fab) return 'no add button';
   fab.click();
   const name = await waitFor(() => q('#habit-name'));

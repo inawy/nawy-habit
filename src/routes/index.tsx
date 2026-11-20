@@ -192,8 +192,8 @@ function TodayPage() {
         </div>
       </header>
 
-      {view && today && totalCount > 0 && (
-        <ReminderBanner today={today} unfinished={totalCount - doneCount} />
+      {view && today && (
+        <ReminderBanner today={today} unfinished={totalCount - doneCount} total={totalCount} />
       )}
 
       {!view || !today ? (
