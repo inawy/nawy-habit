@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { PageBackButton } from "@/components/page-back-button";
+import { ReminderDiagnostics } from "@/features/reminders/reminder-diagnostics";
 import {
   BackupError,
   exportBackup,
@@ -194,6 +195,8 @@ function SettingsPage() {
           </Button>
         )}
       </section>
+
+      <ReminderDiagnostics />
 
       <AlertDialog open={pending !== null} onOpenChange={(o) => !o && !busy && setPending(null)}>
         <AlertDialogContent dir="rtl" className="max-w-[min(32rem,calc(100%-2rem))] rounded-lg">

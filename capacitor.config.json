@@ -1,0 +1,14 @@
+{
+  "appId": "ada.nawy.app",
+  "appName": "عادة",
+  "webDir": "dist-native",
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_ada",
+      "iconColor": "#3D7BFF"
+    }
+  }
+}

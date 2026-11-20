@@ -25,3 +25,4 @@ Local-first, offline-capable, mobile-first habit tracker in the Nawy ecosystem. 
 - GitHub Pages copy: `GH_PAGES=1` build serves the SPA at the custom-domain root (`/`) and publishes the PWA files from `.output/public` (workflow .github/workflows/pages.yml); app paths use import.meta.env.BASE_URL — keeps one codebase for Lovable hosting and Pages.
 
 - Backup export and import share timestamp and referential-integrity validation before atomic replacement — invalid files must never clear local records.
+- Android app (Capacitor, see docs/ANDROID.md): the `android/` project is generated in CI and never committed. Phone code lives only in src/lib/native; the UI talks to the `ReminderScheduler` interface, and the plugin is never returned from an async function (its proxy answers `then`). Never swallow a scheduling failure: read the phone back and show the error. `appId` is permanent after the first Play upload.

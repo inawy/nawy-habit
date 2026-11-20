@@ -117,6 +117,16 @@ assert(
   "The /settings deep link did not receive the application shell",
 );
 
+// Google Play needs a public privacy policy at a stable address. It must be the static page itself,
+// never the application shell that the host and the service worker return for unknown routes.
+const privacy = await retry(() => get("/privacy.html"), "privacy policy page");
+const privacyHtml = Buffer.from(privacy.body).toString("utf8");
+assert(privacyHtml.includes("سياسة الخصوصية"), "/privacy.html is not the privacy policy page");
+assert(
+  !privacyHtml.includes("/assets/") && !privacyHtml.includes("/manifest.webmanifest"),
+  "/privacy.html returned the application shell instead of the static policy page",
+);
+
 console.log(
-  `PAGES_SMOKE_OK: ${root.origin} — homepage, manifest, 192/512px any and maskable icons, Apple touch icon, ICO/SVG favicons, service worker, app shell, built assets, and /settings deep link.`,
+  `PAGES_SMOKE_OK: ${root.origin} — homepage, manifest, 192/512px any and maskable icons, Apple touch icon, ICO/SVG favicons, service worker, app shell, built assets, /settings deep link, and /privacy.html.`,
 );
