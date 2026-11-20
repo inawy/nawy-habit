@@ -15,7 +15,7 @@ const state = vi.hoisted(() => ({
 }));
 
 vi.mock("@capacitor/local-notifications", () => {
-  const api: Record<string, (arg?: never) => Promise<unknown>> = {
+  const api: Record<string, (arg?: unknown) => Promise<unknown>> = {
     checkPermissions: async () => ({ display: state.permission }),
     requestPermissions: async () => ({ display: "granted" }),
     getPending: async () => ({ notifications: [...state.pending] }),
@@ -26,7 +26,7 @@ vi.mock("@capacitor/local-notifications", () => {
     createChannel: async () => {
       state.calls.push("createChannel");
     },
-    schedule: async (arg?: never) => {
+    schedule: async (arg?: unknown) => {
       state.calls.push("schedule");
       const list = (arg as { notifications: { id: number }[] }).notifications;
       state.pending = list.slice(0, state.keep).map(({ id }) => ({ id }));
