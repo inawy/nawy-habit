@@ -1,0 +1,33 @@
+name: lockfile-sync
+
+# Dependencies for the Android build were added from an environment with no package-registry access,
+# so bun.lock could not be updated there. On branches named native-* this regenerates bun.lock from
+# package.json and commits it back. The push made with GITHUB_TOKEN does not start other workflows:
+# push again (an empty commit is enough) to run the normal CI on the result. Delete this workflow
+# once the lockfile is in sync and the branch is merged.
+on:
+  push:
+    branches: ['native-*']
+
+permissions:
+  contents: write
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Regenerate the lockfile
+        run: bun install --lockfile-only --ignore-scripts
+      - name: Commit it if it changed
+        run: |
+          if git diff --quiet -- bun.lock; then
+            echo "lockfile already in sync"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bun.lock
+          git commit -m "chore: sync bun.lock with package.json"
+          git push

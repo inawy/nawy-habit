@@ -1,0 +1,84 @@
+name: android
+
+# Builds an installable debug APK of the app. Not part of the normal CI: it runs by hand
+# ("Run workflow") or on branches named native-*. The android/ project is generated here from
+# capacitor.config.json each time and never committed. See docs/ANDROID.md.
+on:
+  workflow_dispatch:
+  push:
+    branches: ['native-*']
+
+permissions:
+  contents: write # to publish the APK as a release (below)
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4 # the Capacitor CLI runs on Node
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Install
+        run: bun install --frozen-lockfile
+      - name: Build the web app (static single-page build)
+        env:
+          GH_PAGES: '1'
+          VITE_BUILD_SHA: ${{ github.sha }}
+        run: bun run build
+      - name: Prepare the folder Capacitor bundles
+        run: node scripts/prepare-native-web.mjs
+      - name: Generate the Android project
+        run: npx cap add android
+      - name: Ada icons
+        run: |
+          res=android/app/src/main/res
+          find "$res" -name 'ic_launcher*' -delete
+          rm -f "$res/drawable/ic_launcher_background.xml" "$res/drawable-v24/ic_launcher_foreground.xml"
+          cp -r tools/android/res/. "$res/"
+      - name: Reminder permissions
+        run: python3 tools/android/patch_manifest.py android/app/src/main/AndroidManifest.xml
+      - name: Copy the web app into it
+        run: npx cap sync android
+      - name: Use the fixed debug key so each build updates the last one
+        run: mkdir -p ~/.android && cp tools/android/debug.keystore ~/.android/debug.keystore
+      - name: Build the debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+      - name: Keep the APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ada-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+      - name: Publish it as a pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk ada-debug.apk
+          gh release delete android-debug --cleanup-tag --yes || true
+          gh release create android-debug ada-debug.apk \
+            --prerelease \
+            --target "$GITHUB_SHA" \
+            --title "Ada debug APK" \
+            --notes "A debug build for trying reminders on a phone, built from $GITHUB_SHA. Signed with a debug key: for testing only, not for the Play Store. Replaced by the next build."
+      - name: Dry run of the Play bundle with a throwaway key
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/throwaway.p12
+          KEYSTORE_PASSWORD: throwaway-pass
+          KEY_ALIAS: throwaway
+          VERSION_CODE: '1'
+          VERSION_NAME: '0.0.0-dryrun'
+        run: |
+          keytool -genkeypair -storetype PKCS12 -keystore "$KEYSTORE_PATH" -alias throwaway \
+            -storepass "$KEYSTORE_PASSWORD" -keypass "$KEYSTORE_PASSWORD" -keyalg RSA -keysize 2048 \
+            -validity 2 -dname "CN=Throwaway"
+          python3 tools/android/patch_gradle.py android/app/build.gradle
+          cd android && ./gradlew bundleRelease --no-daemon
+          ls -la app/build/outputs/bundle/release/

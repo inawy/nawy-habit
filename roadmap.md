@@ -19,3 +19,4 @@
 - [x] Safer backups — validate dates, duplicates and log references; preserve data on failure and offer a backup before replacement. Verified downloads and replacement readback through the UI.
 - [x] Today usability — preserved view choices and grids; add control follows content instead of covering it; verified mobile and desktop.
 - [ ] Drag-and-drop habit ordering — use a mature open-source library, support touch and keyboard, and persist the order locally across reloads.
+- [ ] Google Play (Android) — Capacitor layer, workflows, native reminders and privacy page are written (docs/ANDROID.md) but have not run in CI yet. Open: decide `appId`, fix `bun.lock` via a `native-*` branch, confirm backup export works inside the WebView, run the emulator workflow, test on a real phone, then the 12-tester x 14-day closed test (docs/CLOSED_TEST.md).

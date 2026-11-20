@@ -10,7 +10,12 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-native
 .output
+
+# Generated in CI by `npx cap add android`; never committed (note the leading slash: a bare
+# `android/` would also hide tools/android/).
+/android/
 .vinxi
 .tanstack/**
 .nitro
