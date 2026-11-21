@@ -139,6 +139,43 @@ const dump = execSync("adb shell dumpsys notification --noredact").toString();
 const shown = /android\.title=String \(تجربة عادة\)/.test(dump);
 log("test notification posted:", shown);
 
+// 4) Backup. "حفظ نسخة" shows a success toast either way, so ask the PHONE whether anything came
+// out: a file in the shared folders, or the Android share sheet opened on top of the app.
+const caps = await ev(`
+  const probe = new File(["{}"], "a.json", { type: "application/json" });
+  return JSON.stringify({
+    share: typeof navigator.share,
+    canShareFiles: !!(navigator.canShare && navigator.canShare({ files: [probe] })),
+    savePicker: typeof window.showSaveFilePicker,
+  });`);
+log("web capabilities inside the WebView:", caps);
+const sh = (cmd) => {
+  try {
+    return execSync(cmd, { stdio: ["ignore", "pipe", "ignore"] }).toString();
+  } catch {
+    return "";
+  }
+};
+sh("adb shell 'rm -f /sdcard/Download/nawy-habit-*.json /sdcard/Documents/nawy-habit-*.json'");
+const clicked = await ev(`${HELPERS}
+  const btn = [...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "حفظ نسخة");
+  if (!btn) return false;
+  btn.click(); await wait(500); return true;`);
+log("backup button pressed:", clicked);
+await sleep(10_000);
+const files = sh("adb shell 'ls /sdcard/Download /sdcard/Documents'");
+const top = sh("adb shell dumpsys activity activities")
+  .split("\n")
+  .filter((l) => /topResumedActivity|mResumedActivity/.test(l))
+  .join(" | ");
+const fileSaved = /nawy-habit-.*\.json/.test(files);
+const sheetOpened = /Chooser|intentresolver|Resolver|DocumentsUI/i.test(top);
+log("backup: file saved:", fileSaved, "| share sheet opened:", sheetOpened, "| top:", top.trim());
+
 ws.close();
 if (!shown) fail("the test notification was not posted");
-log(`OK: permission granted, ${diag.pending} reminders pending, test notification posted`);
+if (!clicked) fail("backup button not found");
+if (!fileSaved && !sheetOpened) {
+  fail("backup left no file and opened no share sheet, although the app said it was saved");
+}
+log(`OK: permission granted, ${diag.pending} reminders pending, test notification posted, backup out`);
