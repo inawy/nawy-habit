@@ -109,6 +109,8 @@ export function createCapacitorScheduler(): ReminderScheduler {
             title: TEST_NOTIFICATION_TITLE,
             body: "لو شفت الإشعار ده، التذكيرات شغالة على هاتفك.",
             channelId: NATIVE_CHANNEL_ID,
+            // Even an immediate notification counts as "exact" by default and would open settings.
+            isExactNotification: false,
           },
         ],
       });

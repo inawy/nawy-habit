@@ -80,6 +80,12 @@ describe("Capacitor reminder scheduler", () => {
     expect(state.scheduled.every((n) => n.isExactNotification === false)).toBe(true);
   });
 
+  it("keeps the test notification from asking for exact alarms too", async () => {
+    await createCapacitorScheduler().showTest();
+    expect(state.scheduled).toHaveLength(1);
+    expect(state.scheduled[0]?.isExactNotification).toBe(false);
+  });
+
   it("schedules nothing, and cancels the old ones, for an empty plan", async () => {
     const scheduler = createCapacitorScheduler();
     await scheduler.replaceAll(plan);
