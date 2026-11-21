@@ -44,6 +44,16 @@ jobs:
           cp -r tools/android/res/. "$res/"
       - name: Reminder permissions
         run: python3 tools/android/patch_manifest.py android/app/src/main/AndroidManifest.xml
+      - name: Show how the local-notifications plugin handles exact alarms
+        run: |
+          D=node_modules/@capacitor/local-notifications
+          grep -m1 '"version"' $D/package.json
+          F=$(find $D/android/src -name 'LocalNotificationsPlugin.java')
+          M=$(find $D/android/src -name 'LocalNotificationManager.java')
+          echo "### exact-alarm / settings code"
+          grep -nE "canScheduleExactAlarms|REQUEST_SCHEDULE_EXACT_ALARM|startActivity|ExactAlarm|exactAlarm|checkExact|allowWhileIdle|setRepeating|setExact|setAndAllow|setInexact" $F $M || true
+          echo "### schedule() in the plugin"
+          awk '/public void schedule\(PluginCall/{f=1} f{print NR": "$0; n++} n>45{exit}' $F
       - name: Show the SDK levels Capacitor generated (Play needs target 36 or higher)
         run: grep -nE "(compile|min|target)SdkVersion" android/variables.gradle
       - name: Copy the web app into it
