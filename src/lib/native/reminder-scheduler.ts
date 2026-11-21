@@ -74,7 +74,10 @@ export function createCapacitorScheduler(): ReminderScheduler {
           title: NATIVE_REMINDER_TITLE,
           body: NATIVE_REMINDER_BODY,
           channelId: NATIVE_CHANNEL_ID,
-          schedule: { at: reminder.at, every: "day", allowWhileIdle: true },
+          // No `allowWhileIdle`: it makes the plugin ask for the exact-alarm permission and, without
+          // it, send the person to system settings and schedule nothing (seen on the emulator).
+          // Inexact daily alarms need no special permission, at the price of Doze delaying them.
+          schedule: { at: reminder.at, every: "day" },
         })),
       });
       // The phone can accept the call and still keep nothing, so ask what it really kept.

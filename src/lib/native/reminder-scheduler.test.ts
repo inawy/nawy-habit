@@ -49,7 +49,7 @@ describe("Capacitor reminder scheduler", () => {
     state.calls = [];
   });
 
-  const plan = planNativeReminders(new Date(2026, 10, 20, 8, 0), 2);
+  const plan = planNativeReminders(new Date(2026, 10, 20, 8, 0), 2, 5);
 
   it("loads the plugin without tripping over its proxy `then`", async () => {
     await expect(createCapacitorScheduler().pendingCount()).resolves.toBe(0);

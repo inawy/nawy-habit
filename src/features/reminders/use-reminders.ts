@@ -20,7 +20,11 @@ export type ReminderPermission = "granted" | "denied" | "default";
  * Inside the Android app the same fixed slots are handed to the phone as repeating alarms, so
  * they ring with the app closed. `syncError` carries the phone's own message when that fails.
  */
-export function useReminders(today: string | null, unfinished: number | null) {
+export function useReminders(
+  today: string | null,
+  unfinished: number | null,
+  total: number | null,
+) {
   const [permission, setPermission] = useState<ReminderPermission | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
   const sendingRef = useRef(false);
@@ -56,10 +60,10 @@ export function useReminders(today: string | null, unfinished: number | null) {
 
   // Android app: keep the phone's alarms in step with what is left to do today.
   useEffect(() => {
-    if (!isNativeApp() || unfinished === null || permission !== "granted") return;
+    if (!isNativeApp() || unfinished === null || total === null || permission !== "granted") return;
     let cancelled = false;
     getReminderScheduler()
-      .replaceAll(planNativeReminders(new Date(), unfinished))
+      .replaceAll(planNativeReminders(new Date(), unfinished, total))
       .then(() => {
         if (!cancelled) setSyncError(null);
       })
@@ -70,7 +74,7 @@ export function useReminders(today: string | null, unfinished: number | null) {
     return () => {
       cancelled = true;
     };
-  }, [today, unfinished, permission]);
+  }, [today, unfinished, total, permission]);
 
   // Browser: the page timer.
   useEffect(() => {
