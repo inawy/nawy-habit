@@ -25,6 +25,7 @@ import {
 } from "@/lib/db/backup-repo";
 import { todayKey } from "@/lib/date/day-key";
 import { num } from "@/lib/format/numbers";
+import { saveBackupFile } from "@/lib/native/backup-file";
 import { type ThemePreference, useTheme } from "@/lib/theme/theme-context";
 
 const themeOptions: readonly { value: ThemePreference; label: string }[] = [
@@ -62,18 +63,20 @@ function SettingsPage() {
       .catch(() => setPersisted(null));
   }, []);
 
-  const downloadBackup = async () => {
+  /** Returns false when the person closed the Android share sheet without saving anything. */
+  const downloadBackup = async (): Promise<boolean> => {
     const data = await exportBackup();
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `nawy-habit-${todayKey()}.json`;
-    document.body.append(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast.success(`تم حفظ ${num(data.habits.length)} عادة في الملف`);
+    const result = await saveBackupFile(
+      `nawy-habit-${todayKey()}.json`,
+      JSON.stringify(data, null, 2),
+    );
+    if (result === "cancelled") return false;
+    toast.success(
+      result === "shared"
+        ? `جهّزنا نسخة من ${num(data.habits.length)} عادة. اتأكد إنك حفظتها في مكان تعرف توصله`
+        : `تم حفظ ${num(data.habits.length)} عادة في الملف`,
+    );
+    return true;
   };
 
   const onExport = async () => {
@@ -105,7 +108,10 @@ function SettingsPage() {
     if (!pending || busy) return;
     setBusy(true);
     try {
-      if (saveFirst) await downloadBackup();
+      if (saveFirst && !(await downloadBackup())) {
+        toast.message("ما اتحفظتش نسخة احتياطية، فما كملناش الاسترجاع وبياناتك زي ما هي");
+        return;
+      }
       await importBackup(pending);
       toast.success(`تم استرجاع ${num(pending.habits.length)} عادة`);
       setPending(null);
