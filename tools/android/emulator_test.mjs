@@ -178,4 +178,6 @@ if (!clicked) fail("backup button not found");
 if (!fileSaved && !sheetOpened) {
   fail("backup left no file and opened no share sheet, although the app said it was saved");
 }
-log(`OK: permission granted, ${diag.pending} reminders pending, test notification posted, backup out`);
+log(
+  `OK: permission granted, ${diag.pending} reminders pending, test notification posted, backup out`,
+);
