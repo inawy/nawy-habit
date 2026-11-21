@@ -74,9 +74,11 @@ export function createCapacitorScheduler(): ReminderScheduler {
           title: NATIVE_REMINDER_TITLE,
           body: NATIVE_REMINDER_BODY,
           channelId: NATIVE_CHANNEL_ID,
-          // No `allowWhileIdle`: it makes the plugin ask for the exact-alarm permission and, without
-          // it, send the person to system settings and schedule nothing (seen on the emulator).
-          // Inexact daily alarms need no special permission, at the price of Doze delaying them.
+          // `isExactNotification` defaults to true in the plugin. With it, and without the exact-alarm
+          // permission (which Play restricts to alarm and calendar apps), schedule() opens system
+          // settings and waits instead of scheduling anything (seen on the emulator, API 34 and 35).
+          // Inexact daily alarms need no permission; the phone may deliver them a little late.
+          isExactNotification: false,
           schedule: { at: reminder.at, every: "day" },
         })),
       });
@@ -107,6 +109,8 @@ export function createCapacitorScheduler(): ReminderScheduler {
             title: TEST_NOTIFICATION_TITLE,
             body: "لو شفت الإشعار ده، التذكيرات شغالة على هاتفك.",
             channelId: NATIVE_CHANNEL_ID,
+            // Even an immediate notification counts as "exact" by default and would open settings.
+            isExactNotification: false,
           },
         ],
       });

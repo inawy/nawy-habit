@@ -12,6 +12,7 @@ const state = vi.hoisted(() => ({
   keep: Number.POSITIVE_INFINITY,
   permission: "prompt",
   calls: [] as string[],
+  scheduled: [] as { id: number; isExactNotification?: boolean }[],
 }));
 
 vi.mock("@capacitor/local-notifications", () => {
@@ -28,7 +29,8 @@ vi.mock("@capacitor/local-notifications", () => {
     },
     schedule: async (arg?: unknown) => {
       state.calls.push("schedule");
-      const list = (arg as { notifications: { id: number }[] }).notifications;
+      const list = (arg as { notifications: (typeof state.scheduled)[number][] }).notifications;
+      state.scheduled = list;
       state.pending = list.slice(0, state.keep).map(({ id }) => ({ id }));
     },
   };
@@ -47,6 +49,7 @@ describe("Capacitor reminder scheduler", () => {
     state.keep = Number.POSITIVE_INFINITY;
     state.permission = "prompt";
     state.calls = [];
+    state.scheduled = [];
   });
 
   const plan = planNativeReminders(new Date(2026, 10, 20, 8, 0), 2, 5);
@@ -69,6 +72,18 @@ describe("Capacitor reminder scheduler", () => {
     await scheduler.replaceAll(plan);
     expect(await scheduler.pendingCount()).toBe(plan.length);
     expect(state.calls.filter((c) => c === "cancel")).toHaveLength(1);
+  });
+
+  it("never asks for exact alarms, which would open system settings instead of scheduling", async () => {
+    await createCapacitorScheduler().replaceAll(plan);
+    expect(state.scheduled).toHaveLength(plan.length);
+    expect(state.scheduled.every((n) => n.isExactNotification === false)).toBe(true);
+  });
+
+  it("keeps the test notification from asking for exact alarms too", async () => {
+    await createCapacitorScheduler().showTest();
+    expect(state.scheduled).toHaveLength(1);
+    expect(state.scheduled[0]?.isExactNotification).toBe(false);
   });
 
   it("schedules nothing, and cancels the old ones, for an empty plan", async () => {
